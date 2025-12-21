@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Order, Settings, Product, Category } from '../types';
+import { Order, Settings, Product, Category } from '../types.ts';
 
 interface DashboardProps {
   orders: Order[];
@@ -8,10 +8,11 @@ interface DashboardProps {
   products: Product[];
   onUpdateSettings: (s: Settings) => void;
   onUpdateProducts: (p: Product[]) => void;
+  onLogout: () => void;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpdateSettings, onUpdateProducts }) => {
-  const [tab, setTab] = useState<'orders' | 'products' | 'pixels' | 'domain'>('orders');
+const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpdateSettings, onUpdateProducts, onLogout }) => {
+  const [tab, setTab] = useState<'orders' | 'products' | 'pixels' | 'domain' | 'security'>('orders');
   const [localSettings, setLocalSettings] = useState<Settings>(settings);
   const [newProduct, setNewProduct] = useState<Partial<Product>>({ category: Category.ELECTRONICS });
 
@@ -66,10 +67,22 @@ const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpd
             إدارة البكسلات وتتبع البيانات
           </button>
           <button 
+            onClick={() => setTab('security')}
+            className={`w-full text-right p-4 rounded-xl font-bold transition ${tab === 'security' ? 'bg-emerald-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
+          >
+            إعدادات الأمان
+          </button>
+          <button 
             onClick={() => setTab('domain')}
             className={`w-full text-right p-4 rounded-xl font-bold transition ${tab === 'domain' ? 'bg-emerald-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
           >
             إعدادات الدومين والربط
+          </button>
+          <button 
+            onClick={onLogout}
+            className="w-full text-right p-4 rounded-xl font-bold bg-red-50 text-red-600 hover:bg-red-100 transition mt-4"
+          >
+            تسجيل الخروج
           </button>
         </div>
 
@@ -113,25 +126,25 @@ const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpd
               <h2 className="text-2xl font-bold mb-6">إضافة منتج جديد</h2>
               <form onSubmit={handleAddProduct} className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12 bg-gray-50 p-6 rounded-xl border">
                 <input 
-                  className="p-3 border rounded-lg" placeholder="اسم المنتج" required
+                  className="p-3 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" placeholder="اسم المنتج" required
                   value={newProduct.name || ''} onChange={e => setNewProduct({...newProduct, name: e.target.value})}
                 />
                 <input 
-                  className="p-3 border rounded-lg" placeholder="السعر (MAD)" type="number" required
+                  className="p-3 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" placeholder="السعر (MAD)" type="number" required
                   value={newProduct.price || ''} onChange={e => setNewProduct({...newProduct, price: Number(e.target.value)})}
                 />
                 <select 
-                  className="p-3 border rounded-lg"
+                  className="p-3 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500"
                   value={newProduct.category} onChange={e => setNewProduct({...newProduct, category: e.target.value as Category})}
                 >
                   {Object.values(Category).map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
                 <input 
-                  className="p-3 border rounded-lg" placeholder="رابط صورة المنتج" required
+                  className="p-3 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" placeholder="رابط صورة المنتج" required
                   value={newProduct.image || ''} onChange={e => setNewProduct({...newProduct, image: e.target.value})}
                 />
                 <textarea 
-                  className="p-3 border rounded-lg md:col-span-2" placeholder="وصف المنتج"
+                  className="p-3 border rounded-lg md:col-span-2 outline-none focus:ring-2 focus:ring-emerald-500" placeholder="وصف المنتج"
                   value={newProduct.description || ''} onChange={e => setNewProduct({...newProduct, description: e.target.value})}
                 />
                 <button type="submit" className="bg-emerald-600 text-white p-3 rounded-lg font-bold hover:bg-emerald-700 md:col-span-2">إضافة المنتج</button>
@@ -155,79 +168,79 @@ const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpd
             </div>
           )}
 
+          {tab === 'security' && (
+            <div className="space-y-8">
+              <h2 className="text-2xl font-bold mb-6">إعدادات الأمان</h2>
+              <div>
+                <label className="block font-bold mb-2">كلمة مرور لوحة التحكم</label>
+                <input 
+                  type="password"
+                  className="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-emerald-500" 
+                  placeholder="أدخل كلمة المرور الجديدة"
+                  value={localSettings.dashboardPassword} onChange={e => setLocalSettings({...localSettings, dashboardPassword: e.target.value})}
+                />
+                <p className="text-xs text-gray-400 mt-2 italic">كلمة المرور هذه مطلوبة للوصول إلى هذه المنطقة.</p>
+              </div>
+              <button 
+                onClick={handleSaveSettings}
+                className="bg-emerald-600 text-white py-3 px-8 rounded-lg font-bold hover:bg-emerald-700 transition"
+              >
+                تحديث كلمة المرور
+              </button>
+            </div>
+          )}
+
           {tab === 'pixels' && (
             <div className="space-y-8">
               <h2 className="text-2xl font-bold mb-6">أكواد التتبع والبيانات</h2>
-              
               <div className="space-y-4">
                 <div>
                   <label className="block font-bold mb-1">Facebook Pixel ID</label>
                   <input 
-                    className="w-full p-3 border rounded-lg" placeholder="مثال: 1234567890"
+                    className="w-full p-3 border rounded-lg outline-none" placeholder="مثال: 1234567890"
                     value={localSettings.fbPixel} onChange={e => setLocalSettings({...localSettings, fbPixel: e.target.value})}
                   />
                 </div>
                 <div>
                   <label className="block font-bold mb-1">Google Analytics ID</label>
                   <input 
-                    className="w-full p-3 border rounded-lg" placeholder="مثال: G-XXXXXXX"
+                    className="w-full p-3 border rounded-lg outline-none" placeholder="مثال: G-XXXXXXX"
                     value={localSettings.googleAnalytics} onChange={e => setLocalSettings({...localSettings, googleAnalytics: e.target.value})}
                   />
                 </div>
                 <div>
                   <label className="block font-bold mb-1">TikTok Pixel ID</label>
                   <input 
-                    className="w-full p-3 border rounded-lg" placeholder="مثال: C6XXXXXXXX"
+                    className="w-full p-3 border rounded-lg outline-none" placeholder="مثال: C6XXXXXXXX"
                     value={localSettings.tiktokPixel} onChange={e => setLocalSettings({...localSettings, tiktokPixel: e.target.value})}
                   />
                 </div>
                 <div>
                   <label className="block font-bold mb-1">Google Sheets Webhook URL</label>
                   <input 
-                    className="w-full p-3 border rounded-lg text-left" dir="ltr" placeholder="https://script.google.com/macros/s/..."
+                    className="w-full p-3 border rounded-lg text-left outline-none" dir="ltr" placeholder="https://script.google.com/macros/s/..."
                     value={localSettings.googleSheetsWebhook} onChange={e => setLocalSettings({...localSettings, googleSheetsWebhook: e.target.value})}
                   />
-                  <p className="text-xs text-gray-400 mt-1">يتم إرسال الطلبات تلقائياً إلى هذا الرابط فور إتمامها.</p>
                 </div>
               </div>
-
-              <button 
-                onClick={handleSaveSettings}
-                className="bg-emerald-600 text-white py-3 px-8 rounded-lg font-bold hover:bg-emerald-700 transition"
-              >
-                حفظ التغييرات
-              </button>
+              <button onClick={handleSaveSettings} className="bg-emerald-600 text-white py-3 px-8 rounded-lg font-bold hover:bg-emerald-700 transition">حفظ التغييرات</button>
             </div>
           )}
 
           {tab === 'domain' && (
             <div className="space-y-8">
               <h2 className="text-2xl font-bold mb-6">إعدادات الدومين والربط</h2>
-              <div className="p-6 bg-blue-50 border border-blue-100 rounded-xl text-blue-800 text-sm mb-6">
-                استخدم هذه الإعدادات لربط متجرك بالدومين الخاص بك بشكل احترافي.
-              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block font-bold mb-2">اسم الدومين (Domain)</label>
-                  <input 
-                    className="w-full p-3 border rounded-lg text-left" dir="ltr"
-                    value={localSettings.domain} onChange={e => setLocalSettings({...localSettings, domain: e.target.value})}
-                  />
+                  <label className="block font-bold mb-2">اسم الدومين</label>
+                  <input className="w-full p-3 border rounded-lg text-left outline-none" dir="ltr" value={localSettings.domain} onChange={e => setLocalSettings({...localSettings, domain: e.target.value})} />
                 </div>
                 <div>
-                  <label className="block font-bold mb-2">خادم الأسماء (Name Server)</label>
-                  <input 
-                    className="w-full p-3 border rounded-lg text-left" dir="ltr"
-                    value={localSettings.nameServer} onChange={e => setLocalSettings({...localSettings, nameServer: e.target.value})}
-                  />
+                  <label className="block font-bold mb-2">خادم الأسماء</label>
+                  <input className="w-full p-3 border rounded-lg text-left outline-none" dir="ltr" value={localSettings.nameServer} onChange={e => setLocalSettings({...localSettings, nameServer: e.target.value})} />
                 </div>
               </div>
-              <button 
-                onClick={handleSaveSettings}
-                className="bg-emerald-600 text-white py-3 px-8 rounded-lg font-bold hover:bg-emerald-700 transition"
-              >
-                تحديث إعدادات النطاق
-              </button>
+              <button onClick={handleSaveSettings} className="bg-emerald-600 text-white py-3 px-8 rounded-lg font-bold hover:bg-emerald-700 transition">تحديث الإعدادات</button>
             </div>
           )}
         </div>

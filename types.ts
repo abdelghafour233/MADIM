@@ -32,6 +32,7 @@ export interface Settings {
   googleSheetsWebhook: string;
   domain: string;
   nameServer: string;
+  dashboardPassword?: string;
 }
 
 export type View = 'home' | 'category' | 'product' | 'cart' | 'checkout' | 'dashboard';
