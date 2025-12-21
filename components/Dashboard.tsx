@@ -286,10 +286,30 @@ const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpd
           {tab === 'domain' && (
             <div className="space-y-8">
               <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">إعدادات الدومين والربط</h2>
-              <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6 text-blue-800 text-sm">
-                <p className="font-bold mb-2">كيفية الربط:</p>
-                <p>قم بتوجيه الـ DNS الخاص بنطاقك إلى خوادم الأسماء (Name Servers) الموضحة أدناه لربط متجرك بشكل صحيح.</p>
+              
+              <div className="bg-blue-50 p-6 rounded-xl border border-blue-100 mb-6 text-blue-800">
+                <div className="flex items-start gap-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <div>
+                    <p className="font-bold mb-2">خوادم أسماء مقترحة (Name Servers):</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                      <div className="bg-white p-3 rounded border">
+                        <p className="text-gray-400 mb-1">Netlify (نتفلي):</p>
+                        <p>dns1.p01.nsone.net</p>
+                        <p>dns2.p01.nsone.net</p>
+                      </div>
+                      <div className="bg-white p-3 rounded border">
+                        <p className="text-gray-400 mb-1">Cloudflare:</p>
+                        <p>dash.ns.cloudflare.com</p>
+                        <p>nina.ns.cloudflare.com</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-2">
                   <label className="block font-bold text-gray-700">اسم الدومين (Domain Name)</label>
@@ -302,11 +322,11 @@ const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpd
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <label className="block font-bold text-gray-700">خادم الأسماء (Name Server)</label>
+                  <label className="block font-bold text-gray-700">خادم الأسماء الأساسي (Primary NS)</label>
                   <input 
                     className="w-full p-3 border rounded-lg text-left outline-none focus:ring-2 focus:ring-emerald-500" 
                     dir="ltr" 
-                    placeholder="ns1.hosting.com"
+                    placeholder="dns1.p01.nsone.net"
                     value={localSettings.nameServer} 
                     onChange={e => setLocalSettings({...localSettings, nameServer: e.target.value})} 
                   />
