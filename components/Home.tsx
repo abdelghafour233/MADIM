@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Product, Category } from '../types';
+import { Product, Category } from '../types.ts';
 
 interface HomeProps {
   products: Product[];
@@ -81,12 +81,6 @@ const Home: React.FC<HomeProps> = ({ products, onProductClick, onCategoryClick, 
           </div>
         ))}
       </div>
-      
-      {products.length === 0 && (
-        <div className="text-center py-20 text-gray-400">
-          <p className="text-xl">لا توجد منتجات متاحة حالياً في هذا القسم.</p>
-        </div>
-      )}
     </div>
   );
 };

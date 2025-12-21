@@ -1,13 +1,13 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Product, Category, Order, Settings } from './types';
-import { INITIAL_PRODUCTS } from './constants';
-import Navbar from './components/Navbar';
-import Home from './components/Home';
-import ProductDetail from './components/ProductDetail';
-import Cart from './components/Cart';
-import Checkout from './components/Checkout';
-import Dashboard from './components/Dashboard';
+import React, { useState, useEffect } from 'react';
+import { View, Product, Category, Order, Settings } from './types.ts';
+import { INITIAL_PRODUCTS } from './constants.tsx';
+import Navbar from './components/Navbar.tsx';
+import Home from './components/Home.tsx';
+import ProductDetail from './components/ProductDetail.tsx';
+import Cart from './components/Cart.tsx';
+import Checkout from './components/Checkout.tsx';
+import Dashboard from './components/Dashboard.tsx';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -25,7 +25,6 @@ const App: React.FC = () => {
     nameServer: 'ns1.hosting.com'
   });
 
-  // Load data from localStorage on mount
   useEffect(() => {
     const savedProducts = localStorage.getItem('products');
     const savedOrders = localStorage.getItem('orders');
@@ -37,15 +36,6 @@ const App: React.FC = () => {
     if (savedOrders) setOrders(JSON.parse(savedOrders));
     if (savedSettings) setSettings(JSON.parse(savedSettings));
   }, []);
-
-  // Inject Pixels based on settings
-  useEffect(() => {
-    if (settings.fbPixel) {
-      const script = document.createElement('script');
-      script.innerHTML = `!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init', '${settings.fbPixel}');fbq('track', 'PageView');`;
-      document.head.appendChild(script);
-    }
-  }, [settings.fbPixel]);
 
   const addToCart = (product: Product) => {
     setCart(prev => {
@@ -91,7 +81,6 @@ const App: React.FC = () => {
     setCurrentView('home');
     alert('تم إرسال طلبك بنجاح! سنتصل بك قريباً.');
 
-    // Simulated Google Sheets Integration
     if (settings.googleSheetsWebhook) {
       try {
         await fetch(settings.googleSheetsWebhook, {
