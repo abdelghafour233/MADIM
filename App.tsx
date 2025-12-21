@@ -77,6 +77,14 @@ const App: React.FC = () => {
     }));
   };
 
+  const deleteOrder = (orderId: string) => {
+    if (confirm('هل أنت متأكد من حذف هذا الطلب نهائياً؟')) {
+      const updatedOrders = orders.filter(o => o.id !== orderId);
+      setOrders(updatedOrders);
+      localStorage.setItem('orders', JSON.stringify(updatedOrders));
+    }
+  };
+
   const placeOrder = async (customerData: { name: string; city: string; phone: string }) => {
     const newOrder: Order = {
       id: Math.random().toString(36).substr(2, 9),
@@ -182,6 +190,7 @@ const App: React.FC = () => {
             products={products}
             onUpdateSettings={(s) => { setSettings(s); localStorage.setItem('settings', JSON.stringify(s)); }}
             onUpdateProducts={(p) => { setProducts(p); localStorage.setItem('products', JSON.stringify(p)); }}
+            onDeleteOrder={deleteOrder}
             onLogout={() => setIsDashboardUnlocked(false)}
           />
         );
@@ -216,7 +225,6 @@ const App: React.FC = () => {
 
           <div className="pt-6 border-t flex flex-col items-center gap-4">
             <p className="text-gray-400 text-xs">© 2024 متجر المغرب الحديث. جميع الحقوق محفوظة.</p>
-            {/* Secret but reachable login link */}
             <div className="flex gap-2 items-center">
               <button 
                 onClick={() => setCurrentView('dashboard')}
