@@ -42,7 +42,6 @@ const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpd
     }
 
     if (editingId) {
-      // Update existing product
       const updatedProducts = products.map(p => 
         p.id === editingId 
           ? { ...p, ...newProduct as Product } 
@@ -52,7 +51,6 @@ const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpd
       setEditingId(null);
       alert('تم تحديث المنتج بنجاح');
     } else {
-      // Add new product
       const prod: Product = {
         id: Math.random().toString(36).substr(2, 9),
         name: newProduct.name,
@@ -78,7 +76,6 @@ const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpd
       image: product.image,
       category: product.category
     });
-    // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -117,6 +114,12 @@ const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpd
             className={`w-full text-right p-4 rounded-xl font-bold transition ${tab === 'pixels' ? 'bg-emerald-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
           >
             إدارة البكسلات
+          </button>
+          <button 
+            onClick={() => setTab('domain')}
+            className={`w-full text-right p-4 rounded-xl font-bold transition ${tab === 'domain' ? 'bg-emerald-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-100'}`}
+          >
+            إعدادات الدومين والربط
           </button>
           <button 
             onClick={() => setTab('security')}
@@ -277,6 +280,44 @@ const Dashboard: React.FC<DashboardProps> = ({ orders, settings, products, onUpd
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {tab === 'domain' && (
+            <div className="space-y-8">
+              <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">إعدادات الدومين والربط</h2>
+              <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-6 text-blue-800 text-sm">
+                <p className="font-bold mb-2">كيفية الربط:</p>
+                <p>قم بتوجيه الـ DNS الخاص بنطاقك إلى خوادم الأسماء (Name Servers) الموضحة أدناه لربط متجرك بشكل صحيح.</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="flex flex-col gap-2">
+                  <label className="block font-bold text-gray-700">اسم الدومين (Domain Name)</label>
+                  <input 
+                    className="w-full p-3 border rounded-lg text-left outline-none focus:ring-2 focus:ring-emerald-500" 
+                    dir="ltr" 
+                    placeholder="example.com"
+                    value={localSettings.domain} 
+                    onChange={e => setLocalSettings({...localSettings, domain: e.target.value})} 
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label className="block font-bold text-gray-700">خادم الأسماء (Name Server)</label>
+                  <input 
+                    className="w-full p-3 border rounded-lg text-left outline-none focus:ring-2 focus:ring-emerald-500" 
+                    dir="ltr" 
+                    placeholder="ns1.hosting.com"
+                    value={localSettings.nameServer} 
+                    onChange={e => setLocalSettings({...localSettings, nameServer: e.target.value})} 
+                  />
+                </div>
+              </div>
+              <button 
+                onClick={handleSaveSettings} 
+                className="bg-emerald-600 text-white py-3 px-8 rounded-lg font-bold hover:bg-emerald-700 transition shadow-md active:scale-95"
+              >
+                تحديث إعدادات الربط
+              </button>
             </div>
           )}
 
