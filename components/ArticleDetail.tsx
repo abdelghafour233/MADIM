@@ -34,19 +34,37 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack }) => {
           {article.content.split('\n').map((para, i) => <p key={i} className="mb-4">{para}</p>)}
         </div>
 
-        <div className="bg-orange-50 p-8 rounded-3xl border border-orange-100 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div>
-            <p className="text-orange-800 font-bold text-lg mb-1">أفضل سعر وجدناه:</p>
-            <p className="text-4xl font-black text-orange-600">{article.price.toLocaleString()} د.م.</p>
+        {/* روابط الشراء الخارجية */}
+        <div className="mt-12">
+          <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            روابط الشراء الخارجية:
+          </h3>
+          <div className="grid grid-cols-1 gap-4">
+            {article.links && article.links.length > 0 ? (
+              article.links.map((link, index) => (
+                <a 
+                  key={index}
+                  href={link.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-between bg-gray-50 hover:bg-emerald-50 border border-gray-100 hover:border-emerald-200 p-5 rounded-2xl transition-all group"
+                >
+                  <span className="font-bold text-gray-700 group-hover:text-emerald-700">{link.label}</span>
+                  <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
+                    <span>عرض العرض</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </div>
+                </a>
+              ))
+            ) : (
+              <p className="text-gray-400 italic">لا توجد روابط شراء متوفرة حالياً.</p>
+            )}
           </div>
-          <a 
-            href={article.affiliateLink} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="bg-orange-600 hover:bg-orange-700 text-white py-5 px-12 rounded-2xl font-black text-xl shadow-xl shadow-orange-200 transition-all active:scale-95 text-center w-full md:w-auto"
-          >
-            اشتري الآن من المتجر
-          </a>
         </div>
       </div>
     </div>

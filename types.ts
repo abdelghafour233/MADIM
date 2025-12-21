@@ -6,19 +6,22 @@ export enum Category {
   TECH = 'تقنية'
 }
 
+export interface AffiliateLink {
+  label: string;
+  url: string;
+}
+
 export interface Article {
   id: string;
-  // Renamed from title to name to fix errors in constants.tsx and components
   name: string;
   price: number;
   content: string;
   image: string;
   category: Category;
-  affiliateLink: string;
+  links: AffiliateLink[];
   rating: number;
 }
 
-// Added missing Product interface required by Cart and ProductDetail components
 export interface Product {
   id: string;
   name: string;
