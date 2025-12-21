@@ -27,7 +27,7 @@ const App: React.FC = () => {
     googleSheetsWebhook: '',
     domain: 'myshop.com',
     nameServer: 'ns1.hosting.com',
-    dashboardPassword: 'admin' // كلمة المرور الافتراضية
+    dashboardPassword: 'admin'
   });
 
   useEffect(() => {
@@ -151,26 +151,27 @@ const App: React.FC = () => {
       case 'dashboard':
         if (!isDashboardUnlocked) {
           return (
-            <div className="max-w-md mx-auto mt-20 p-8 bg-white rounded-2xl shadow-lg animate-fadeIn text-center">
-              <div className="bg-emerald-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="max-w-md mx-auto mt-20 p-8 bg-white rounded-2xl shadow-lg animate-fadeIn text-center border">
+              <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold mb-6">الدخول للوحة التحكم</h2>
+              <h2 className="text-2xl font-bold mb-6">منطقة الإدارة</h2>
               <form onSubmit={handleDashboardLogin}>
                 <input 
                   type="password" 
-                  className="w-full border rounded-xl p-3 mb-4 focus:ring-2 focus:ring-emerald-500 outline-none"
-                  placeholder="أدخل كلمة المرور"
+                  className="w-full border rounded-xl p-3 mb-4 focus:ring-2 focus:ring-emerald-500 outline-none text-center"
+                  placeholder="كلمة السر"
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
                   autoFocus
                 />
                 <button type="submit" className="w-full bg-emerald-600 text-white py-3 rounded-xl font-bold hover:bg-emerald-700 transition">
-                  دخول
+                  فتح اللوحة
                 </button>
               </form>
+              <button onClick={() => setCurrentView('home')} className="mt-4 text-gray-400 text-sm hover:underline">العودة للمتجر</button>
             </div>
           );
         }
@@ -190,19 +191,43 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar 
         currentView={currentView} 
         setView={setCurrentView} 
         cartCount={cart.reduce((acc, i) => acc + i.quantity, 0)} 
       />
-      <main className="flex-grow container mx-auto px-4 py-8">
+      <main className="flex-grow container mx-auto px-4 py-6 md:py-10">
         {renderView()}
       </main>
       <WhatsAppButton />
-      <footer className="bg-gray-900 text-white py-8 text-center">
-        <p>© 2024 متجر المغرب الحديث. جميع الحقوق محفوظة.</p>
-        <p className="mt-2 text-gray-400 text-sm">أفضل المنتجات بأفضل الأسعار في المملكة المغربية</p>
+      <footer className="bg-white border-t py-10 mt-20">
+        <div className="container mx-auto px-4 text-center">
+          <div className="mb-6">
+            <h3 className="text-xl font-bold text-emerald-600 mb-2">سوق المغرب</h3>
+            <p className="text-gray-500 text-sm max-w-sm mx-auto">نحن نوفر لكم أفضل المنتجات بأفضل الأسعار مع خدمة الدفع عند الاستلام في كل أنحاء المغرب.</p>
+          </div>
+          
+          <div className="flex justify-center gap-8 text-sm font-bold text-gray-600 mb-8">
+            <button onClick={() => setCurrentView('home')} className="hover:text-emerald-600 transition">الرئيسية</button>
+            <button onClick={() => setCurrentView('cart')} className="hover:text-emerald-600 transition">سلة التسوق</button>
+            <button className="hover:text-emerald-600 transition">من نحن</button>
+          </div>
+
+          <div className="pt-6 border-t flex flex-col items-center gap-4">
+            <p className="text-gray-400 text-xs">© 2024 متجر المغرب الحديث. جميع الحقوق محفوظة.</p>
+            {/* Secret but reachable login link */}
+            <div className="flex gap-2 items-center">
+              <button 
+                onClick={() => setCurrentView('dashboard')}
+                className="text-gray-200 hover:text-emerald-300 text-[10px] transition-all"
+                title="Admin Access"
+              >
+                دخول الإدارة
+              </button>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
   );
