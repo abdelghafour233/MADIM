@@ -10,24 +10,6 @@ export const INITIAL_ARTICLES: Article[] = [
     image: 'https://images.unsplash.com/photo-1607082349566-187342175e2f?q=80&w=2000',
     category: Category.GUIDES,
     rating: 5
-  },
-  {
-    id: '1',
-    name: 'مراجعة هاتف آيفون 15 برو: هل يستحق الشراء؟',
-    price: 12000,
-    content: 'يعتبر آيفون 15 برو قفزة نوعية في عالم الهواتف الذكية بفضل معالج A17 Pro الجديد وتصميمه من التيتانيوم...\n\nيمكنك العثور على هذا المنتج في المتاجر الكبرى الموثوقة.\nتأكد دائماً من مراجعة الضمان قبل الشراء.',
-    image: 'https://images.unsplash.com/photo-1696446701796-da61225697cc?q=80&w=1000',
-    category: Category.REVIEWS,
-    rating: 5
-  },
-  {
-    id: '2',
-    name: 'أفضل 5 قلايات هوائية في السوق المغربي لعام 2024',
-    price: 1500,
-    content: 'إذا كنت تبحث عن طعام صحي ومقرمش، فإن القلاية الهوائية هي خيارك الأمثل. في هذا المقال نستعرض أفضل الأنواع المتوفرة حالياً وأسعارها التنافسية.',
-    image: 'https://images.unsplash.com/photo-1626074353765-517a681e40be?q=80&w=1000',
-    category: Category.BEST_OFFERS,
-    rating: 4.5
   }
 ];
 
