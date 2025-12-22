@@ -9,61 +9,90 @@ interface ArticleDetailProps {
 
 const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack }) => {
   return (
-    <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-lg overflow-hidden animate-fadeIn border">
-      <img src={article.image} alt={article.name} className="w-full h-[400px] object-cover" />
-      <div className="p-8 md:p-12">
-        <button onClick={onBack} className="text-gray-400 hover:text-emerald-600 mb-6 flex items-center gap-2 font-bold transition">
+    <div className="max-w-4xl mx-auto pb-20 animate-fadeIn">
+      <button 
+        onClick={onBack} 
+        className="mb-8 flex items-center gap-2 font-black text-slate-400 hover:text-emerald-600 transition-all group"
+      >
+        <div className="p-2 bg-white rounded-xl shadow-sm group-hover:bg-emerald-50 transition-colors">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          العودة للمقالات
-        </button>
+        </div>
+        العودة للمقالات
+      </button>
 
-        <div className="flex flex-wrap items-center gap-4 mb-6">
-          <span className="bg-emerald-50 text-emerald-600 font-bold px-4 py-1 rounded-full text-sm">{article.category}</span>
-          <div className="flex text-yellow-400">
-            {[...Array(5)].map((_, i) => (
-              <svg key={i} className={`h-5 w-5 ${i < article.rating ? 'fill-current' : 'text-gray-300'}`} viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
-            ))}
+      <div className="bg-white rounded-[48px] shadow-2xl shadow-slate-200/50 overflow-hidden border border-white">
+        <div className="relative h-[500px]">
+          <img src={article.image} alt={article.name} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+          <div className="absolute bottom-10 right-10 left-10">
+             <span className="bg-emerald-600 text-white font-black px-6 py-2 rounded-2xl text-xs shadow-xl shadow-emerald-500/20 mb-6 inline-block">
+                {article.category}
+              </span>
+              <h1 className="text-4xl md:text-6xl font-black text-slate-900 leading-[1.15] drop-shadow-sm">
+                {article.name}
+              </h1>
           </div>
         </div>
 
-        <h1 className="text-3xl md:text-5xl font-black text-gray-900 mb-8 leading-tight">{article.name}</h1>
-        
-        <div className="prose prose-lg max-w-none text-gray-600 mb-12 leading-loose">
-          {article.content.split('\n').map((para, i) => <p key={i} className="mb-4">{para}</p>)}
-        </div>
+        <div className="px-8 md:px-16 py-12">
+          <div className="flex flex-wrap items-center justify-between gap-6 mb-12 p-8 bg-slate-50 rounded-[32px] border border-slate-100">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">وقت القراءة</p>
+                <p className="font-black text-slate-700">4 دقائق</p>
+              </div>
+            </div>
 
-        {/* روابط الشراء الخارجية */}
-        <div className="mt-12">
-          <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-            </svg>
-            روابط الشراء الخارجية:
-          </h3>
-          <div className="grid grid-cols-1 gap-4">
-            {article.links && article.links.length > 0 ? (
-              article.links.map((link, index) => (
-                <a 
-                  key={index}
-                  href={link.url} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-between bg-gray-50 hover:bg-emerald-50 border border-gray-100 hover:border-emerald-200 p-5 rounded-2xl transition-all group"
-                >
-                  <span className="font-bold text-gray-700 group-hover:text-emerald-700">{link.label}</span>
-                  <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
-                    <span>عرض العرض</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </div>
-                </a>
-              ))
-            ) : (
-              <p className="text-gray-400 italic">لا توجد روابط شراء متوفرة حالياً.</p>
-            )}
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm text-amber-400">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 fill-current" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-[10px] font-bold text-slate-400 uppercase">تقييمنا</p>
+                <p className="font-black text-slate-700">{article.rating}/5 نجوم</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <div className="px-6 py-3 bg-emerald-600 rounded-2xl shadow-lg shadow-emerald-200">
+                <p className="text-[10px] font-bold text-emerald-100 uppercase">السعر التقديري</p>
+                <p className="font-black text-white text-xl">{article.price.toLocaleString()} د.م.</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="prose prose-slate prose-lg max-w-none text-slate-600 leading-[2] font-medium space-y-6">
+            {article.content.split('\n').map((para, i) => para.trim() ? (
+              <p key={i} className="mb-6 first-letter:text-5xl first-letter:font-black first-letter:text-emerald-600 first-letter:ml-3 first-letter:float-right">
+                {para}
+              </p>
+            ) : <br key={i}/>)}
+          </div>
+
+          <div className="mt-20 p-10 bg-slate-900 rounded-[40px] text-white flex flex-col md:flex-row items-center justify-between gap-8">
+            <div>
+              <h3 className="text-2xl font-black mb-2">هل أعجبك هذا المقال؟</h3>
+              <p className="text-slate-400 font-medium">اشترك لتصلك أحدث المراجعات والعروض الحصرية مباشرة.</p>
+            </div>
+            <div className="flex w-full md:w-auto gap-2">
+              <input 
+                type="email" 
+                placeholder="بريدك الإلكتروني" 
+                className="bg-white/10 border border-white/10 rounded-2xl px-6 py-4 outline-none focus:ring-2 focus:ring-emerald-500 flex-grow md:w-64"
+              />
+              <button className="bg-emerald-500 hover:bg-emerald-600 px-6 py-4 rounded-2xl font-black transition">
+                انضم
+              </button>
+            </div>
           </div>
         </div>
       </div>

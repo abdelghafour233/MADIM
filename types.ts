@@ -6,11 +6,6 @@ export enum Category {
   TECH = 'تقنية'
 }
 
-export interface AffiliateLink {
-  label: string;
-  url: string;
-}
-
 export interface Article {
   id: string;
   name: string;
@@ -18,7 +13,6 @@ export interface Article {
   content: string;
   image: string;
   category: Category;
-  links: AffiliateLink[];
   rating: number;
 }
 
