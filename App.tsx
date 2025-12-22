@@ -39,6 +39,31 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // SEO Management
+  useEffect(() => {
+    let title = settings.siteName;
+    let description = settings.siteDescription;
+
+    if (currentView === 'article' && selectedArticle) {
+      title = `${selectedArticle.name} | ${settings.siteName}`;
+      description = selectedArticle.content.substring(0, 160).replace(/\n/g, ' ');
+    } else if (currentView === 'category' && selectedCategory) {
+      title = `قسم ${selectedCategory} | ${settings.siteName}`;
+    } else if (currentView === 'dashboard') {
+      title = `لوحة التحكم | ${settings.siteName}`;
+    }
+
+    document.title = title;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    if (metaDescription) metaDescription.setAttribute('content', description);
+    
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', title);
+    
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', description);
+  }, [currentView, selectedArticle, selectedCategory, settings]);
+
   const handleDashboardLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordInput === (settings.dashboardPassword || 'admin')) {
@@ -73,6 +98,7 @@ const App: React.FC = () => {
           <ArticleDetail 
             article={selectedArticle} 
             onBack={() => setCurrentView('home')} 
+            siteName={settings.siteName}
           />
         ) : null;
       case 'dashboard':
@@ -136,7 +162,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navbar currentView={currentView} setView={setCurrentView} siteName={settings.siteName} />
-      <main className="flex-grow container mx-auto px-4 py-10">
+      <main className="flex-grow container mx-auto px-4 py-10" id="main-content">
         {renderView()}
       </main>
       <WhatsAppButton />
