@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Article, Settings, Category } from '../types.ts';
 
 interface DashboardProps {
@@ -11,7 +11,7 @@ interface DashboardProps {
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSettings, onUpdateArticles, onLogout }) => {
-  const [tab, setTab] = useState<'articles' | 'adsense' | 'settings'>('articles');
+  const [tab, setTab] = useState<'articles' | 'adsense' | 'settings' | 'stats'>('stats');
   const [localSettings, setLocalSettings] = useState<Settings>(settings);
   const [newArticle, setNewArticle] = useState<Partial<Article>>({ category: Category.TECH, rating: 5, image: '' });
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -22,10 +22,25 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     setLocalSettings(settings);
   }, [settings]);
 
+  // Calculate Stats
+  const stats = useMemo(() => {
+    const totalViews = articles.reduce((acc, curr) => acc + (curr.views || 0), 0);
+    const totalLikes = articles.reduce((acc, curr) => acc + (curr.likes || 0), 0);
+    const totalComments = articles.reduce((acc, curr) => acc + (curr.comments?.length || 0), 0);
+    const topArticles = [...articles].sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, 5);
+
+    return {
+      totalArticles: articles.length,
+      totalViews,
+      totalLikes,
+      totalComments,
+      topArticles
+    };
+  }, [articles]);
+
   const handleSaveSettings = async () => {
     setIsSaving(true);
     try {
-      // Simulate save delay
       await new Promise(resolve => setTimeout(resolve, 800));
       onUpdateSettings(localSettings);
       alert('✅ تم تحديث كافة الإعدادات وكلمة السر بنجاح!');
@@ -71,6 +86,12 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       {/* Navigation Tabs */}
       <div className="flex flex-wrap gap-2 mb-10 bg-white p-3 rounded-[28px] shadow-lg border border-slate-100 sticky top-24 z-40 overflow-x-auto no-scrollbar">
         <button 
+          onClick={() => setTab('stats')} 
+          className={`flex-shrink-0 px-8 py-4 rounded-2xl font-black transition-all ${tab === 'stats' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
+        >
+          الإحصائيات 📊
+        </button>
+        <button 
           onClick={() => setTab('articles')} 
           className={`flex-shrink-0 px-8 py-4 rounded-2xl font-black transition-all ${tab === 'articles' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
         >
@@ -80,21 +101,69 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
           onClick={() => setTab('adsense')} 
           className={`flex-shrink-0 px-8 py-4 rounded-2xl font-black transition-all ${tab === 'adsense' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
         >
-          الأدسنس والأرباح 💰
+          الأرباح 💰
         </button>
         <button 
           onClick={() => setTab('settings')} 
           className={`flex-shrink-0 px-8 py-4 rounded-2xl font-black transition-all ${tab === 'settings' ? 'bg-emerald-600 text-white shadow-md' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
         >
-          إعدادات الموقع ⚙️
+          الإعدادات ⚙️
         </button>
         <button 
           onClick={onLogout} 
           className="mr-auto px-6 py-4 text-red-500 font-black hover:bg-red-50 rounded-2xl transition-colors"
         >
-          خروج الآمن
+          خروج آمن
         </button>
       </div>
+
+      {tab === 'stats' && (
+        <div className="space-y-10">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {[
+              { label: 'إجمالي المشاهدات', val: stats.totalViews.toLocaleString(), icon: '👁️', color: 'bg-blue-50 text-blue-600' },
+              { label: 'إجمالي الإعجابات', val: stats.totalLikes.toLocaleString(), icon: '❤️', color: 'bg-rose-50 text-rose-600' },
+              { label: 'إجمالي التعليقات', val: stats.totalComments.toLocaleString(), icon: '💬', color: 'bg-amber-50 text-amber-600' },
+              { label: 'المقالات المنشورة', val: stats.totalArticles.toLocaleString(), icon: '📑', color: 'bg-emerald-50 text-emerald-600' },
+            ].map((s, idx) => (
+              <div key={idx} className="bg-white p-8 rounded-[40px] shadow-xl border border-slate-50 text-center animate-slideUp" style={{ animationDelay: `${idx * 0.1}s` }}>
+                <div className={`w-14 h-14 ${s.color} rounded-2xl flex items-center justify-center mx-auto mb-4 text-2xl shadow-sm`}>
+                  {s.icon}
+                </div>
+                <div className="text-3xl font-black text-slate-800 mb-1">{s.val}</div>
+                <div className="text-slate-400 font-bold text-xs uppercase tracking-widest">{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          <div className="bg-white p-10 rounded-[48px] shadow-xl border border-slate-50">
+            <h2 className="text-2xl font-black mb-8 text-slate-800 flex items-center gap-3">
+              <span className="p-2 bg-emerald-100 text-emerald-600 rounded-xl">📈</span>
+              أفضل 5 مقالات أداءً (حسب المشاهدات)
+            </h2>
+            <div className="space-y-4">
+              {stats.topArticles.map((art, idx) => (
+                <div key={art.id} className="flex items-center gap-6 p-4 rounded-3xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group">
+                  <div className="text-2xl font-black text-slate-200 w-8">0{idx + 1}</div>
+                  <img src={art.image} className="w-16 h-16 rounded-2xl object-cover shadow-sm" alt="" />
+                  <div className="flex-grow min-w-0">
+                    <h4 className="font-black text-slate-800 truncate text-lg group-hover:text-emerald-600 transition-colors">{art.name}</h4>
+                    <div className="flex gap-4 text-xs font-bold text-slate-400">
+                      <span>👁️ {art.views?.toLocaleString()} مشاهدة</span>
+                      <span>❤️ {art.likes?.toLocaleString()} إعجاب</span>
+                    </div>
+                  </div>
+                  <button onClick={() => startEditing(art)} className="bg-slate-100 hover:bg-emerald-600 hover:text-white text-slate-500 p-3 rounded-xl transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {tab === 'articles' && (
         <div className="space-y-12">
@@ -213,7 +282,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                 />
               </div>
               <div className="md:col-span-2 space-y-4">
-                <label className="block text-slate-700 font-black mr-2">وصف الموقع (لتحسين محركات البحث SEO)</label>
+                <label className="block text-slate-700 font-black mr-2">وصف الموقع (SEO)</label>
                 <textarea 
                   className="w-full p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-medium h-24"
                   value={localSettings.siteDescription}
@@ -249,14 +318,9 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 transition-colors"
                   >
-                    {showPassword ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
-                    ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.04m4.533-4.533A10.01 10.01 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21m-4.225-4.225l-4.225-4.225m4.225 4.225L7 7m3.586 3.586a3 3 0 004.243 4.243" /></svg>
-                    )}
+                    {showPassword ? '👁️' : '🕶️'}
                   </button>
                 </div>
-                <p className="text-sm text-slate-400 font-bold px-4">ملاحظة: سيتم طلب كلمة المرور هذه في المرة القادمة التي تحاول فيها الدخول للإدارة.</p>
               </div>
             </div>
           </div>
@@ -266,12 +330,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
             disabled={isSaving}
             className={`w-full py-6 rounded-[32px] font-black text-xl transition-all shadow-2xl flex items-center justify-center gap-4 ${isSaving ? 'bg-slate-400 text-white cursor-not-allowed' : 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-emerald-100'}`}
           >
-            {isSaving ? (
-              <>
-                <svg className="animate-spin h-6 w-6 text-white" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                جاري تحديث البيانات...
-              </>
-            ) : 'حفظ كافة التغييرات النهائية ✅'}
+            {isSaving ? 'جاري تحديث البيانات...' : 'حفظ كافة التغييرات النهائية ✅'}
           </button>
         </div>
       )}
