@@ -21,6 +21,7 @@ const App: React.FC = () => {
     googleAnalytics: '',
     tiktokPixel: '',
     adsenseCode: '',
+    adsTxt: '',
     domain: 'souq-morocco.com',
     dashboardPassword: 'admin',
     siteName: 'دليلك الشرائي',
@@ -42,30 +43,29 @@ const App: React.FC = () => {
 
   // AdSense & Tracking Injection
   useEffect(() => {
-    // Inject AdSense Code if available
     if (settings.adsenseCode) {
       const scriptId = 'adsense-script-injected';
       let existingScript = document.getElementById(scriptId);
       if (!existingScript) {
-        const script = document.createElement('div');
-        script.id = scriptId;
-        script.innerHTML = settings.adsenseCode;
-        // Search for the script tag within the string and execute it
-        const scriptTags = script.getElementsByTagName('script');
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = settings.adsenseCode.trim();
+        const scriptTags = tempDiv.getElementsByTagName('script');
+        
         for (let s of scriptTags) {
           const newScript = document.createElement('script');
+          newScript.id = scriptId;
           newScript.async = true;
           if (s.src) newScript.src = s.src;
           if (s.innerHTML) newScript.innerHTML = s.innerHTML;
-          // Extract crossOrigin/Client ID if possible
           if (s.getAttribute('crossorigin')) newScript.setAttribute('crossorigin', s.getAttribute('crossorigin')!);
+          if (s.getAttribute('data-ad-client')) newScript.setAttribute('data-ad-client', s.getAttribute('data-ad-client')!);
           document.head.appendChild(newScript);
         }
       }
     }
   }, [settings.adsenseCode]);
 
-  // SEO Management
+  // SEO & Head Management
   useEffect(() => {
     let title = settings.siteName;
     let description = settings.siteDescription;
@@ -119,6 +119,7 @@ const App: React.FC = () => {
             article={selectedArticle} 
             onBack={() => setCurrentView('home')} 
             siteName={settings.siteName}
+            adsenseCode={settings.adsenseCode}
           />
         ) : null;
       case 'dashboard':

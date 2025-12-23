@@ -6,9 +6,10 @@ interface ArticleDetailProps {
   article: Article;
   onBack: () => void;
   siteName: string;
+  adsenseCode?: string;
 }
 
-const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName }) => {
+const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName, adsenseCode }) => {
   
   useEffect(() => {
     const scriptId = 'article-schema-script';
@@ -33,6 +34,18 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
     return () => { const el = document.getElementById(scriptId); if (el) el.remove(); };
   }, [article, siteName]);
 
+  // Push Adsense Ads if library is loaded
+  useEffect(() => {
+    if (adsenseCode) {
+      try {
+        // @ts-ignore
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      } catch (e) {
+        console.error('AdSense error', e);
+      }
+    }
+  }, [article, adsenseCode]);
+
   const renderContent = (text: string) => {
     const paragraphs = text.split('\n');
     return paragraphs.map((para, i) => {
@@ -43,10 +56,15 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
       
       return (
         <React.Fragment key={i}>
-          {/* Ad Slot after 2nd paragraph */}
-          {i === 2 && (
-            <div className="my-8 p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center text-slate-300 font-bold text-sm min-h-[100px]">
-              مساحة إعلانية (سيظهر إعلان أدسنس هنا تلقائياً)
+          {/* Ad Slot after 3rd paragraph */}
+          {i === 3 && adsenseCode && (
+            <div className="my-10 flex justify-center overflow-hidden min-h-[100px]">
+              <ins className="adsbygoogle"
+                   style={{ display: 'block', textAlign: 'center' }}
+                   data-ad-layout="in-article"
+                   data-ad-format="fluid"
+                   data-ad-client={adsenseCode.match(/ca-pub-\d+/)?.[0]}
+                   data-ad-slot="default"></ins>
             </div>
           )}
           
@@ -103,10 +121,12 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
         </header>
 
         <div className="px-6 md:px-16 py-12">
-          {/* Top Ad Slot */}
-          <div className="mb-10 p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center text-slate-300 font-bold text-sm min-h-[100px]">
-            مساحة إعلانية علوية
-          </div>
+          {/* Top Ad Slot if verified */}
+          {!adsenseCode && (
+             <div className="mb-10 p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center text-slate-300 font-bold text-sm min-h-[100px]">
+                مساحة إعلانية علوية (جاهزة للتفعيل)
+             </div>
+          )}
 
           <div className="flex flex-wrap items-center justify-between gap-6 mb-12 p-8 bg-slate-50 rounded-[32px]">
             <div className="flex items-center gap-4">
@@ -127,10 +147,16 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
             {renderContent(article.content)}
           </div>
 
-          {/* Bottom Ad Slot */}
-          <div className="mt-12 p-4 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl flex items-center justify-center text-slate-300 font-bold text-sm min-h-[150px]">
-            مساحة إعلانية سفلية (إعلان استجابة)
-          </div>
+          {adsenseCode && (
+            <div className="mt-12 overflow-hidden flex justify-center min-h-[250px]">
+               <ins className="adsbygoogle"
+                    style={{ display: 'block' }}
+                    data-ad-client={adsenseCode.match(/ca-pub-\d+/)?.[0]}
+                    data-ad-slot="default"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+            </div>
+          )}
         </div>
       </div>
     </article>

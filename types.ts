@@ -30,6 +30,7 @@ export interface Settings {
   googleAnalytics: string;
   tiktokPixel: string;
   adsenseCode: string;
+  adsTxt: string;
   domain: string;
   dashboardPassword?: string;
   siteName: string;
