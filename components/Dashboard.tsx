@@ -17,16 +17,19 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   const [newArticle, setNewArticle] = useState<Partial<Article>>({ category: Category.REVIEWS, rating: 5 });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isFixing, setIsFixing] = useState(false);
+  
+  // حالات تغيير كلمة السر
+  const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
 
   useEffect(() => { setLocalSettings(settings); }, [settings]);
 
   const generateSitemap = () => {
-    const baseUrl = `https://${settings.domain || 'souq-morocco.com'}`;
+    const baseUrl = `https://${settings.domain || 'abdouweb.online'}`;
     return [`${baseUrl}/`, ...articles.map(a => `${baseUrl}/article/${a.id}`)].join('\n');
   };
 
   const generateRobotsTxt = () => {
-    return `User-agent: *\nAllow: /\nSitemap: https://${settings.domain || 'souq-morocco.com'}/sitemap.xml`;
+    return `User-agent: *\nAllow: /\nSitemap: https://${settings.domain || 'abdouweb.online'}/sitemap.xml`;
   };
 
   const checkSEOStatus = () => {
@@ -40,6 +43,27 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   const handleUpdate = () => {
     onUpdateSettings(localSettings);
     alert('تم حفظ الإعدادات بنجاح! 🇲🇦');
+  };
+
+  const handlePasswordChange = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwords.current !== settings.dashboardPassword) {
+      alert('كلمة السر الحالية غير صحيحة!');
+      return;
+    }
+    if (passwords.new !== passwords.confirm) {
+      alert('كلمات السر الجديدة غير متطابقة!');
+      return;
+    }
+    if (passwords.new.length < 4) {
+      alert('يجب أن تكون كلمة السر 4 أرقام أو حروف على الأقل');
+      return;
+    }
+
+    onUpdateSettings({ ...settings, dashboardPassword: passwords.new });
+    setPasswords({ current: '', new: '', confirm: '' });
+    alert('تم تغيير كلمة السر بنجاح! سيتم تسجيل خروجك للأمان.');
+    onLogout();
   };
 
   const fixContentWithAI = async () => {
@@ -58,8 +82,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fadeIn">
-      {/* القائمة العلوية للوحة التحكم */}
-      <div className="flex flex-wrap gap-2 mb-10 bg-white p-2 rounded-[24px] shadow-sm sticky top-24 z-40 overflow-x-auto no-scrollbar">
+      <div className="flex flex-wrap gap-2 mb-10 bg-white p-2 rounded-[24px] shadow-sm sticky top-24 z-40 overflow-x-auto no-scrollbar border border-slate-100">
         {[
           { id: 'articles', label: 'المقالات' },
           { id: 'monetization', label: 'أدسنس والربح' },
@@ -76,6 +99,71 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         ))}
         <button onClick={onLogout} className="mr-auto px-6 py-3 text-red-500 font-black hover:bg-red-50 rounded-2xl transition-all">خروج</button>
       </div>
+
+      {tab === 'security' && (
+        <div className="max-w-xl mx-auto space-y-8 animate-fadeIn">
+          <div className="bg-white p-10 rounded-[40px] shadow-xl border border-slate-100 text-center">
+            <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <h3 className="text-2xl font-black text-slate-800 mb-2">تغيير كلمة السر</h3>
+            <p className="text-slate-500 text-sm mb-8 font-medium">قم بتحديث كلمة مرور لوحة الإدارة بانتظام لحماية بياناتك</p>
+
+            <form onSubmit={handlePasswordChange} className="space-y-4">
+              <div className="text-right">
+                <label className="text-xs font-black text-slate-400 mr-2 mb-1 block">كلمة السر الحالية</label>
+                <input 
+                  type="password" 
+                  className="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/10 font-bold"
+                  placeholder="••••"
+                  value={passwords.current}
+                  onChange={e => setPasswords({...passwords, current: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="text-right">
+                <label className="text-xs font-black text-slate-400 mr-2 mb-1 block">كلمة السر الجديدة</label>
+                <input 
+                  type="password" 
+                  className="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/10 font-bold"
+                  placeholder="••••"
+                  value={passwords.new}
+                  onChange={e => setPasswords({...passwords, new: e.target.value})}
+                  required
+                />
+              </div>
+              <div className="text-right">
+                <label className="text-xs font-black text-slate-400 mr-2 mb-1 block">تأكيد كلمة السر الجديدة</label>
+                <input 
+                  type="password" 
+                  className="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/10 font-bold"
+                  placeholder="••••"
+                  value={passwords.confirm}
+                  onChange={e => setPasswords({...passwords, confirm: e.target.value})}
+                  required
+                />
+              </div>
+              <button 
+                type="submit" 
+                className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-600 transition-all mt-4"
+              >
+                تحديث الأمان وحفظ الإعدادات
+              </button>
+            </form>
+          </div>
+          <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-3xl">
+            <h4 className="text-emerald-800 font-black text-sm mb-2 flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              تنبيه أمني
+            </h4>
+            <p className="text-emerald-700 text-xs font-bold leading-relaxed">بمجرد تغيير كلمة السر، سيتم إنهاء الجلسة الحالية وإعادة توجيهك لشاشة الدخول لضمان تفعيل الحماية الجديدة.</p>
+          </div>
+        </div>
+      )}
 
       {tab === 'seo' && (
         <div className="space-y-8 animate-fadeIn">
@@ -188,7 +276,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
           </div>
           <div className="space-y-4">
              <label className="font-black text-slate-500 text-sm">رابط الدومين (بدون https)</label>
-             <input className="w-full p-4 border rounded-2xl bg-slate-50 font-bold" value={localSettings.domain} onChange={e => setLocalSettings({...localSettings, domain: e.target.value})} placeholder="souq-morocco.com" />
+             <input className="w-full p-4 border rounded-2xl bg-slate-50 font-bold" value={localSettings.domain} onChange={e => setLocalSettings({...localSettings, domain: e.target.value})} placeholder="abdouweb.online" />
           </div>
           <button onClick={handleUpdate} className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black hover:bg-emerald-600 transition-all">حفظ التغييرات العامة</button>
         </div>
