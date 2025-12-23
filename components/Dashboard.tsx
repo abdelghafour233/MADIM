@@ -12,6 +12,7 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSettings, onUpdateArticles, onLogout }) => {
   const [tab, setTab] = useState<'articles' | 'adsense' | 'settings' | 'stats'>('stats');
+  const [editorMode, setEditorMode] = useState<'write' | 'preview'>('write');
   const [localSettings, setLocalSettings] = useState<Settings>(settings);
   const [newArticle, setNewArticle] = useState<Partial<Article>>({ category: Category.TECH, rating: 5, image: '' });
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -71,6 +72,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
     setEditingId(null);
     setNewArticle({ category: Category.TECH, rating: 5, image: '' });
+    setEditorMode('write');
     alert('✅ تم حفظ المقال بنجاح');
   };
 
@@ -78,7 +80,31 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     setEditingId(a.id);
     setNewArticle(a);
     setTab('articles');
+    setEditorMode('write');
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const renderPreviewContent = (text: string) => {
+    if (!text) return <p className="text-slate-300 italic">ابدأ الكتابة لرؤية المعاينة هنا...</p>;
+    const paragraphs = text.split('\n').filter(p => p.trim() !== '');
+    return paragraphs.map((para, i) => {
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      const parts = para.split(urlRegex);
+      return (
+        <p key={i} className="mb-6 leading-relaxed text-slate-700 text-lg">
+          {parts.map((part, index) => {
+            if (part.match(urlRegex)) {
+              return (
+                <span key={index} className="block my-4 p-4 bg-emerald-50 border border-emerald-100 rounded-xl text-emerald-600 font-bold text-center break-all">
+                  رابط مدمج: {part} 🔗
+                </span>
+              );
+            }
+            return part;
+          })}
+        </p>
+      );
+    });
   };
 
   return (
@@ -168,42 +194,81 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       {tab === 'articles' && (
         <div className="space-y-12">
           <div className="bg-white p-10 rounded-[40px] shadow-xl border border-slate-50">
-            <h2 className="text-2xl font-black mb-8 text-slate-800">{editingId ? 'تعديل المقال' : 'نشر مقال جديد'}</h2>
-            <form onSubmit={handleArticleSubmit} className="space-y-6">
-              <input 
-                className="w-full p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-bold"
-                placeholder="عنوان المقال..."
-                value={newArticle.name || ''}
-                onChange={e => setNewArticle({...newArticle, name: e.target.value})}
-                required
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <select 
-                  className="p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-bold"
-                  value={newArticle.category}
-                  onChange={e => setNewArticle({...newArticle, category: e.target.value as Category})}
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl font-black text-slate-800">{editingId ? 'تعديل المقال' : 'نشر مقال جديد'}</h2>
+              <div className="flex bg-slate-100 p-1 rounded-xl">
+                <button 
+                  onClick={() => setEditorMode('write')}
+                  className={`px-6 py-2 rounded-lg font-black text-sm transition-all ${editorMode === 'write' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                  {Object.values(Category).map(c => <option key={c} value={c}>{c}</option>)}
-                </select>
-                <input 
-                  className="p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-bold"
-                  placeholder="رابط الصورة البارزة"
-                  value={newArticle.image || ''}
-                  onChange={e => setNewArticle({...newArticle, image: e.target.value})}
-                />
+                  تحرير ✏️
+                </button>
+                <button 
+                  onClick={() => setEditorMode('preview')}
+                  className={`px-6 py-2 rounded-lg font-black text-sm transition-all ${editorMode === 'preview' ? 'bg-white text-emerald-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  معاينة 👁️
+                </button>
               </div>
-              <textarea 
-                className="w-full h-80 p-6 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-medium leading-relaxed"
-                placeholder="محتوى المقال..."
-                value={newArticle.content || ''}
-                onChange={e => setNewArticle({...newArticle, content: e.target.value})}
-                required
-              />
+            </div>
+
+            <form onSubmit={handleArticleSubmit} className="space-y-6">
+              {editorMode === 'write' ? (
+                <div className="space-y-6 animate-fadeIn">
+                  <input 
+                    className="w-full p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-bold text-xl"
+                    placeholder="عنوان المقال..."
+                    value={newArticle.name || ''}
+                    onChange={e => setNewArticle({...newArticle, name: e.target.value})}
+                    required
+                  />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <select 
+                      className="p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-bold"
+                      value={newArticle.category}
+                      onChange={e => setNewArticle({...newArticle, category: e.target.value as Category})}
+                    >
+                      {Object.values(Category).map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                    <input 
+                      className="p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-bold"
+                      placeholder="رابط الصورة البارزة"
+                      value={newArticle.image || ''}
+                      onChange={e => setNewArticle({...newArticle, image: e.target.value})}
+                    />
+                  </div>
+                  <textarea 
+                    className="w-full h-96 p-6 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-medium leading-relaxed"
+                    placeholder="محتوى المقال... (استخدم السطر الجديد للفصل بين الفقرات)"
+                    value={newArticle.content || ''}
+                    onChange={e => setNewArticle({...newArticle, content: e.target.value})}
+                    required
+                  />
+                </div>
+              ) : (
+                <div className="animate-fadeIn">
+                  <div className="relative h-64 rounded-3xl overflow-hidden mb-8 border border-slate-100">
+                    <img src={newArticle.image || 'https://via.placeholder.com/800x400?text=الصورة+البارزة'} className="w-full h-full object-cover" alt="" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
+                       <h3 className="text-3xl font-black text-white leading-tight">{newArticle.name || 'عنوان المقال سيظهر هنا'}</h3>
+                    </div>
+                  </div>
+                  <div className="bg-slate-50 p-8 rounded-[32px] border border-slate-100 min-h-[400px]">
+                    <div className="mb-6">
+                      <span className="bg-emerald-600 text-white text-[10px] font-black px-4 py-2 rounded-lg">
+                        {newArticle.category}
+                      </span>
+                    </div>
+                    {renderPreviewContent(newArticle.content || '')}
+                  </div>
+                </div>
+              )}
+
               <button 
                 type="submit" 
-                className="w-full bg-emerald-600 text-white py-6 rounded-2xl font-black text-xl hover:bg-emerald-700 shadow-xl shadow-emerald-100 transition-all"
+                className="w-full bg-emerald-600 text-white py-6 rounded-2xl font-black text-xl hover:bg-emerald-700 shadow-xl shadow-emerald-100 transition-all active:scale-95"
               >
-                {editingId ? 'حفظ التغييرات' : 'نشر المقال'}
+                {editingId ? 'حفظ التغييرات النهائية' : 'نشر المقال الآن'}
               </button>
             </form>
           </div>
@@ -235,7 +300,8 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
             <div className="space-y-4">
               <label className="block text-slate-700 font-black mr-2">كود Header (AdSense):</label>
               <textarea 
-                className="w-full h-48 p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-emerald-500 outline-none font-mono text-sm leading-relaxed"
+                className="w-full h-48 p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-emerald-500 outline-none font-mono text-sm leading-relaxed text-left"
+                dir="ltr"
                 value={localSettings.adsenseCode}
                 onChange={e => setLocalSettings({...localSettings, adsenseCode: e.target.value})}
               />
@@ -243,7 +309,8 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
             <div className="space-y-4">
               <label className="block text-slate-700 font-black mr-2">محتوى Ads.txt:</label>
               <textarea 
-                className="w-full h-24 p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-emerald-500 outline-none font-mono text-sm"
+                className="w-full h-24 p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-emerald-500 outline-none font-mono text-sm text-left"
+                dir="ltr"
                 value={localSettings.adsTxt}
                 onChange={e => setLocalSettings({...localSettings, adsTxt: e.target.value})}
               />
@@ -308,7 +375,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                 <div className="relative">
                   <input 
                     type={showPassword ? "text" : "password"}
-                    className="w-full p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-rose-500 outline-none font-black text-2xl text-center pr-16"
+                    className="w-full p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-rose-500 outline-none font-black text-2xl text-center pr-4 pl-16"
                     placeholder="أدخل كلمة المرور الجديدة"
                     value={localSettings.dashboardPassword}
                     onChange={e => setLocalSettings({...localSettings, dashboardPassword: e.target.value})}
@@ -316,11 +383,16 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                   <button 
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 transition-colors"
+                    className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 transition-colors"
                   >
-                    {showPassword ? '👁️' : '🕶️'}
+                    {showPassword ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.04m4.533-4.533A10.01 10.01 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21m-4.225-4.225l-4.225-4.225m4.225 4.225L7 7m3.586 3.586a3 3 0 004.243 4.243" /></svg>
+                    )}
                   </button>
                 </div>
+                <p className="text-sm text-slate-400 font-bold px-4 leading-relaxed">ملاحظة: يمكنك الضغط على أيقونة العين لمراجعة كلمة السر قبل الحفظ.</p>
               </div>
             </div>
           </div>
