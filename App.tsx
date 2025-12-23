@@ -21,10 +21,11 @@ const App: React.FC = () => {
     fbPixel: '',
     googleAnalytics: '',
     tiktokPixel: '',
-    adsenseCode: '',
-    adsTxt: '',
+    // تم تثبيت الكود الخاص بك هنا بنجاح 🇲🇦
+    adsenseCode: '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5578524966832192" crossorigin="anonymous"></script>',
+    adsTxt: 'google.com, pub-5578524966832192, DIRECT, f08c47fec0942fa0',
     domain: 'souq-morocco.com',
-    dashboardPassword: '1234', // تم التغيير من admin إلى 1234
+    dashboardPassword: '1234',
     siteName: 'دليلك الشرائي',
     siteDescription: 'نراجع لك أفضل المنتجات ونختار لك أفضل العروض في المغرب'
   });
@@ -39,9 +40,12 @@ const App: React.FC = () => {
     if (savedSettings) {
       const parsed = JSON.parse(savedSettings);
       setSettings(prev => ({...prev, ...parsed}));
+    } else {
+      localStorage.setItem('settings', JSON.stringify(settings));
     }
   }, []);
 
+  // نظام الحقن الآلي لكود أدسنس في كل الصفحات
   useEffect(() => {
     if (settings.adsenseCode) {
       const scriptId = 'adsense-script-injected';
@@ -58,7 +62,6 @@ const App: React.FC = () => {
           if (s.src) newScript.src = s.src;
           if (s.innerHTML) newScript.innerHTML = s.innerHTML;
           if (s.getAttribute('crossorigin')) newScript.setAttribute('crossorigin', s.getAttribute('crossorigin')!);
-          if (s.getAttribute('data-ad-client')) newScript.setAttribute('data-ad-client', s.getAttribute('data-ad-client')!);
           document.head.appendChild(newScript);
         }
       }
@@ -74,8 +77,6 @@ const App: React.FC = () => {
       description = selectedArticle.content.substring(0, 160).replace(/\n/g, ' ');
     } else if (currentView === 'category' && selectedCategory) {
       title = `قسم ${selectedCategory} | ${settings.siteName}`;
-    } else if (currentView === 'dashboard') {
-      title = `لوحة التحكم | ${settings.siteName}`;
     }
 
     document.title = title;
@@ -90,7 +91,7 @@ const App: React.FC = () => {
       setPasswordInput('');
       setShowPassword(false);
     } else {
-      alert('كلمة المرور غير صحيحة، يرجى المحاولة مرة أخرى.');
+      alert('كلمة المرور غير صحيحة!');
     }
   };
 
@@ -128,42 +129,21 @@ const App: React.FC = () => {
             <div className="min-h-[70vh] flex items-center justify-center p-4">
               <div className="max-w-md w-full bg-white rounded-[40px] shadow-2xl p-10 border border-slate-100 animate-fadeIn">
                 <div className="text-center">
-                  <div className="w-20 h-20 bg-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl rotate-3">
+                  <div className="w-20 h-20 bg-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-black text-slate-800 mb-2">مركز التحكم</h2>
-                  <p className="text-slate-400 font-bold mb-10">أدخل رمز الوصول للإدارة</p>
+                  <h2 className="text-3xl font-black text-slate-800 mb-10">مركز التحكم</h2>
                   <form onSubmit={handleDashboardLogin} className="space-y-6">
-                    <div className="relative">
-                      <input 
-                        type={showPassword ? "text" : "password"} 
-                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none text-center font-black text-xl transition-all focus:ring-2 focus:ring-emerald-500/20"
-                        placeholder="••••"
-                        value={passwordInput}
-                        onChange={(e) => setPasswordInput(e.target.value)}
-                      />
-                      <button 
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-emerald-600 transition-colors"
-                      >
-                        {showPassword ? (
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                          </svg>
-                        ) : (
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                        )}
-                      </button>
-                    </div>
-                    <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100">
-                      فتح لوحة التحكم
-                    </button>
+                    <input 
+                      type={showPassword ? "text" : "password"} 
+                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none text-center font-black text-xl"
+                      placeholder="كلمة السر"
+                      value={passwordInput}
+                      onChange={(e) => setPasswordInput(e.target.value)}
+                    />
+                    <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg">دخول</button>
                   </form>
                 </div>
               </div>
@@ -191,15 +171,10 @@ const App: React.FC = () => {
         {renderView()}
       </main>
       <WhatsAppButton />
-      <footer className="bg-white border-t py-12 mt-20">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-2xl font-black text-slate-800 mb-4">{settings.siteName}</h3>
-          <p className="text-slate-400 text-sm mb-8 font-medium">{settings.siteDescription}</p>
-          <div className="pt-8 border-t border-slate-50 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-slate-300 text-xs font-bold">© 2024 جميع الحقوق محفوظة. صنع في المغرب 🇲🇦</p>
-            <button onClick={() => {setCurrentView('dashboard'); window.scrollTo(0,0);}} className="text-slate-300 hover:text-emerald-600 transition-colors text-[10px] font-black uppercase">إدارة الموقع وأدسنس</button>
-          </div>
-        </div>
+      <footer className="bg-white border-t py-12 mt-20 text-center">
+        <h3 className="text-2xl font-black text-slate-800 mb-4">{settings.siteName}</h3>
+        <p className="text-slate-400 text-sm mb-8">{settings.siteDescription}</p>
+        <button onClick={() => setCurrentView('dashboard')} className="text-slate-300 hover:text-emerald-600 text-[10px] font-black uppercase">إدارة الموقع وأدسنس</button>
       </footer>
     </div>
   );
