@@ -42,6 +42,36 @@ const App: React.FC = () => {
     }
   }, []);
 
+  // وظيفة حقن كود أدسنس في الـ Head تلقائياً
+  useEffect(() => {
+    if (settings.adsenseCode) {
+      const pubIdMatch = settings.adsenseCode.match(/ca-pub-\d+/);
+      if (pubIdMatch) {
+        const pubId = pubIdMatch[0];
+        // تحديث كود الميتا
+        let metaTag = document.querySelector('meta[name="google-adsense-account"]');
+        if (!metaTag) {
+          metaTag = document.createElement('meta');
+          metaTag.setAttribute('name', 'google-adsense-account');
+          document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', pubId);
+
+        // تحديث السكريبت
+        const existingScript = document.querySelector('script[src*="adsbygoogle.js"]');
+        if (existingScript) {
+          existingScript.setAttribute('src', `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}`);
+        } else {
+          const script = document.createElement('script');
+          script.async = true;
+          script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}`;
+          script.crossOrigin = "anonymous";
+          document.head.appendChild(script);
+        }
+      }
+    }
+  }, [settings.adsenseCode]);
+
   useEffect(() => {
     let title = settings.siteName;
     let desc = settings.siteDescription;
