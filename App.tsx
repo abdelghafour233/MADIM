@@ -21,7 +21,6 @@ const App: React.FC = () => {
     fbPixel: '',
     googleAnalytics: '',
     tiktokPixel: '',
-    // تم تثبيت الكود الخاص بك هنا بنجاح 🇲🇦
     adsenseCode: '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5578524966832192" crossorigin="anonymous"></script>',
     adsTxt: 'google.com, pub-5578524966832192, DIRECT, f08c47fec0942fa0',
     domain: 'souq-morocco.com',
@@ -45,7 +44,6 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // نظام الحقن الآلي لكود أدسنس في كل الصفحات
   useEffect(() => {
     if (settings.adsenseCode) {
       const scriptId = 'adsense-script-injected';
@@ -86,12 +84,13 @@ const App: React.FC = () => {
 
   const handleDashboardLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordInput === (settings.dashboardPassword || '1234')) {
+    const correctPassword = settings.dashboardPassword || '1234';
+    if (passwordInput === correctPassword) {
       setIsDashboardUnlocked(true);
       setPasswordInput('');
       setShowPassword(false);
     } else {
-      alert('كلمة المرور غير صحيحة!');
+      alert('كلمة المرور غير صحيحة! جرب 1234 إذا لم تغيرها سابقاً.');
     }
   };
 
@@ -134,16 +133,37 @@ const App: React.FC = () => {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                   </div>
-                  <h2 className="text-3xl font-black text-slate-800 mb-10">مركز التحكم</h2>
+                  <h2 className="text-3xl font-black text-slate-800 mb-2">مركز التحكم</h2>
+                  <p className="text-slate-400 font-bold mb-10 text-sm">يرجى إدخال كلمة السر للمتابعة</p>
                   <form onSubmit={handleDashboardLogin} className="space-y-6">
-                    <input 
-                      type={showPassword ? "text" : "password"} 
-                      className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none text-center font-black text-xl"
-                      placeholder="كلمة السر"
-                      value={passwordInput}
-                      onChange={(e) => setPasswordInput(e.target.value)}
-                    />
-                    <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg">دخول</button>
+                    <div className="relative">
+                      <input 
+                        type={showPassword ? "text" : "password"} 
+                        className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 outline-none text-center font-black text-xl transition-all focus:ring-4 focus:ring-emerald-500/10"
+                        placeholder="كلمة السر"
+                        value={passwordInput}
+                        onChange={(e) => setPasswordInput(e.target.value)}
+                      />
+                      <button 
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-emerald-600 transition-colors"
+                      >
+                        {showPassword ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                          </svg>
+                        ) : (
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                    <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-700 shadow-xl transition-all active:scale-95">
+                      دخول للوحة الإدارة
+                    </button>
                   </form>
                 </div>
               </div>
@@ -174,7 +194,7 @@ const App: React.FC = () => {
       <footer className="bg-white border-t py-12 mt-20 text-center">
         <h3 className="text-2xl font-black text-slate-800 mb-4">{settings.siteName}</h3>
         <p className="text-slate-400 text-sm mb-8">{settings.siteDescription}</p>
-        <button onClick={() => setCurrentView('dashboard')} className="text-slate-300 hover:text-emerald-600 text-[10px] font-black uppercase">إدارة الموقع وأدسنس</button>
+        <button onClick={() => { setCurrentView('dashboard'); window.scrollTo(0,0); }} className="text-slate-300 hover:text-emerald-600 text-[10px] font-black uppercase tracking-widest">إدارة الموقع وأدسنس</button>
       </footer>
     </div>
   );

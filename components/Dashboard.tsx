@@ -201,11 +201,39 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
               </svg>
             </div>
             <h3 className="text-3xl font-black text-slate-800">تعديل كلمة السر</h3>
+            <p className="text-slate-400 font-bold text-sm italic">اضغط على أيقونة العين للتأكد من الكتابة</p>
           </div>
           <div className="space-y-6">
-            <input type={showPassChange ? "text" : "password"} className="w-full p-6 border border-slate-100 rounded-[30px] bg-slate-50 outline-none text-center font-black text-2xl" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="كلمة المرور الجديدة" />
-            <input type={showPassChange ? "text" : "password"} className="w-full p-6 border border-slate-100 rounded-[30px] bg-slate-50 outline-none text-center font-black text-2xl" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="تأكيد كلمة المرور" />
-            <button onClick={handlePasswordUpdate} className="w-full bg-slate-900 text-white py-6 rounded-3xl font-black text-xl hover:bg-slate-800 shadow-2xl transition-all">تحديث وحفظ</button>
+            <div className="relative">
+              <input 
+                type={showPassChange ? "text" : "password"} 
+                className="w-full p-6 border border-slate-100 rounded-[30px] bg-slate-50 outline-none text-center font-black text-2xl" 
+                value={newPassword} 
+                onChange={e => setNewPassword(e.target.value)} 
+                placeholder="كلمة المرور الجديدة" 
+              />
+              <button onClick={() => setShowPassChange(!showPassChange)} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300 hover:text-emerald-600">
+                {showPassChange ? (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" /></svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                )}
+              </button>
+            </div>
+            
+            <div className="relative">
+              <input 
+                type={showPassChange ? "text" : "password"} 
+                className="w-full p-6 border border-slate-100 rounded-[30px] bg-slate-50 outline-none text-center font-black text-2xl" 
+                value={confirmPassword} 
+                onChange={e => setConfirmPassword(e.target.value)} 
+                placeholder="تأكيد كلمة المرور" 
+              />
+            </div>
+
+            <button onClick={handlePasswordUpdate} className="w-full bg-slate-900 text-white py-6 rounded-3xl font-black text-xl hover:bg-slate-800 shadow-2xl transition-all">
+              تحديث وحفظ كلمة السر الجديدة
+            </button>
           </div>
         </div>
       )}
