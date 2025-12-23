@@ -29,6 +29,7 @@ export interface Settings {
   fbPixel: string;
   googleAnalytics: string;
   tiktokPixel: string;
+  adsenseCode: string;
   domain: string;
   dashboardPassword?: string;
   siteName: string;
