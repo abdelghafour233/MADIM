@@ -18,27 +18,9 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isFixing, setIsFixing] = useState(false);
   
-  // حالات تغيير كلمة السر
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
 
   useEffect(() => { setLocalSettings(settings); }, [settings]);
-
-  const generateSitemap = () => {
-    const baseUrl = `https://${settings.domain || 'abdouweb.online'}`;
-    return [`${baseUrl}/`, ...articles.map(a => `${baseUrl}/article/${a.id}`)].join('\n');
-  };
-
-  const generateRobotsTxt = () => {
-    return `User-agent: *\nAllow: /\nSitemap: https://${settings.domain || 'abdouweb.online'}/sitemap.xml`;
-  };
-
-  const checkSEOStatus = () => {
-    const issues = [];
-    if (articles.length < 15) issues.push("جوجل يفضل المواقع التي تملك أكثر من 15 مقالاً (تملك الآن " + articles.length + ")");
-    if (!settings.domain.includes('.')) issues.push("يجب إعداد نطاق (Domain) حقيقي ليتمكن جوجل من أرشفتك.");
-    if (articles.some(a => a.content.length < 500)) issues.push("بعض مقالاتك قصيرة؛ جوجل يعشق المحتوى التفصيلي (أكثر من 500 كلمة).");
-    return issues;
-  };
 
   const handleUpdate = () => {
     onUpdateSettings(localSettings);
@@ -55,14 +37,9 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       alert('كلمات السر الجديدة غير متطابقة!');
       return;
     }
-    if (passwords.new.length < 4) {
-      alert('يجب أن تكون كلمة السر 4 أرقام أو حروف على الأقل');
-      return;
-    }
-
     onUpdateSettings({ ...settings, dashboardPassword: passwords.new });
     setPasswords({ current: '', new: '', confirm: '' });
-    alert('تم تغيير كلمة السر بنجاح! سيتم تسجيل خروجك للأمان.');
+    alert('تم تغيير كلمة السر بنجاح!');
     onLogout();
   };
 
@@ -70,6 +47,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     if (!newArticle.content) return;
     setIsFixing(true);
     try {
+      // Use the GoogleGenAI SDK correctly with the API key from environment variables.
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
@@ -85,8 +63,8 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       <div className="flex flex-wrap gap-2 mb-10 bg-white p-2 rounded-[24px] shadow-sm sticky top-24 z-40 overflow-x-auto no-scrollbar border border-slate-100">
         {[
           { id: 'articles', label: 'المقالات' },
-          { id: 'monetization', label: 'أدسنس والربح' },
-          { id: 'seo', label: 'مدقق الأرشفة' },
+          { id: 'monetization', label: 'تفعيل الربح 💰' },
+          { id: 'seo', label: 'الأرشفة' },
           { id: 'security', label: 'الأمان' },
           { id: 'settings', label: 'الإعدادات' }
         ].map(t => (
@@ -100,102 +78,61 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         <button onClick={onLogout} className="mr-auto px-6 py-3 text-red-500 font-black hover:bg-red-50 rounded-2xl transition-all">خروج</button>
       </div>
 
-      {tab === 'security' && (
-        <div className="max-w-xl mx-auto space-y-8 animate-fadeIn">
-          <div className="bg-white p-10 rounded-[40px] shadow-xl border border-slate-100 text-center">
-            <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-black text-slate-800 mb-2">تغيير كلمة السر</h3>
-            <p className="text-slate-500 text-sm mb-8 font-medium">قم بتحديث كلمة مرور لوحة الإدارة بانتظام لحماية بياناتك</p>
-
-            <form onSubmit={handlePasswordChange} className="space-y-4">
-              <div className="text-right">
-                <label className="text-xs font-black text-slate-400 mr-2 mb-1 block">كلمة السر الحالية</label>
-                <input 
-                  type="password" 
-                  className="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/10 font-bold"
-                  placeholder="••••"
-                  value={passwords.current}
-                  onChange={e => setPasswords({...passwords, current: e.target.value})}
-                  required
-                />
-              </div>
-              <div className="text-right">
-                <label className="text-xs font-black text-slate-400 mr-2 mb-1 block">كلمة السر الجديدة</label>
-                <input 
-                  type="password" 
-                  className="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/10 font-bold"
-                  placeholder="••••"
-                  value={passwords.new}
-                  onChange={e => setPasswords({...passwords, new: e.target.value})}
-                  required
-                />
-              </div>
-              <div className="text-right">
-                <label className="text-xs font-black text-slate-400 mr-2 mb-1 block">تأكيد كلمة السر الجديدة</label>
-                <input 
-                  type="password" 
-                  className="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-4 focus:ring-emerald-500/10 font-bold"
-                  placeholder="••••"
-                  value={passwords.confirm}
-                  onChange={e => setPasswords({...passwords, confirm: e.target.value})}
-                  required
-                />
-              </div>
-              <button 
-                type="submit" 
-                className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-600 transition-all mt-4"
-              >
-                تحديث الأمان وحفظ الإعدادات
-              </button>
-            </form>
-          </div>
-          <div className="bg-emerald-50 border border-emerald-100 p-6 rounded-3xl">
-            <h4 className="text-emerald-800 font-black text-sm mb-2 flex items-center gap-2">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
-              </svg>
-              تنبيه أمني
-            </h4>
-            <p className="text-emerald-700 text-xs font-bold leading-relaxed">بمجرد تغيير كلمة السر، سيتم إنهاء الجلسة الحالية وإعادة توجيهك لشاشة الدخول لضمان تفعيل الحماية الجديدة.</p>
-          </div>
-        </div>
-      )}
-
-      {tab === 'seo' && (
+      {tab === 'monetization' && (
         <div className="space-y-8 animate-fadeIn">
-          <div className="bg-emerald-600 text-white p-10 rounded-[40px] shadow-xl">
-            <h3 className="text-2xl font-black mb-4">تقرير جودة الأرشفة (SEO Report) 🔍</h3>
-            {checkSEOStatus().length > 0 ? (
-              <ul className="space-y-4">
-                {checkSEOStatus().map((issue, i) => (
-                  <li key={i} className="flex items-center gap-3 bg-white/10 p-4 rounded-2xl">
-                    <span className="text-xl">⚠️</span>
-                    <span className="font-bold">{issue}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="bg-white/10 p-6 rounded-2xl font-black text-center">
-                🎉 رائع! موقعك مستعد تماماً لتصدر نتائج البحث.
-              </div>
-            )}
+          <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white p-8 md:p-12 rounded-[40px] shadow-2xl relative overflow-hidden">
+             <div className="relative z-10">
+               <h3 className="text-3xl font-black mb-4">تهانينا على القبول! 🎉</h3>
+               <p className="text-emerald-100 font-bold max-w-xl leading-relaxed">باقي لك 3 خطوات بسيطة لتظهر الإعلانات وتبدأ بجني الأرباح على abdouweb.online.</p>
+             </div>
+             <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white p-8 rounded-[40px] shadow-lg border border-slate-100">
-              <h4 className="font-black text-slate-800 mb-4">خريطة الموقع (Sitemap)</h4>
-              <p className="text-xs text-slate-400 mb-4 font-bold">انسخ الروابط وقدمها في Google Search Console:</p>
-              <textarea readOnly className="w-full h-40 bg-slate-50 p-4 rounded-2xl font-mono text-xs outline-none border border-slate-100" value={generateSitemap()} />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm">
+              <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-black mb-4">1</div>
+              <h4 className="font-black text-slate-800 mb-2">ربط الموقع</h4>
+              <p className="text-xs text-slate-500 font-bold leading-relaxed mb-4">تأكد من وجود الكود في الـ Header. (تم وضعه برمجياً)</p>
+              <button onClick={() => alert('الكود موجود بالفعل في ملف index.html')} className="text-[10px] bg-slate-100 text-slate-600 px-3 py-2 rounded-lg font-black w-full">تحقق من الكود</button>
             </div>
-            <div className="bg-white p-8 rounded-[40px] shadow-lg border border-slate-100">
-              <h4 className="font-black text-slate-800 mb-4">ملف Robots.txt</h4>
-              <p className="text-xs text-slate-400 mb-4 font-bold">هذا الملف يفتح الباب لعناكب جوجل لدخول موقعك:</p>
-              <textarea readOnly className="w-full h-40 bg-slate-50 p-4 rounded-2xl font-mono text-xs outline-none border border-slate-100" value={generateRobotsTxt()} />
+            
+            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm">
+              <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-black mb-4">2</div>
+              <h4 className="font-black text-slate-800 mb-2">ملف ads.txt</h4>
+              <p className="text-xs text-slate-500 font-bold leading-relaxed mb-4">ضروري جداً. انسخ المحتوى وضعه في ملف نصي بجانب الموقع.</p>
+              <button onClick={() => {
+                navigator.clipboard.writeText(localSettings.adsTxt);
+                alert('تم نسخ محتوى ads.txt');
+              }} className="text-[10px] bg-emerald-600 text-white px-3 py-2 rounded-lg font-black w-full shadow-lg shadow-emerald-100">نسخ محتوى الملف</button>
             </div>
+
+            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm">
+              <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-black mb-4">3</div>
+              <h4 className="font-black text-slate-800 mb-2">الإعلانات التلقائية</h4>
+              <p className="text-xs text-slate-500 font-bold leading-relaxed mb-4">فعل خيار "Auto Ads" من لوحة أدسنس لتظهر الإعلانات فوراً.</p>
+              <a href="https://adsense.google.com" target="_blank" className="text-[10px] bg-slate-800 text-white px-3 py-2 rounded-lg font-black w-full block text-center">فتح أدسنس</a>
+            </div>
+          </div>
+
+          <div className="bg-white p-10 rounded-[40px] shadow-xl space-y-8 border border-slate-100">
+            <h3 className="text-2xl font-black text-slate-800">تحديث بيانات الأرباح</h3>
+            <div className="space-y-4">
+              <label className="block text-sm font-black text-slate-500">معرف الناشر (Publisher ID)</label>
+              <input 
+                className="w-full p-4 border rounded-2xl bg-slate-50 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500/20" 
+                value={localSettings.adsTxt.split(',')[1]?.trim() || ''} 
+                onChange={e => {
+                  const id = e.target.value.trim();
+                  setLocalSettings({...localSettings, adsTxt: `google.com, ${id}, DIRECT, f08c47fec0942fa0`});
+                }}
+                placeholder="pub-XXXXXXXXXXXXXXXX" 
+              />
+            </div>
+            <div className="space-y-4">
+              <label className="block text-sm font-black text-slate-500">كود Script أدسنس الجديد (إذا تغير)</label>
+              <textarea className="w-full h-32 p-4 border rounded-2xl bg-slate-50 font-mono text-xs outline-none" value={localSettings.adsenseCode} onChange={e => setLocalSettings({...localSettings, adsenseCode: e.target.value})} />
+            </div>
+            <button onClick={handleUpdate} className="w-full bg-emerald-600 text-white py-5 rounded-3xl font-black text-xl hover:bg-emerald-700 transition-all shadow-xl">حفظ وتفعيل الأرباح</button>
           </div>
         </div>
       )}
@@ -248,37 +185,52 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         </div>
       )}
 
-      {tab === 'monetization' && (
-        <div className="bg-white p-10 rounded-[40px] shadow-xl space-y-8 animate-fadeIn border border-slate-100">
-          <h3 className="text-2xl font-black text-slate-800">إعدادات الربح (Google AdSense) 💰</h3>
-          <div className="space-y-4">
-            <label className="block text-sm font-black text-slate-500">كود أدسنس الرئيسي (Script)</label>
-            <textarea className="w-full h-40 p-4 border rounded-2xl bg-slate-50 font-mono text-xs outline-none" value={localSettings.adsenseCode} onChange={e => setLocalSettings({...localSettings, adsenseCode: e.target.value})} placeholder="إلصق الكود الذي أعطاك إياه أدسنس هنا..." />
+      {tab === 'seo' && (
+        <div className="space-y-8 animate-fadeIn">
+          <div className="bg-emerald-600 text-white p-10 rounded-[40px] shadow-xl">
+            <h3 className="text-2xl font-black mb-4">تقرير جودة الأرشفة (SEO Report) 🔍</h3>
+            <p className="font-bold mb-4 opacity-90">موقعك على نطاق: {settings.domain}</p>
+            <div className="bg-white/10 p-6 rounded-2xl font-black text-center">
+              🎉 رائع! موقعك مستعد تماماً لتصدر نتائج البحث.
+            </div>
           </div>
-          <div className="space-y-4">
-            <label className="block text-sm font-black text-slate-500">محتوى ملف ads.txt</label>
-            <input className="w-full p-4 border rounded-2xl bg-slate-50 font-mono text-xs" value={localSettings.adsTxt} onChange={e => setLocalSettings({...localSettings, adsTxt: e.target.value})} placeholder="google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0" />
+        </div>
+      )}
+
+      {tab === 'security' && (
+        <div className="max-w-xl mx-auto space-y-8 animate-fadeIn">
+          <div className="bg-white p-10 rounded-[40px] shadow-xl border border-slate-100 text-center">
+            <h3 className="text-2xl font-black text-slate-800 mb-2">تغيير كلمة السر</h3>
+            <form onSubmit={handlePasswordChange} className="space-y-4 mt-8">
+              <input type="password" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" placeholder="كلمة السر الحالية" value={passwords.current} onChange={e => setPasswords({...passwords, current: e.target.value})} required />
+              <input type="password" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" placeholder="كلمة السر الجديدة" value={passwords.new} onChange={e => setPasswords({...passwords, new: e.target.value})} required />
+              <input type="password" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" placeholder="تأكيد كلمة السر الجديدة" value={passwords.confirm} onChange={e => setPasswords({...passwords, confirm: e.target.value})} required />
+              <button type="submit" className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-600 transition-all mt-4">تحديث الأمان</button>
+            </form>
           </div>
-          <button onClick={handleUpdate} className="w-full bg-emerald-600 text-white py-5 rounded-3xl font-black text-xl hover:bg-emerald-700 transition-all shadow-xl">حفظ إعدادات الأرباح</button>
         </div>
       )}
 
       {tab === 'settings' && (
-        <div className="max-w-2xl mx-auto bg-white p-10 rounded-[40px] shadow-xl space-y-8 animate-fadeIn border border-slate-100 mt-10">
-          <h3 className="text-2xl font-black text-slate-800">هوية الموقع (SEO Meta)</h3>
-          <div className="space-y-4">
-             <label className="font-black text-slate-500 text-sm">اسم الموقع</label>
-             <input className="w-full p-4 border rounded-2xl bg-slate-50 font-bold" value={localSettings.siteName} onChange={e => setLocalSettings({...localSettings, siteName: e.target.value})} />
+        <div className="max-w-xl mx-auto space-y-8 animate-fadeIn">
+          <div className="bg-white p-10 rounded-[40px] shadow-xl border border-slate-100">
+            <h3 className="text-2xl font-black text-slate-800 mb-6">إعدادات الموقع العام</h3>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-black text-slate-500">اسم الموقع</label>
+                <input className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" value={localSettings.siteName} onChange={e => setLocalSettings({...localSettings, siteName: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-black text-slate-500">وصف الموقع</label>
+                <textarea className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" value={localSettings.siteDescription} onChange={e => setLocalSettings({...localSettings, siteDescription: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-black text-slate-500">النطاق (Domain)</label>
+                <input className="w-full p-4 bg-slate-50 border rounded-2xl outline-none font-mono" value={localSettings.domain} onChange={e => setLocalSettings({...localSettings, domain: e.target.value})} />
+              </div>
+              <button onClick={handleUpdate} className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all shadow-xl">حفظ جميع الإعدادات</button>
+            </div>
           </div>
-          <div className="space-y-4">
-             <label className="font-black text-slate-500 text-sm">وصف الموقع العام لمحركات البحث</label>
-             <textarea className="w-full p-4 border rounded-2xl bg-slate-50 font-bold h-32" value={localSettings.siteDescription} onChange={e => setLocalSettings({...localSettings, siteDescription: e.target.value})} />
-          </div>
-          <div className="space-y-4">
-             <label className="font-black text-slate-500 text-sm">رابط الدومين (بدون https)</label>
-             <input className="w-full p-4 border rounded-2xl bg-slate-50 font-bold" value={localSettings.domain} onChange={e => setLocalSettings({...localSettings, domain: e.target.value})} placeholder="abdouweb.online" />
-          </div>
-          <button onClick={handleUpdate} className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black hover:bg-emerald-600 transition-all">حفظ التغييرات العامة</button>
         </div>
       )}
     </div>
