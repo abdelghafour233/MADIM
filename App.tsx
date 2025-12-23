@@ -18,7 +18,7 @@ const App: React.FC = () => {
   const [passwordInput, setPasswordInput] = useState('');
   const [darkMode, setDarkMode] = useState(false);
   
-  // Default settings with your AdSense ID
+  // Default settings
   const defaultSettings: Settings = {
     fbPixel: '',
     googleAnalytics: '',
@@ -33,7 +33,7 @@ const App: React.FC = () => {
 
   const [settings, setSettings] = useState<Settings>(defaultSettings);
 
-  // Load Data
+  // Load Data on Initial Render
   useEffect(() => {
     const savedArticles = localStorage.getItem('articles');
     const savedSettings = localStorage.getItem('settings');
@@ -42,28 +42,42 @@ const App: React.FC = () => {
     if (savedArticles) {
       setArticles(JSON.parse(savedArticles));
     } else {
-      setArticles(INITIAL_ARTICLES.map(a => ({ ...a, likes: 0, views: 100, comments: [] })));
+      setArticles(INITIAL_ARTICLES.map(a => ({ ...a, likes: 12, views: 245, comments: [] })));
     }
 
     if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
+      const parsedSettings = JSON.parse(savedSettings);
+      setSettings(prev => ({ ...prev, ...parsedSettings }));
     }
     
     if (savedTheme === 'dark') setDarkMode(true);
   }, []);
 
-  // AdSense Sync
+  // AdSense Injection Logic
   useEffect(() => {
     if (settings.adsenseCode) {
       const pubIdMatch = settings.adsenseCode.match(/ca-pub-\d+/);
       if (pubIdMatch) {
         const pubId = pubIdMatch[0];
-        let metaTag = document.querySelector('meta[name="google-adsense-account"]');
-        if (metaTag) metaTag.setAttribute('content', pubId);
         
-        // Ensure script exists
-        if (!document.querySelector(`script[src*="${pubId}"]`)) {
+        // Update Meta Tag
+        let metaTag = document.querySelector('meta[name="google-adsense-account"]');
+        if (!metaTag) {
+          metaTag = document.createElement('meta');
+          metaTag.setAttribute('name', 'google-adsense-account');
+          document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', pubId);
+        
+        // Check and inject script
+        const scriptId = `adsense-script-${pubId}`;
+        if (!document.getElementById(scriptId)) {
+          // Remove old scripts
+          const oldScripts = document.querySelectorAll('script[src*="adsbygoogle"]');
+          oldScripts.forEach(s => s.remove());
+
           const sc = document.createElement('script');
+          sc.id = scriptId;
           sc.async = true;
           sc.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}`;
           sc.crossOrigin = "anonymous";
@@ -85,10 +99,12 @@ const App: React.FC = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordInput === (settings.dashboardPassword || '1234')) {
+    const correctPassword = settings.dashboardPassword || '1234';
+    if (passwordInput === correctPassword) {
       setIsDashboardUnlocked(true);
+      setPasswordInput('');
     } else {
-      alert('كلمة المرور خاطئة!');
+      alert('❌ كلمة المرور خاطئة! حاول مرة أخرى.');
     }
   };
 
@@ -107,7 +123,7 @@ const App: React.FC = () => {
   }, [articles, selectedCategory, searchQuery, currentView]);
 
   return (
-    <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
       <Navbar 
         currentView={currentView} 
         setView={setCurrentView} 
@@ -143,7 +159,7 @@ const App: React.FC = () => {
             onBack={() => setCurrentView('home')} 
             siteName={settings.siteName}
             adsenseCode={settings.adsenseCode}
-            relatedArticles={articles.filter(a => a.id !== selectedArticle.id).slice(0, 2)}
+            relatedArticles={articles.filter(a => a.id !== selectedArticle.id && a.category === selectedArticle.category).slice(0, 2)}
             onArticleClick={(a) => { setSelectedArticle(a); window.scrollTo(0,0); }}
             onLike={() => {}}
             onAddComment={() => {}}
@@ -152,18 +168,25 @@ const App: React.FC = () => {
         )}
         {currentView === 'dashboard' && (
           !isDashboardUnlocked ? (
-            <div className="max-w-md mx-auto mt-20 p-10 bg-white rounded-[40px] shadow-2xl text-center">
-              <h2 className="text-3xl font-black mb-8 text-slate-800">لوحة التحكم</h2>
-              <form onSubmit={handleLogin} className="space-y-4">
+            <div className="max-w-md mx-auto mt-20 p-12 bg-white rounded-[50px] shadow-2xl text-center border border-slate-100 animate-slideUp">
+              <div className="w-20 h-20 bg-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-3xl font-black mb-8 text-slate-800">مدير الموقع</h2>
+              <form onSubmit={handleLogin} className="space-y-6">
                 <input 
                   type="password" 
-                  className="w-full p-5 bg-slate-50 rounded-2xl text-center font-black text-xl border"
+                  className="w-full p-5 bg-slate-50 rounded-2xl text-center font-black text-2xl border-2 border-transparent focus:border-emerald-500 outline-none"
                   placeholder="كلمة السر"
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
+                  autoFocus
                 />
-                <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg">دخول</button>
+                <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100">دخول الإدارة</button>
               </form>
+              <p className="mt-6 text-slate-400 font-bold text-sm">إذا كنت لا تعرف كلمة السر، جرب: 1234</p>
             </div>
           ) : (
             <Dashboard 
@@ -179,8 +202,13 @@ const App: React.FC = () => {
       
       <WhatsAppButton />
       
-      <footer className="bg-slate-900 text-white py-10 mt-20 text-center">
-        <p>© {new Date().getFullYear()} {settings.siteName} - جميع الحقوق محفوظة</p>
+      <footer className={`${darkMode ? 'bg-black border-t border-slate-900' : 'bg-slate-900'} text-white py-16 mt-20`}>
+        <div className="container mx-auto px-6 text-center">
+          <h3 className="text-2xl font-black mb-4 text-emerald-400">{settings.siteName}</h3>
+          <p className="text-slate-400 max-w-md mx-auto mb-8">{settings.siteDescription}</p>
+          <div className="h-px bg-slate-800 w-32 mx-auto mb-8"></div>
+          <p className="text-slate-500 font-bold">© {new Date().getFullYear()} - جميع الحقوق محفوظة</p>
+        </div>
       </footer>
     </div>
   );
