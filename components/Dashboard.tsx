@@ -18,15 +18,23 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isFixing, setIsFixing] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState<'idle' | 'success' | 'fail'>('idle');
   
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
 
-  useEffect(() => { setLocalSettings(settings); }, [settings]);
+  // مزامنة الإعدادات المحلية عند فتح اللوحة
+  useEffect(() => { 
+    setLocalSettings(settings); 
+  }, [settings]);
 
-  const handleUpdate = () => {
+  const handleUpdate = async () => {
+    setIsSaving(true);
+    // محاكاة وقت بسيط للحفظ لإعطاء انطباع بالعملية
+    await new Promise(r => setTimeout(r, 800));
     onUpdateSettings(localSettings);
-    alert('تم حفظ الإعدادات بنجاح! 🇲🇦');
+    setIsSaving(false);
+    alert('✅ تم حفظ جميع الإعدادات وتثبيت الأكواد بنجاح!');
   };
 
   const verifyAdsenseOnSite = () => {
@@ -34,21 +42,21 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     setVerificationStatus('idle');
     
     setTimeout(() => {
-      // فحص وجود الميتا تاج والسكريبت في الـ DOM
       const meta = document.querySelector('meta[name="google-adsense-account"]');
       const script = document.querySelector('script[src*="adsbygoogle.js"]');
-      const pubId = localSettings.adsTxt.split(',')[1]?.trim() || 'ca-pub-5578524966832192';
+      // استخراج المعرف من الإعدادات الحالية (المحفوظة أو المحلية)
+      const currentPubId = localSettings.adsTxt.match(/pub-\d+/)?.[0] || 'pub-5578524966832192';
       
-      const isMetaCorrect = meta?.getAttribute('content')?.includes(pubId.replace('ca-', ''));
-      const isScriptCorrect = script?.getAttribute('src')?.includes(pubId.replace('ca-', ''));
+      const hasCorrectMeta = meta?.getAttribute('content')?.includes(currentPubId);
+      const hasCorrectScript = script?.getAttribute('src')?.includes(currentPubId);
 
       setIsVerifying(false);
-      if (isMetaCorrect || isScriptCorrect || (window as any).adsbygoogle) {
+      if (hasCorrectMeta || hasCorrectScript) {
         setVerificationStatus('success');
       } else {
         setVerificationStatus('fail');
       }
-    }, 1500);
+    }, 1200);
   };
 
   const handlePasswordChange = (e: React.FormEvent) => {
@@ -74,7 +82,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `أعد صياغة هذا المقال بأسلوب SEO متقدم جداً، استعمل كلمات بحث مغربية مشهورة، واجعل المحتوى فريداً: ${newArticle.content}`,
+        contents: `أعد صياغة هذا المقال بأسلوب SEO متقدم جداً للسوق المغربي: ${newArticle.content}`,
       });
       if (response.text) setNewArticle(prev => ({ ...prev, content: response.text }));
     } catch (e) { console.error(e); }
@@ -83,7 +91,8 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fadeIn">
-      <div className="flex flex-wrap gap-2 mb-10 bg-white p-2 rounded-[24px] shadow-sm sticky top-24 z-40 border border-slate-100">
+      {/* Navigation Tabs */}
+      <div className="flex flex-wrap gap-2 mb-10 bg-white p-2 rounded-[24px] shadow-sm sticky top-24 z-40 border border-slate-100 overflow-x-auto no-scrollbar">
         {[
           { id: 'articles', label: 'المقالات' },
           { id: 'monetization', label: 'تفعيل الربح 💰' },
@@ -92,7 +101,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
           { id: 'settings', label: 'الإعدادات' }
         ].map(t => (
           <button 
-            key={t.id} onClick={() => setTab(t.id as any)}
+            key={t.id} onClick={() => {setTab(t.id as any); setVerificationStatus('idle');}}
             className={`flex-shrink-0 px-6 py-3 rounded-2xl font-black transition-all ${tab === t.id ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-50'}`}
           >
             {t.label}
@@ -105,13 +114,13 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         <div className="space-y-8 animate-fadeIn">
           <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white p-8 md:p-12 rounded-[40px] shadow-2xl relative overflow-hidden">
              <div className="relative z-10">
-               <h3 className="text-3xl font-black mb-4">الخطوة 1: ربط الموقع بنجاح ✅</h3>
-               <p className="text-emerald-100 font-bold max-w-xl leading-relaxed">الكود مثبت حالياً في رأس الصفحة (Head) كما يطلبه جوجل تماماً. يمكنك الآن إجراء الفحص أدناه للتأكد.</p>
+               <h3 className="text-3xl font-black mb-4">نظام الربح التلقائي 💰</h3>
+               <p className="text-emerald-100 font-bold max-w-xl leading-relaxed">بمجرد إدخال معرّف الناشر (Publisher ID) وحفظ البيانات، سيقوم الموقع بتحديث كود أدسنس في كل الصفحات فوراً.</p>
              </div>
           </div>
 
           <div className="bg-white p-10 rounded-[40px] shadow-xl border border-slate-100 text-center">
-            <h4 className="text-xl font-black text-slate-800 mb-6">فحص اتصال جوجل أدسنس (AdSense Connectivity)</h4>
+            <h4 className="text-xl font-black text-slate-800 mb-6 italic">1. فحص الاتصال بجوجل أدسنس</h4>
             
             <div className={`mb-8 p-6 rounded-3xl border-2 transition-all ${
               verificationStatus === 'success' ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 
@@ -120,70 +129,77 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
               {isVerifying ? (
                 <div className="flex flex-col items-center gap-4">
                   <div className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
-                  <span className="font-black">جاري فحص الكود في مصدر الصفحة...</span>
+                  <span className="font-black">جاري البحث عن الكود...</span>
                 </div>
               ) : verificationStatus === 'success' ? (
                 <div className="flex flex-col items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </svg>
-                  <span className="text-lg font-black italic">تم اكتشاف الكود بنجاح! الكود موجود ونشط.</span>
-                  <p className="text-xs opacity-80 mt-2 font-bold uppercase tracking-widest">ID: {localSettings.adsTxt.split(',')[1]?.trim()}</p>
+                  <span className="text-lg font-black">الكود نشط ومرتبط بالحساب بنجاح!</span>
                 </div>
               ) : verificationStatus === 'fail' ? (
-                <span className="font-black text-lg italic">الكود غير مكتشف! تأكد من حفظ الإعدادات.</span>
+                <div className="flex flex-col items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span className="font-black text-lg">لم يتم اكتشاف الكود. هل قمت بالحفظ؟</span>
+                </div>
               ) : (
-                <span className="font-black italic">اضغط على الزر أدناه لبدء عملية التحقق المحلي.</span>
+                <span className="font-black italic">اضغط للتحقق من وجود الكود في الموقع</span>
               )}
             </div>
 
             <button 
               onClick={verifyAdsenseOnSite} 
               disabled={isVerifying}
-              className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black text-lg hover:bg-emerald-600 transition-all shadow-xl shadow-slate-200"
+              className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black text-lg hover:bg-emerald-600 transition-all shadow-xl shadow-slate-200 disabled:opacity-50"
             >
               تحقق من الربط الآن 🔍
             </button>
-            
-            <div className="mt-10 pt-8 border-t border-slate-50 grid grid-cols-1 md:grid-cols-2 gap-4">
-               <button onClick={() => {
-                navigator.clipboard.writeText(localSettings.adsTxt);
-                alert('تم نسخ سطر ads.txt!');
-              }} className="p-5 bg-orange-50 text-orange-600 rounded-3xl font-black border border-orange-100 hover:bg-orange-100 transition-all">
-                نسخ ملف ads.txt (الخطوة 2)
-              </button>
-              <a href="https://adsense.google.com" target="_blank" className="p-5 bg-blue-50 text-blue-600 rounded-3xl font-black border border-blue-100 hover:bg-blue-100 transition-all text-center">
-                فتح لوحة أدسنس (الخطوة 3)
-              </a>
-            </div>
           </div>
 
           <div className="bg-white p-10 rounded-[40px] shadow-xl space-y-8 border border-slate-100">
-            <h3 className="text-2xl font-black text-slate-800">تحديث معرف الناشر (Publisher ID)</h3>
+            <h3 className="text-2xl font-black text-slate-800">إعدادات الهوية المالية</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <label className="block text-sm font-black text-slate-500 italic">Publisher ID (المعرف الرقمي للحساب)</label>
+                <label className="block text-sm font-black text-slate-500 italic">Publisher ID (مثال: pub-5578524966832192)</label>
                 <input 
-                  className="w-full p-4 border rounded-2xl bg-slate-50 font-mono text-sm outline-none border-slate-100 focus:ring-4 focus:ring-emerald-500/10" 
-                  value={localSettings.adsTxt.split(',')[1]?.trim() || ''} 
+                  className="w-full p-5 border rounded-2xl bg-slate-50 font-mono text-lg outline-none border-slate-100 focus:ring-4 focus:ring-emerald-500/10 transition-all" 
+                  value={localSettings.adsTxt.match(/pub-\d+/)?.[0] || ''} 
                   onChange={e => {
-                    const id = e.target.value.trim();
+                    const rawId = e.target.value.trim();
+                    const cleanId = rawId.includes('pub-') ? rawId : `pub-${rawId.replace(/\D/g, '')}`;
                     setLocalSettings({
                       ...localSettings, 
-                      adsTxt: `google.com, ${id}, DIRECT, f08c47fec0942fa0`,
-                      adsenseCode: `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${id}" crossorigin="anonymous"></script>`
+                      adsTxt: `google.com, ${cleanId}, DIRECT, f08c47fec0942fa0`,
+                      adsenseCode: `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${cleanId}" crossorigin="anonymous"></script>`
                     });
                   }}
-                  placeholder="pub-5578524966832192" 
+                  placeholder="pub-XXXXXXXXXXXXXXXX" 
                 />
               </div>
               <div className="space-y-4">
-                <label className="block text-sm font-black text-slate-500 italic">نطاق الموقع (Domain)</label>
-                <input className="w-full p-4 border rounded-2xl bg-slate-50 font-mono text-sm border-slate-100" value={localSettings.domain} onChange={e => setLocalSettings({...localSettings, domain: e.target.value})} />
+                <label className="block text-sm font-black text-slate-500 italic">نطاق الموقع المربوط</label>
+                <input className="w-full p-5 border rounded-2xl bg-slate-50 font-mono text-lg border-slate-100 outline-none focus:ring-4 focus:ring-emerald-500/10" value={localSettings.domain} onChange={e => setLocalSettings({...localSettings, domain: e.target.value})} />
               </div>
             </div>
-            <button onClick={handleUpdate} className="w-full bg-emerald-600 text-white py-5 rounded-3xl font-black text-xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-100">
-              حفظ وتثبيت البيانات 🚀
+            
+            <button 
+              onClick={handleUpdate} 
+              disabled={isSaving}
+              className={`w-full py-6 rounded-3xl font-black text-2xl transition-all shadow-xl flex items-center justify-center gap-3 ${
+                isSaving ? 'bg-slate-400 text-white cursor-wait' : 'bg-emerald-600 text-white hover:bg-emerald-700 active:scale-[0.98]'
+              }`}
+            >
+              {isSaving ? (
+                <>
+                  <div className="w-6 h-6 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  جاري حفظ البيانات...
+                </>
+              ) : (
+                <>حفظ وتفعيل الكود فوراً 🚀</>
+              )}
             </button>
           </div>
         </div>
@@ -196,34 +212,34 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
             const art = { ...newArticle, id: editingId || Math.random().toString(36).substr(2, 9) } as Article;
             onUpdateArticles(editingId ? articles.map(a => a.id === editingId ? art : a) : [art, ...articles]);
             setNewArticle({ category: Category.REVIEWS, rating: 5 }); setEditingId(null);
-            alert('تم الحفظ');
+            alert('تم حفظ المقال');
           }} className="bg-white p-10 rounded-[40px] shadow-xl space-y-6 border border-slate-100">
-            <h3 className="text-2xl font-black text-slate-800">{editingId ? 'تعديل المقال' : 'إضافة مقال جديد'}</h3>
+            <h3 className="text-2xl font-black text-slate-800">{editingId ? 'تعديل المقال' : 'نشر مقال جديد'}</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <input className="p-4 border rounded-2xl bg-slate-50 font-bold" value={newArticle.name || ''} onChange={e => setNewArticle({...newArticle, name: e.target.value})} placeholder="العنوان..." required />
-              <input className="p-4 border rounded-2xl bg-slate-50 font-bold" value={newArticle.image || ''} onChange={e => setNewArticle({...newArticle, image: e.target.value})} placeholder="رابط الصورة..." required />
+              <input className="p-4 border rounded-2xl bg-slate-50 font-bold outline-none focus:ring-2 focus:ring-emerald-500/20" value={newArticle.name || ''} onChange={e => setNewArticle({...newArticle, name: e.target.value})} placeholder="العنوان..." required />
+              <input className="p-4 border rounded-2xl bg-slate-50 font-bold outline-none focus:ring-2 focus:ring-emerald-500/20" value={newArticle.image || ''} onChange={e => setNewArticle({...newArticle, image: e.target.value})} placeholder="رابط الصورة..." required />
             </div>
             <div className="relative">
-               <button type="button" onClick={fixContentWithAI} className="mb-2 text-xs bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg font-black">
+               <button type="button" onClick={fixContentWithAI} className="mb-2 text-xs bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg font-black hover:bg-emerald-100 transition-colors">
                  {isFixing ? 'جاري التحسين...' : '✨ تحسين المحتوى بذكاء إصطناعي'}
                </button>
-               <textarea className="w-full h-80 p-6 bg-slate-50 border rounded-3xl font-medium leading-relaxed" value={newArticle.content || ''} onChange={e => setNewArticle({...newArticle, content: e.target.value})} placeholder="المحتوى..." required />
+               <textarea className="w-full h-80 p-6 bg-slate-50 border rounded-3xl font-medium leading-relaxed outline-none focus:ring-2 focus:ring-emerald-500/20" value={newArticle.content || ''} onChange={e => setNewArticle({...newArticle, content: e.target.value})} placeholder="محتوى المقال..." required />
             </div>
-            <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-3xl font-black text-xl">
-              {editingId ? 'تحديث' : 'نشر 🚀'}
+            <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-3xl font-black text-xl hover:bg-emerald-700 transition-all">
+              {editingId ? 'تحديث المقال' : 'نشر المقال الآن 🚀'}
             </button>
           </form>
 
           <div className="grid gap-4">
             {articles.map(a => (
-              <div key={a.id} className="bg-white p-4 rounded-3xl flex items-center justify-between border border-slate-100 shadow-sm">
+              <div key={a.id} className="bg-white p-4 rounded-3xl flex items-center justify-between border border-slate-100 shadow-sm hover:shadow-md transition-all">
                 <div className="flex items-center gap-4">
-                  <img src={a.image} className="w-16 h-16 object-cover rounded-2xl" alt="" />
+                  <img src={a.image} className="w-16 h-16 object-cover rounded-2xl shadow-sm" alt="" />
                   <p className="font-black text-slate-800">{a.name}</p>
                 </div>
                 <div className="flex gap-2">
-                  <button onClick={() => {setEditingId(a.id); setNewArticle(a); window.scrollTo(0,0);}} className="p-3 bg-slate-50 text-emerald-600 rounded-xl font-bold">تعديل</button>
-                  <button onClick={() => onUpdateArticles(articles.filter(item => item.id !== a.id))} className="p-3 bg-red-50 text-red-500 rounded-xl font-bold">حذف</button>
+                  <button onClick={() => {setEditingId(a.id); setNewArticle(a); window.scrollTo(0,0);}} className="p-3 bg-slate-50 text-emerald-600 rounded-xl font-bold hover:bg-emerald-100">تعديل</button>
+                  <button onClick={() => {if(confirm('حذف؟')) onUpdateArticles(articles.filter(item => item.id !== a.id))}} className="p-3 bg-red-50 text-red-500 rounded-xl font-bold hover:bg-red-100">حذف</button>
                 </div>
               </div>
             ))}
@@ -231,11 +247,27 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         </div>
       )}
 
-      {tab === 'seo' && (
-        <div className="space-y-8 animate-fadeIn">
-          <div className="bg-emerald-600 text-white p-10 rounded-[40px] shadow-xl text-center">
-            <h3 className="text-2xl font-black mb-4">تقرير SEO</h3>
-            <p className="font-bold">موقعك جاهز للأرشفة على {settings.domain}</p>
+      {tab === 'settings' && (
+        <div className="max-w-xl mx-auto space-y-8 animate-fadeIn">
+          <div className="bg-white p-10 rounded-[40px] shadow-xl border border-slate-100">
+            <h3 className="text-2xl font-black text-slate-800 mb-6">إعدادات الموقع العامة</h3>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-black text-slate-500">اسم الموقع</label>
+                <input className="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500/20" value={localSettings.siteName} onChange={e => setLocalSettings({...localSettings, siteName: e.target.value})} />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-black text-slate-500">الوصف (SEO)</label>
+                <textarea className="w-full p-4 bg-slate-50 border rounded-2xl outline-none focus:ring-2 focus:ring-emerald-500/20" value={localSettings.siteDescription} onChange={e => setLocalSettings({...localSettings, siteDescription: e.target.value})} />
+              </div>
+              <button 
+                onClick={handleUpdate} 
+                disabled={isSaving}
+                className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all shadow-xl disabled:opacity-50"
+              >
+                {isSaving ? 'جاري الحفظ...' : 'حفظ الإعدادات'}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -244,25 +276,12 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         <div className="max-w-xl mx-auto space-y-8 animate-fadeIn">
           <div className="bg-white p-10 rounded-[40px] shadow-xl text-center border border-slate-100">
             <h3 className="text-2xl font-black mb-8">تغيير كلمة السر</h3>
-            <form onSubmit={handlePasswordChange} className="space-y-4">
-              <input type="password" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" placeholder="الحالية" value={passwords.current} onChange={e => setPasswords({...passwords, current: e.target.value})} required />
-              <input type="password" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" placeholder="الجديدة" value={passwords.new} onChange={e => setPasswords({...passwords, new: e.target.value})} required />
-              <input type="password" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" placeholder="تأكيد الجديدة" value={passwords.confirm} onChange={e => setPasswords({...passwords, confirm: e.target.value})} required />
-              <button type="submit" className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black">تحديث</button>
+            <form onSubmit={handlePasswordChange} className="space-y-4 text-right">
+              <input type="password" title="الحالية" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" placeholder="كلمة السر الحالية" value={passwords.current} onChange={e => setPasswords({...passwords, current: e.target.value})} required />
+              <input type="password" title="الجديدة" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" placeholder="كلمة السر الجديدة" value={passwords.new} onChange={e => setPasswords({...passwords, new: e.target.value})} required />
+              <input type="password" title="تأكيد" className="w-full p-4 bg-slate-50 border rounded-2xl outline-none" placeholder="تأكيد كلمة السر الجديدة" value={passwords.confirm} onChange={e => setPasswords({...passwords, confirm: e.target.value})} required />
+              <button type="submit" className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black mt-4 hover:bg-emerald-600 transition-all">تحديث الأمان</button>
             </form>
-          </div>
-        </div>
-      )}
-
-      {tab === 'settings' && (
-        <div className="max-w-xl mx-auto space-y-8 animate-fadeIn">
-          <div className="bg-white p-10 rounded-[40px] shadow-xl border border-slate-100">
-            <h3 className="text-2xl font-black mb-6">إعدادات الموقع</h3>
-            <div className="space-y-6">
-              <input className="w-full p-4 bg-slate-50 border rounded-2xl" value={localSettings.siteName} onChange={e => setLocalSettings({...localSettings, siteName: e.target.value})} placeholder="اسم الموقع" />
-              <textarea className="w-full p-4 bg-slate-50 border rounded-2xl" value={localSettings.siteDescription} onChange={e => setLocalSettings({...localSettings, siteDescription: e.target.value})} placeholder="الوصف" />
-              <button onClick={handleUpdate} className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black">حفظ</button>
-            </div>
           </div>
         </div>
       )}
