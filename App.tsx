@@ -23,10 +23,10 @@ const App: React.FC = () => {
     tiktokPixel: '',
     adsenseCode: '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5578524966832192" crossorigin="anonymous"></script>',
     adsTxt: 'google.com, pub-5578524966832192, DIRECT, f08c47fec0942fa0',
-    domain: 'souq-morocco.com',
+    domain: 'abdouweb.online',
     dashboardPassword: '1234',
-    siteName: 'دليلك المغربي',
-    siteDescription: 'نراجع لك أفضل المنتجات ونختار لك أفضل العروض في المغرب'
+    siteName: 'Abdou Web | عبدو ويب',
+    siteDescription: 'دليلك الموثوق لأفضل المراجعات والعروض الحصرية في المغرب'
   });
 
   useEffect(() => {
@@ -42,11 +42,10 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // تحديث SEO Metadata تلقائياً عند تغيير المقال لضمان فهرسة جوجل لكل صفحة
   useEffect(() => {
     let title = settings.siteName;
     let desc = settings.siteDescription;
-    const baseUrl = `https://${settings.domain || 'souq-morocco.com'}`;
+    const baseUrl = `https://${settings.domain || 'abdouweb.online'}`;
     let canonical = baseUrl;
 
     if (currentView === 'article' && selectedArticle) {

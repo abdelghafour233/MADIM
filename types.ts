@@ -16,15 +16,6 @@ export interface Article {
   rating: number;
 }
 
-export interface Product {
-  id: string;
-  name: string;
-  price: number;
-  description: string;
-  image: string;
-  category: string;
-}
-
 export interface Settings {
   fbPixel: string;
   googleAnalytics: string;
@@ -37,4 +28,4 @@ export interface Settings {
   siteDescription: string;
 }
 
-export type View = 'home' | 'category' | 'article' | 'dashboard';
+export type View = 'home' | 'article' | 'category' | 'dashboard';

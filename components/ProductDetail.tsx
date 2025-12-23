@@ -1,19 +1,20 @@
 
 import React from 'react';
-import { Product } from '../types';
+import { Article } from '../types.ts';
 
 interface ProductDetailProps {
-  product: Product;
-  onAddToCart: (p: Product) => void;
+  article: Article;
+  onAddToCart: (a: Article) => void;
   onBack: () => void;
 }
 
-const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onBack }) => {
+// Fixed Product to Article mismatch and updated description to content property
+const ProductDetail: React.FC<ProductDetailProps> = ({ article, onAddToCart, onBack }) => {
   return (
     <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-sm overflow-hidden animate-fadeIn">
       <div className="grid md:grid-cols-2">
         <div className="h-[400px] md:h-full relative">
-          <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+          <img src={article.image} alt={article.name} className="w-full h-full object-cover" />
           <button 
             onClick={onBack} 
             className="absolute top-4 right-4 bg-white/90 backdrop-blur p-2 rounded-full shadow-lg text-gray-800 hover:text-emerald-600 transition md:hidden"
@@ -32,23 +33,23 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
           </button>
           
           <div className="inline-block bg-emerald-50 text-emerald-600 font-bold px-3 py-1 rounded-lg text-sm mb-4 self-start">
-            {product.category}
+            {article.category}
           </div>
-          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">{product.name}</h1>
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">{article.name}</h1>
           <p className="text-gray-500 text-lg mb-8 leading-relaxed">
-            {product.description}
+            {article.content}
           </p>
           
           <div className="mb-10 p-6 bg-gray-50 rounded-2xl">
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl md:text-5xl font-black text-emerald-600">{product.price.toLocaleString()}</span>
+              <span className="text-4xl md:text-5xl font-black text-emerald-600">{article.price.toLocaleString()}</span>
               <span className="text-xl font-bold text-emerald-600">د.م.</span>
             </div>
             <p className="text-gray-400 text-sm mt-2">السعر شامل للتوصيل والدفع عند الاستلام</p>
           </div>
 
           <button 
-            onClick={() => onAddToCart(product)}
+            onClick={() => onAddToCart(article)}
             className="bg-orange-600 hover:bg-orange-700 text-white py-5 px-8 rounded-2xl font-black text-xl shadow-xl shadow-orange-200 hover:shadow-orange-300 transition-all active:scale-95 flex items-center justify-center gap-4"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">

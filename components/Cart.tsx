@@ -1,16 +1,17 @@
 
 import React from 'react';
-import { Product } from '../types';
+import { Article } from '../types.ts';
 
 interface CartProps {
-  items: { product: Product; quantity: number }[];
+  items: { article: Article; quantity: number }[];
   onRemove: (id: string) => void;
   onUpdateQty: (id: string, delta: number) => void;
   onCheckout: () => void;
 }
 
+// Fixed Product to Article mismatch and updated items to use article property
 const Cart: React.FC<CartProps> = ({ items, onRemove, onUpdateQty, onCheckout }) => {
-  const total = items.reduce((acc, i) => acc + (i.product.price * i.quantity), 0);
+  const total = items.reduce((acc, i) => acc + (i.article.price * i.quantity), 0);
 
   if (items.length === 0) {
     return (
@@ -43,30 +44,30 @@ const Cart: React.FC<CartProps> = ({ items, onRemove, onUpdateQty, onCheckout })
 
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-4 md:p-8 mb-8 space-y-6">
         {items.map(item => (
-          <div key={item.product.id} className="flex flex-col md:flex-row items-center gap-6 py-6 border-b border-gray-50 last:border-b-0">
-            <img src={item.product.image} alt={item.product.name} className="w-28 h-28 object-cover rounded-2xl shadow-sm border" />
+          <div key={item.article.id} className="flex flex-col md:flex-row items-center gap-6 py-6 border-b border-gray-50 last:border-b-0">
+            <img src={item.article.image} alt={item.article.name} className="w-28 h-28 object-cover rounded-2xl shadow-sm border" />
             <div className="flex-grow text-center md:text-right">
-              <h3 className="font-bold text-xl text-gray-900 mb-1">{item.product.name}</h3>
-              <p className="text-emerald-600 font-black text-lg">{item.product.price.toLocaleString()} د.م.</p>
+              <h3 className="font-bold text-xl text-gray-900 mb-1">{item.article.name}</h3>
+              <p className="text-emerald-600 font-black text-lg">{item.article.price.toLocaleString()} د.م.</p>
             </div>
             <div className="flex items-center gap-6">
               <div className="flex items-center bg-gray-50 rounded-2xl p-1 border">
                 <button 
-                  onClick={() => onUpdateQty(item.product.id, -1)}
+                  onClick={() => onUpdateQty(item.article.id, -1)}
                   className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-emerald-600 font-black transition"
                 >
                   -
                 </button>
                 <span className="w-12 text-center font-black text-lg">{item.quantity}</span>
                 <button 
-                  onClick={() => onUpdateQty(item.product.id, 1)}
+                  onClick={() => onUpdateQty(item.article.id, 1)}
                   className="w-10 h-10 flex items-center justify-center text-gray-400 hover:text-emerald-600 font-black transition"
                 >
                   +
                 </button>
               </div>
               <button 
-                onClick={() => onRemove(item.product.id)}
+                onClick={() => onRemove(item.article.id)}
                 className="text-red-400 hover:text-red-600 p-3 hover:bg-red-50 rounded-2xl transition"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
