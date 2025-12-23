@@ -37,7 +37,6 @@ const Home: React.FC<HomeProps> = ({ articles, onArticleClick, onCategoryClick, 
               </div>
             </div>
           </div>
-          {/* Decorative element */}
           <div className="absolute -bottom-20 -left-20 w-80 h-80 bg-emerald-500/10 rounded-full blur-[100px]"></div>
         </section>
       )}
@@ -91,17 +90,14 @@ const Home: React.FC<HomeProps> = ({ articles, onArticleClick, onCategoryClick, 
               <p className="text-slate-500 text-sm mb-8 line-clamp-3 font-medium leading-relaxed">
                 {article.content}
               </p>
-              <div className="mt-auto flex items-center justify-between border-t border-slate-50 pt-6">
-                <div className="flex flex-col">
-                  <span className="text-[10px] text-slate-400 font-bold">متوسط السعر</span>
-                  <span className="text-emerald-600 font-black text-xl">
-                    {article.price.toLocaleString()} <span className="text-sm">د.م.</span>
-                  </span>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner">
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
+              <div className="mt-auto flex items-center justify-end border-t border-slate-50 pt-6">
+                <div className="flex items-center gap-2 group-hover:translate-x-[-4px] transition-transform duration-300">
+                  <span className="text-xs font-black text-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity">اقرأ المزيد</span>
+                  <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-inner">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                  </div>
                 </div>
               </div>
             </div>

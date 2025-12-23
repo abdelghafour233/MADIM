@@ -23,12 +23,12 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   const [isFixing, setIsFixing] = useState(false);
   const [newPassword, setNewPassword] = useState('');
 
-  // إحصائيات لوحة التحكم
+  // إحصائيات لوحة التحكم المعدلة
   const stats = {
     total: articles.length,
     guides: articles.filter(a => a.category === Category.GUIDES).length,
     avgRating: (articles.reduce((acc, a) => acc + a.rating, 0) / (articles.length || 1)).toFixed(1),
-    topPrice: Math.max(...articles.map(a => a.price), 0)
+    reviews: articles.filter(a => a.category === Category.REVIEWS).length,
   };
 
   const fixContentWithAI = async () => {
@@ -69,7 +69,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     const articleData: Article = {
       id: editingId || Math.random().toString(36).substr(2, 9),
       name: newArticle.name || '',
-      price: Number(newArticle.price) || 0,
+      price: 0, // السعر ملغى ولكن نحافظ عليه كـ 0 في البيانات
       content: newArticle.content || '',
       image: newArticle.image || '',
       category: newArticle.category as Category,
@@ -100,10 +100,10 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fadeIn">
-      {/* قسم الإحصائيات */}
+      {/* قسم الإحصائيات (بدون السعر) */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         <div className="bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm">
-          <p className="text-slate-400 text-[10px] font-black uppercase mb-1">المقالات</p>
+          <p className="text-slate-400 text-[10px] font-black uppercase mb-1">إجمالي المقالات</p>
           <p className="text-2xl font-black text-emerald-600">{stats.total}</p>
         </div>
         <div className="bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm">
@@ -111,16 +111,15 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
           <p className="text-2xl font-black text-blue-600">{stats.guides}</p>
         </div>
         <div className="bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm">
-          <p className="text-slate-400 text-[10px] font-black uppercase mb-1">التقييم العام</p>
-          <p className="text-2xl font-black text-amber-500">{stats.avgRating}</p>
+          <p className="text-slate-400 text-[10px] font-black uppercase mb-1">مراجعات المنتجات</p>
+          <p className="text-2xl font-black text-purple-600">{stats.reviews}</p>
         </div>
         <div className="bg-white p-6 rounded-[28px] border border-slate-100 shadow-sm">
-          <p className="text-slate-400 text-[10px] font-black uppercase mb-1">أعلى سعر</p>
-          <p className="text-2xl font-black text-slate-800">{stats.topPrice} <small className="text-xs">د.م.</small></p>
+          <p className="text-slate-400 text-[10px] font-black uppercase mb-1">متوسط التقييم</p>
+          <p className="text-2xl font-black text-amber-500">{stats.avgRating}/5</p>
         </div>
       </div>
 
-      {/* شريط التنقل للوحة التحكم */}
       <div className="flex flex-wrap items-center gap-2 mb-10 bg-white p-2 rounded-[24px] shadow-sm border border-slate-100 sticky top-24 z-40 overflow-x-auto">
         {[
           { id: 'articles', label: 'المحتوى', icon: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' },
@@ -152,34 +151,28 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-2">
-                <label className="text-sm font-black text-slate-700 mr-2">العنوان</label>
+                <label className="text-sm font-black text-slate-700 mr-2">عنوان المقال</label>
                 <input className="w-full p-5 border border-slate-100 rounded-2xl bg-slate-50 font-bold outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all" value={newArticle.name || ''} onChange={e => setNewArticle({...newArticle, name: e.target.value})} required placeholder="عنوان المقال..." />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-black text-slate-700 mr-2">رابط الصورة</label>
+                <label className="text-sm font-black text-slate-700 mr-2">رابط صورة الغلاف</label>
                 <input className="w-full p-5 border border-slate-100 rounded-2xl bg-slate-50 font-bold outline-none" value={newArticle.image || ''} onChange={e => setNewArticle({...newArticle, image: e.target.value})} required placeholder="https://..." />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-black text-slate-700 mr-2">القسم</label>
+                <label className="text-sm font-black text-slate-700 mr-2">القسم الرئيسي</label>
                 <select className="w-full p-5 border border-slate-100 rounded-2xl bg-slate-50 font-bold outline-none" value={newArticle.category} onChange={e => setNewArticle({...newArticle, category: e.target.value as Category})}>
                   {Object.values(Category).map(cat => <option key={cat} value={cat}>{cat}</option>)}
                 </select>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <label className="text-sm font-black text-slate-700 mr-2">السعر (د.م.)</label>
-                  <input className="w-full p-5 border border-slate-100 rounded-2xl bg-slate-50 font-bold outline-none" type="number" value={newArticle.price || ''} onChange={e => setNewArticle({...newArticle, price: Number(e.target.value)})} required />
-                </div>
-                <div className="space-y-2">
-                  <label className="text-sm font-black text-slate-700 mr-2">التقييم</label>
-                  <input className="w-full p-5 border border-slate-100 rounded-2xl bg-slate-50 font-bold outline-none" type="number" max="5" min="1" step="0.5" value={newArticle.rating || ''} onChange={e => setNewArticle({...newArticle, rating: Number(e.target.value)})} />
-                </div>
+              <div className="space-y-2">
+                <label className="text-sm font-black text-slate-700 mr-2">تقييم المنتج (1-5)</label>
+                <input className="w-full p-5 border border-slate-100 rounded-2xl bg-slate-50 font-bold outline-none" type="number" max="5" min="1" step="0.5" value={newArticle.rating || ''} onChange={e => setNewArticle({...newArticle, rating: Number(e.target.value)})} />
               </div>
             </div>
 
             <div className="space-y-4">
               <div className="flex items-center justify-between px-2">
-                <label className="text-sm font-black text-slate-700">محتوى المقال</label>
+                <label className="text-sm font-black text-slate-700">محتوى المراجعة / المقال</label>
                 <button 
                   type="button" 
                   onClick={fixContentWithAI} 
@@ -203,7 +196,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
             </button>
           </form>
 
-          {/* قائمة المقالات */}
           <div className="grid grid-cols-1 gap-4">
             <h3 className="font-black text-xl text-slate-800 px-4">إدارة المقالات المنشورة ({articles.length})</h3>
             {articles.map(a => (
