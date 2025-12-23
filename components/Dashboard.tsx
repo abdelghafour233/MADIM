@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Article, Settings, Category } from '../types.ts';
 import { GoogleGenAI } from "@google/genai";
+import { INITIAL_ARTICLES } from '../constants.tsx';
 
 interface DashboardProps {
   articles: Article[];
@@ -23,18 +24,23 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
 
-  // مزامنة الإعدادات المحلية عند فتح اللوحة
   useEffect(() => { 
     setLocalSettings(settings); 
   }, [settings]);
 
   const handleUpdate = async () => {
     setIsSaving(true);
-    // محاكاة وقت بسيط للحفظ لإعطاء انطباع بالعملية
     await new Promise(r => setTimeout(r, 800));
     onUpdateSettings(localSettings);
     setIsSaving(false);
     alert('✅ تم حفظ جميع الإعدادات وتثبيت الأكواد بنجاح!');
+  };
+
+  const resetToDefaults = () => {
+    if (confirm('هل أنت متأكد؟ سيتم حذف جميع تعديلاتك واستعادة المقالات الأصلية (بما في ذلك إصلاحات الصور).')) {
+      onUpdateArticles(INITIAL_ARTICLES);
+      alert('✅ تم استعادة المقالات الأصلية بنجاح! الصور ستظهر الآن.');
+    }
   };
 
   const verifyAdsenseOnSite = () => {
@@ -44,7 +50,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     setTimeout(() => {
       const meta = document.querySelector('meta[name="google-adsense-account"]');
       const script = document.querySelector('script[src*="adsbygoogle.js"]');
-      // استخراج المعرف من الإعدادات الحالية (المحفوظة أو المحلية)
       const currentPubId = localSettings.adsTxt.match(/pub-\d+/)?.[0] || 'pub-5578524966832192';
       
       const hasCorrectMeta = meta?.getAttribute('content')?.includes(currentPubId);
@@ -91,8 +96,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fadeIn">
-      {/* Navigation Tabs */}
-      <div className="flex flex-wrap gap-2 mb-10 bg-white p-2 rounded-[24px] shadow-sm sticky top-24 z-40 border border-slate-100 overflow-x-auto no-scrollbar">
+      <div className="flex flex-wrap gap-2 mb-10 bg-white p-2 rounded-[24px] shadow-sm sticky top-24 z-40 border border-slate-100 overflow-x-auto no-scrollbar text-xs md:text-base">
         {[
           { id: 'articles', label: 'المقالات' },
           { id: 'monetization', label: 'تفعيل الربح 💰' },
@@ -102,13 +106,68 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         ].map(t => (
           <button 
             key={t.id} onClick={() => {setTab(t.id as any); setVerificationStatus('idle');}}
-            className={`flex-shrink-0 px-6 py-3 rounded-2xl font-black transition-all ${tab === t.id ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-50'}`}
+            className={`flex-shrink-0 px-4 md:px-6 py-3 rounded-2xl font-black transition-all ${tab === t.id ? 'bg-emerald-600 text-white shadow-lg' : 'text-slate-500 hover:bg-slate-50'}`}
           >
             {t.label}
           </button>
         ))}
-        <button onClick={onLogout} className="mr-auto px-6 py-3 text-red-500 font-black hover:bg-red-50 rounded-2xl transition-all">خروج</button>
+        <button onClick={onLogout} className="mr-auto px-4 md:px-6 py-3 text-red-500 font-black hover:bg-red-50 rounded-2xl transition-all">خروج</button>
       </div>
+
+      {tab === 'articles' && (
+        <div className="space-y-10 animate-fadeIn">
+          <div className="flex justify-between items-center bg-amber-50 p-6 rounded-3xl border border-amber-100">
+            <div>
+              <h4 className="font-black text-amber-800">هل تواجه مشكلة في الصور؟</h4>
+              <p className="text-sm text-amber-700">اضغط على الزر لاستعادة الصور الأصلية المصححة.</p>
+            </div>
+            <button 
+              onClick={resetToDefaults}
+              className="bg-amber-600 text-white px-6 py-3 rounded-xl font-black text-sm hover:bg-amber-700 transition-all shadow-lg shadow-amber-200"
+            >
+              استعادة الصور 🛠️
+            </button>
+          </div>
+
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            const art = { ...newArticle, id: editingId || Math.random().toString(36).substr(2, 9) } as Article;
+            onUpdateArticles(editingId ? articles.map(a => a.id === editingId ? art : a) : [art, ...articles]);
+            setNewArticle({ category: Category.REVIEWS, rating: 5 }); setEditingId(null);
+            alert('تم حفظ المقال');
+          }} className="bg-white p-10 rounded-[40px] shadow-xl space-y-6 border border-slate-100">
+            <h3 className="text-2xl font-black text-slate-800">{editingId ? 'تعديل المقال' : 'نشر مقال جديد'}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <input className="p-4 border rounded-2xl bg-slate-50 font-bold outline-none focus:ring-2 focus:ring-emerald-500/20" value={newArticle.name || ''} onChange={e => setNewArticle({...newArticle, name: e.target.value})} placeholder="العنوان..." required />
+              <input className="p-4 border rounded-2xl bg-slate-50 font-bold outline-none focus:ring-2 focus:ring-emerald-500/20" value={newArticle.image || ''} onChange={e => setNewArticle({...newArticle, image: e.target.value})} placeholder="رابط الصورة..." required />
+            </div>
+            <div className="relative">
+               <button type="button" onClick={fixContentWithAI} className="mb-2 text-xs bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg font-black hover:bg-emerald-100 transition-colors">
+                 {isFixing ? 'جاري التحسين...' : '✨ تحسين المحتوى بذكاء إصطناعي'}
+               </button>
+               <textarea className="w-full h-80 p-6 bg-slate-50 border rounded-3xl font-medium leading-relaxed outline-none focus:ring-2 focus:ring-emerald-500/20" value={newArticle.content || ''} onChange={e => setNewArticle({...newArticle, content: e.target.value})} placeholder="محتوى المقال..." required />
+            </div>
+            <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-3xl font-black text-xl hover:bg-emerald-700 transition-all">
+              {editingId ? 'تحديث المقال' : 'نشر المقال الآن 🚀'}
+            </button>
+          </form>
+
+          <div className="grid gap-4">
+            {articles.map(a => (
+              <div key={a.id} className="bg-white p-4 rounded-3xl flex items-center justify-between border border-slate-100 shadow-sm hover:shadow-md transition-all">
+                <div className="flex items-center gap-4">
+                  <img src={a.image} className="w-16 h-16 object-cover rounded-2xl shadow-sm" alt="" onError={(e) => e.currentTarget.src = 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=200'} />
+                  <p className="font-black text-slate-800">{a.name}</p>
+                </div>
+                <div className="flex gap-2">
+                  <button onClick={() => {setEditingId(a.id); setNewArticle(a); window.scrollTo(0,0);}} className="p-3 bg-slate-50 text-emerald-600 rounded-xl font-bold hover:bg-emerald-100">تعديل</button>
+                  <button onClick={() => {if(confirm('حذف؟')) onUpdateArticles(articles.filter(item => item.id !== a.id))}} className="p-3 bg-red-50 text-red-500 rounded-xl font-bold hover:bg-red-100">حذف</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {tab === 'monetization' && (
         <div className="space-y-8 animate-fadeIn">
@@ -201,48 +260,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                 <>حفظ وتفعيل الكود فوراً 🚀</>
               )}
             </button>
-          </div>
-        </div>
-      )}
-
-      {tab === 'articles' && (
-        <div className="space-y-10 animate-fadeIn">
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            const art = { ...newArticle, id: editingId || Math.random().toString(36).substr(2, 9) } as Article;
-            onUpdateArticles(editingId ? articles.map(a => a.id === editingId ? art : a) : [art, ...articles]);
-            setNewArticle({ category: Category.REVIEWS, rating: 5 }); setEditingId(null);
-            alert('تم حفظ المقال');
-          }} className="bg-white p-10 rounded-[40px] shadow-xl space-y-6 border border-slate-100">
-            <h3 className="text-2xl font-black text-slate-800">{editingId ? 'تعديل المقال' : 'نشر مقال جديد'}</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <input className="p-4 border rounded-2xl bg-slate-50 font-bold outline-none focus:ring-2 focus:ring-emerald-500/20" value={newArticle.name || ''} onChange={e => setNewArticle({...newArticle, name: e.target.value})} placeholder="العنوان..." required />
-              <input className="p-4 border rounded-2xl bg-slate-50 font-bold outline-none focus:ring-2 focus:ring-emerald-500/20" value={newArticle.image || ''} onChange={e => setNewArticle({...newArticle, image: e.target.value})} placeholder="رابط الصورة..." required />
-            </div>
-            <div className="relative">
-               <button type="button" onClick={fixContentWithAI} className="mb-2 text-xs bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg font-black hover:bg-emerald-100 transition-colors">
-                 {isFixing ? 'جاري التحسين...' : '✨ تحسين المحتوى بذكاء إصطناعي'}
-               </button>
-               <textarea className="w-full h-80 p-6 bg-slate-50 border rounded-3xl font-medium leading-relaxed outline-none focus:ring-2 focus:ring-emerald-500/20" value={newArticle.content || ''} onChange={e => setNewArticle({...newArticle, content: e.target.value})} placeholder="محتوى المقال..." required />
-            </div>
-            <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-3xl font-black text-xl hover:bg-emerald-700 transition-all">
-              {editingId ? 'تحديث المقال' : 'نشر المقال الآن 🚀'}
-            </button>
-          </form>
-
-          <div className="grid gap-4">
-            {articles.map(a => (
-              <div key={a.id} className="bg-white p-4 rounded-3xl flex items-center justify-between border border-slate-100 shadow-sm hover:shadow-md transition-all">
-                <div className="flex items-center gap-4">
-                  <img src={a.image} className="w-16 h-16 object-cover rounded-2xl shadow-sm" alt="" />
-                  <p className="font-black text-slate-800">{a.name}</p>
-                </div>
-                <div className="flex gap-2">
-                  <button onClick={() => {setEditingId(a.id); setNewArticle(a); window.scrollTo(0,0);}} className="p-3 bg-slate-50 text-emerald-600 rounded-xl font-bold hover:bg-emerald-100">تعديل</button>
-                  <button onClick={() => {if(confirm('حذف؟')) onUpdateArticles(articles.filter(item => item.id !== a.id))}} className="p-3 bg-red-50 text-red-500 rounded-xl font-bold hover:bg-red-100">حذف</button>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       )}

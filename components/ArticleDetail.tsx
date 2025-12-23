@@ -26,6 +26,11 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
     }
   }, [article, pubId]);
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    // صورة بديلة في حال فشل الرابط الأصلي
+    e.currentTarget.src = 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?q=80&w=1000';
+  };
+
   const renderContent = (text: string) => {
     const paragraphs = text.split('\n');
     return paragraphs.map((para, i) => {
@@ -88,7 +93,12 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
 
       <div className="bg-white rounded-[48px] shadow-2xl overflow-hidden border border-white">
         <header className="relative h-[350px] md:h-[450px]">
-          <img src={article.image} alt={article.name} className="w-full h-full object-cover" />
+          <img 
+            src={article.image} 
+            alt={article.name} 
+            onError={handleImageError}
+            className="w-full h-full object-cover" 
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
           <div className="absolute bottom-8 right-8 left-8">
              <span className="bg-emerald-600 text-white font-black px-4 py-2 rounded-xl text-xs mb-4 inline-block shadow-lg shadow-emerald-200">
