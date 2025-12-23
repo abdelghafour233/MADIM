@@ -18,7 +18,6 @@ const App: React.FC = () => {
   const [passwordInput, setPasswordInput] = useState('');
   const [darkMode, setDarkMode] = useState(false);
   
-  // Default settings
   const defaultSettings: Settings = {
     fbPixel: '',
     googleAnalytics: '',
@@ -27,13 +26,13 @@ const App: React.FC = () => {
     adsTxt: 'google.com, pub-5578524966832192, DIRECT, f08c47fec0942fa0',
     domain: 'abdouweb.online',
     dashboardPassword: '1234',
-    siteName: 'Abdou Web | عبدو ويب',
-    siteDescription: 'دليلك الموثوق لأفضل المراجعات والعروض الحصرية في المغرب'
+    siteName: 'مدونة عبدو | Abdou Blog',
+    siteDescription: 'منصة معرفية متخصصة في التقنية، ريادة الأعمال، وأسلوب الحياة المعاصر.'
   };
 
   const [settings, setSettings] = useState<Settings>(defaultSettings);
 
-  // Load Data on Initial Render
+  // Load Data
   useEffect(() => {
     const savedArticles = localStorage.getItem('articles');
     const savedSettings = localStorage.getItem('settings');
@@ -42,7 +41,7 @@ const App: React.FC = () => {
     if (savedArticles) {
       setArticles(JSON.parse(savedArticles));
     } else {
-      setArticles(INITIAL_ARTICLES.map(a => ({ ...a, likes: 12, views: 245, comments: [] })));
+      setArticles(INITIAL_ARTICLES.map(a => ({ ...a, likes: 24, views: 1540, comments: [] })));
     }
 
     if (savedSettings) {
@@ -53,14 +52,14 @@ const App: React.FC = () => {
     if (savedTheme === 'dark') setDarkMode(true);
   }, []);
 
-  // AdSense Injection Logic
+  // AdSense Script Injection Logic - Improved
   useEffect(() => {
     if (settings.adsenseCode) {
       const pubIdMatch = settings.adsenseCode.match(/ca-pub-\d+/);
       if (pubIdMatch) {
         const pubId = pubIdMatch[0];
         
-        // Update Meta Tag
+        // Update Meta
         let metaTag = document.querySelector('meta[name="google-adsense-account"]');
         if (!metaTag) {
           metaTag = document.createElement('meta');
@@ -69,13 +68,9 @@ const App: React.FC = () => {
         }
         metaTag.setAttribute('content', pubId);
         
-        // Check and inject script
-        const scriptId = `adsense-script-${pubId}`;
+        // Inject Script
+        const scriptId = 'adsense-main-script';
         if (!document.getElementById(scriptId)) {
-          // Remove old scripts
-          const oldScripts = document.querySelectorAll('script[src*="adsbygoogle"]');
-          oldScripts.forEach(s => s.remove());
-
           const sc = document.createElement('script');
           sc.id = scriptId;
           sc.async = true;
@@ -86,6 +81,10 @@ const App: React.FC = () => {
       }
     }
   }, [settings.adsenseCode]);
+
+  useEffect(() => {
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
 
   const handleUpdateSettings = (newSettings: Settings) => {
     setSettings(newSettings);
@@ -104,7 +103,7 @@ const App: React.FC = () => {
       setIsDashboardUnlocked(true);
       setPasswordInput('');
     } else {
-      alert('❌ كلمة المرور خاطئة! حاول مرة أخرى.');
+      alert('❌ كلمة المرور خاطئة!');
     }
   };
 
@@ -174,7 +173,7 @@ const App: React.FC = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <h2 className="text-3xl font-black mb-8 text-slate-800">مدير الموقع</h2>
+              <h2 className="text-3xl font-black mb-8 text-slate-800">إدارة المدونة</h2>
               <form onSubmit={handleLogin} className="space-y-6">
                 <input 
                   type="password" 
@@ -186,7 +185,6 @@ const App: React.FC = () => {
                 />
                 <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100">دخول الإدارة</button>
               </form>
-              <p className="mt-6 text-slate-400 font-bold text-sm">إذا كنت لا تعرف كلمة السر، جرب: 1234</p>
             </div>
           ) : (
             <Dashboard 

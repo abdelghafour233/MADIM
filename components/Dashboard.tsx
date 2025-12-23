@@ -14,7 +14,8 @@ interface DashboardProps {
 const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSettings, onUpdateArticles, onLogout }) => {
   const [tab, setTab] = useState<'articles' | 'adsense' | 'settings'>('articles');
   const [localSettings, setLocalSettings] = useState<Settings>(settings);
-  const [newArticle, setNewArticle] = useState<Partial<Article>>({ category: Category.REVIEWS, rating: 5, image: '' });
+  // Fixed: Replaced non-existent Category.REVIEWS with Category.TECH as a valid default
+  const [newArticle, setNewArticle] = useState<Partial<Article>>({ category: Category.TECH, rating: 5, image: '' });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +29,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   const handleSaveSettings = async () => {
     setIsSaving(true);
     try {
-      // Small delay to show feedback
       await new Promise(resolve => setTimeout(resolve, 600));
       onUpdateSettings(localSettings);
       alert('✅ تم حفظ جميع التغييرات بنجاح في المتصفح');
@@ -58,7 +58,8 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     }
 
     setEditingId(null);
-    setNewArticle({ category: Category.REVIEWS, rating: 5, image: '' });
+    // Fixed: Replaced non-existent Category.REVIEWS with Category.TECH
+    setNewArticle({ category: Category.TECH, rating: 5, image: '' });
     alert('✅ تم حفظ المقال بنجاح');
   };
 
@@ -101,7 +102,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
       {tab === 'articles' && (
         <div className="space-y-12">
-          {/* Article Form */}
           <div className="bg-white p-10 rounded-[40px] shadow-xl border border-slate-50">
             <h2 className="text-2xl font-black mb-8 text-slate-800">{editingId ? 'تعديل مقال حالي' : 'نشر مقال جديد'}</h2>
             <form onSubmit={handleArticleSubmit} className="space-y-6">
@@ -143,7 +143,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
             </form>
           </div>
 
-          {/* Articles List */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {articles.map(a => (
               <div key={a.id} className="bg-white p-6 rounded-[32px] border border-slate-100 flex items-center gap-6 shadow-sm hover:shadow-md transition-all group">
@@ -194,14 +193,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
               disabled={isSaving}
               className={`w-full py-6 rounded-3xl font-black text-xl transition-all shadow-xl flex items-center justify-center gap-4 ${isSaving ? 'bg-slate-400 text-white cursor-not-allowed' : 'bg-slate-900 text-white hover:bg-emerald-600 shadow-slate-100'}`}
             >
-              {isSaving ? (
-                <>
-                  <svg className="animate-spin h-6 w-6 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                  جاري الحفظ والتحميل...
-                </>
-              ) : (
-                'حفظ إعدادات الأرباح والسكربتات ✅'
-              )}
+              {isSaving ? 'جاري الحفظ...' : 'حفظ إعدادات الأرباح والسكربتات ✅'}
             </button>
           </div>
         </div>
@@ -235,14 +227,9 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                   className="absolute left-4 top-1/2 -translate-y-1/2 p-2 text-slate-400 hover:text-emerald-600 transition-colors"
                 >
                   {showPassword ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
                   ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.04m4.533-4.533A10.01 10.01 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21m-4.225-4.225l-4.225-4.225m4.225 4.225L7 7m3.586 3.586a3 3 0 004.243 4.243" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.04m4.533-4.533A10.01 10.01 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21m-4.225-4.225l-4.225-4.225m4.225 4.225L7 7m3.586 3.586a3 3 0 004.243 4.243" /></svg>
                   )}
                 </button>
               </div>

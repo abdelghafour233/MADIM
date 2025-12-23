@@ -23,12 +23,6 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
 
   return (
     <header className="sticky top-0 z-50">
-      <div className="bg-emerald-600 text-white py-2 overflow-hidden whitespace-nowrap">
-        <div className="animate-marquee inline-block font-black text-xs uppercase tracking-widest">
-          ✨ عروض تيمو الجديدة وحصرية لشهر رمضان 🌙 | خصومات تصل لـ 90% | توصيل سريع لكل المدن المغربية 🇲🇦 | هميزات "عبدو ويب" لا تنتهي!
-        </div>
-      </div>
-
       <nav className={`glass border-b transition-colors duration-300 ${darkMode ? 'bg-slate-900/90 border-slate-800 text-white' : 'bg-white/90 border-emerald-100/50 text-slate-900'} backdrop-blur-md`}>
         <div className="container mx-auto px-6 h-20 flex items-center justify-between gap-4">
           <div 
@@ -83,18 +77,8 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
           </div>
         </div>
       </nav>
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
-        }
-        .animate-marquee {
-          animation: marquee 20s linear infinite;
-        }
-      `}</style>
     </header>
   );
 };
 
-// Fixed missing default export
 export default Navbar;

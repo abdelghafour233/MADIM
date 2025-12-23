@@ -1,9 +1,10 @@
 
 export enum Category {
-  REVIEWS = 'مراجعات المنتجات',
-  BEST_OFFERS = 'أفضل العروض',
-  GUIDES = 'أدلة الشراء',
-  TECH = 'تقنية'
+  TECH = 'تقنية وتكنولوجيا',
+  BUSINESS = 'ريادة أعمال',
+  LIFESTYLE = 'أسلوب حياة',
+  PRODUCTIVITY = 'تطوير الذات',
+  NEWS = 'أخبار حصرية'
 }
 
 export interface Comment {
