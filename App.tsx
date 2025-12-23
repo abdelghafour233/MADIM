@@ -42,7 +42,7 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // تحديث SEO Metadata عند تغيير الصفحة
+  // تحديث SEO Metadata تلقائياً عند تغيير المقال لضمان فهرسة جوجل لكل صفحة
   useEffect(() => {
     let title = settings.siteName;
     let desc = settings.siteDescription;
@@ -71,7 +71,7 @@ const App: React.FC = () => {
       setIsDashboardUnlocked(true);
       setPasswordInput('');
     } else {
-      alert('خطأ في كلمة السر');
+      alert('كلمة المرور غير صحيحة');
     }
   };
 
@@ -104,17 +104,27 @@ const App: React.FC = () => {
         )}
         {currentView === 'dashboard' && (
           !isDashboardUnlocked ? (
-            <div className="max-w-md mx-auto mt-20 p-10 bg-white rounded-[40px] shadow-2xl border border-slate-100 text-center">
-              <h2 className="text-3xl font-black mb-8">مركز الإدارة</h2>
+            <div className="max-w-md mx-auto mt-20 p-10 bg-white rounded-[40px] shadow-2xl border border-slate-100 text-center animate-fadeIn">
+              <div className="w-20 h-20 bg-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              </div>
+              <h2 className="text-3xl font-black mb-8 text-slate-800">مركز الإدارة</h2>
               <form onSubmit={handleDashboardLogin} className="space-y-4">
-                <input 
-                  type={showPassword ? "text" : "password"} 
-                  className="w-full p-4 bg-slate-50 border rounded-2xl text-center font-black text-xl"
-                  placeholder="كلمة السر"
-                  value={passwordInput}
-                  onChange={(e) => setPasswordInput(e.target.value)}
-                />
-                <button type="submit" className="w-full bg-emerald-600 text-white py-4 rounded-2xl font-black">دخول</button>
+                <div className="relative">
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    className="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-center font-black text-xl outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                    placeholder="كلمة السر"
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                  />
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300">
+                    {showPassword ? 'إخفاء' : 'إظهار'}
+                  </button>
+                </div>
+                <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all">دخول للمنصة</button>
               </form>
             </div>
           ) : (
@@ -131,7 +141,7 @@ const App: React.FC = () => {
       <WhatsAppButton />
       <footer className="bg-white border-t py-12 text-center mt-20">
         <p className="text-slate-400 font-bold mb-4">جميع الحقوق محفوظة © {settings.siteName}</p>
-        <button onClick={() => setCurrentView('dashboard')} className="text-[10px] text-slate-300 uppercase tracking-widest font-black">Dashboard</button>
+        <button onClick={() => {setCurrentView('dashboard'); window.scrollTo(0,0);}} className="text-[10px] text-slate-200 uppercase tracking-widest font-black hover:text-emerald-500 transition-colors">Admin Dashboard</button>
       </footer>
     </div>
   );
