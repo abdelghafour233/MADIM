@@ -6,6 +6,13 @@ export enum Category {
   TECH = 'تقنية'
 }
 
+export interface Comment {
+  id: string;
+  userName: string;
+  text: string;
+  date: string;
+}
+
 export interface Article {
   id: string;
   name: string;
@@ -14,6 +21,9 @@ export interface Article {
   image: string;
   category: Category;
   rating: number;
+  likes?: number;
+  views?: number;
+  comments?: Comment[];
 }
 
 export interface Settings {

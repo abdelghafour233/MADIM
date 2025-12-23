@@ -1,6 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
-import { View, Article, Category, Settings } from './types.ts';
+import React, { useState, useEffect, useMemo } from 'react';
+import { View, Article, Category, Settings, Comment } from './types.ts';
 import { INITIAL_ARTICLES } from './constants.tsx';
 import Navbar from './components/Navbar.tsx';
 import Home from './components/Home.tsx';
@@ -12,12 +12,14 @@ const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const [articles, setArticles] = useState<Article[]>([]);
   const [isDashboardUnlocked, setIsDashboardUnlocked] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
   
-  const [settings, setSettings] = useState<Settings>({
+  // Default settings with your AdSense ID
+  const defaultSettings: Settings = {
     fbPixel: '',
     googleAnalytics: '',
     tiktokPixel: '',
@@ -27,100 +29,112 @@ const App: React.FC = () => {
     dashboardPassword: '1234',
     siteName: 'Abdou Web | عبدو ويب',
     siteDescription: 'دليلك الموثوق لأفضل المراجعات والعروض الحصرية في المغرب'
-  });
+  };
 
+  const [settings, setSettings] = useState<Settings>(defaultSettings);
+
+  // Load Data
   useEffect(() => {
     const savedArticles = localStorage.getItem('articles');
     const savedSettings = localStorage.getItem('settings');
+    const savedTheme = localStorage.getItem('theme');
     
-    if (savedArticles) setArticles(JSON.parse(savedArticles));
-    else setArticles(INITIAL_ARTICLES);
+    if (savedArticles) {
+      setArticles(JSON.parse(savedArticles));
+    } else {
+      setArticles(INITIAL_ARTICLES.map(a => ({ ...a, likes: 0, views: 100, comments: [] })));
+    }
 
     if (savedSettings) {
-      const parsed = JSON.parse(savedSettings);
-      setSettings(prev => ({...prev, ...parsed}));
+      setSettings(JSON.parse(savedSettings));
     }
+    
+    if (savedTheme === 'dark') setDarkMode(true);
   }, []);
 
-  // وظيفة حقن كود أدسنس في الـ Head تلقائياً
+  // AdSense Sync
   useEffect(() => {
     if (settings.adsenseCode) {
       const pubIdMatch = settings.adsenseCode.match(/ca-pub-\d+/);
       if (pubIdMatch) {
         const pubId = pubIdMatch[0];
-        // تحديث كود الميتا
         let metaTag = document.querySelector('meta[name="google-adsense-account"]');
-        if (!metaTag) {
-          metaTag = document.createElement('meta');
-          metaTag.setAttribute('name', 'google-adsense-account');
-          document.head.appendChild(metaTag);
-        }
-        metaTag.setAttribute('content', pubId);
-
-        // تحديث السكريبت
-        const existingScript = document.querySelector('script[src*="adsbygoogle.js"]');
-        if (existingScript) {
-          existingScript.setAttribute('src', `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}`);
-        } else {
-          const script = document.createElement('script');
-          script.async = true;
-          script.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}`;
-          script.crossOrigin = "anonymous";
-          document.head.appendChild(script);
+        if (metaTag) metaTag.setAttribute('content', pubId);
+        
+        // Ensure script exists
+        if (!document.querySelector(`script[src*="${pubId}"]`)) {
+          const sc = document.createElement('script');
+          sc.async = true;
+          sc.src = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pubId}`;
+          sc.crossOrigin = "anonymous";
+          document.head.appendChild(sc);
         }
       }
     }
   }, [settings.adsenseCode]);
 
-  useEffect(() => {
-    let title = settings.siteName;
-    let desc = settings.siteDescription;
-    const baseUrl = `https://${settings.domain || 'abdouweb.online'}`;
-    let canonical = baseUrl;
+  const handleUpdateSettings = (newSettings: Settings) => {
+    setSettings(newSettings);
+    localStorage.setItem('settings', JSON.stringify(newSettings));
+  };
 
-    if (currentView === 'article' && selectedArticle) {
-      title = `${selectedArticle.name} | ${settings.siteName}`;
-      desc = selectedArticle.content.substring(0, 160).replace(/\n/g, ' ');
-      canonical = `${baseUrl}/article/${selectedArticle.id}`;
-    } else if (currentView === 'category' && selectedCategory) {
-      title = `قسم ${selectedCategory} | ${settings.siteName}`;
-      canonical = `${baseUrl}/category/${selectedCategory}`;
-    }
+  const handleUpdateArticles = (newArticles: Article[]) => {
+    setArticles(newArticles);
+    localStorage.setItem('articles', JSON.stringify(newArticles));
+  };
 
-    document.title = title;
-    document.querySelector('meta[name="description"]')?.setAttribute('content', desc);
-    document.querySelector('meta[property="og:title"]')?.setAttribute('content', title);
-    document.querySelector('meta[property="og:description"]')?.setAttribute('content', desc);
-    document.getElementById('canonical-link')?.setAttribute('href', canonical);
-  }, [currentView, selectedArticle, selectedCategory, settings]);
-
-  const handleDashboardLogin = (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (passwordInput === (settings.dashboardPassword || '1234')) {
       setIsDashboardUnlocked(true);
-      setPasswordInput('');
     } else {
-      alert('كلمة المرور غير صحيحة');
+      alert('كلمة المرور خاطئة!');
     }
   };
 
+  const filteredArticles = useMemo(() => {
+    let result = articles;
+    if (selectedCategory && currentView === 'category') {
+      result = result.filter(a => a.category === selectedCategory);
+    }
+    if (searchQuery) {
+      result = result.filter(a => 
+        a.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        a.content.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    return result;
+  }, [articles, selectedCategory, searchQuery, currentView]);
+
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50">
-      <Navbar currentView={currentView} setView={setCurrentView} siteName={settings.siteName} />
+    <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
+      <Navbar 
+        currentView={currentView} 
+        setView={setCurrentView} 
+        siteName={settings.siteName} 
+        onSearch={setSearchQuery}
+        darkMode={darkMode}
+        toggleDarkMode={() => setDarkMode(!darkMode)}
+      />
+      
       <main className="flex-grow container mx-auto px-4 py-8">
         {currentView === 'home' && (
           <Home 
-            articles={articles} 
+            articles={filteredArticles} 
             onArticleClick={(a) => { setSelectedArticle(a); setCurrentView('article'); window.scrollTo(0,0); }}
             onCategoryClick={(c) => { setSelectedCategory(c); setCurrentView('category'); window.scrollTo(0,0); }}
+            isSearching={!!searchQuery}
+            darkMode={darkMode}
           />
         )}
         {currentView === 'category' && (
           <Home 
-            articles={articles.filter(a => a.category === selectedCategory)} 
+            articles={filteredArticles} 
             onArticleClick={(a) => { setSelectedArticle(a); setCurrentView('article'); window.scrollTo(0,0); }}
             onCategoryClick={(c) => { setSelectedCategory(c); setCurrentView('category'); window.scrollTo(0,0); }}
             filterLabel={selectedCategory || ''}
+            isSearching={!!searchQuery}
+            darkMode={darkMode}
           />
         )}
         {currentView === 'article' && selectedArticle && (
@@ -129,48 +143,44 @@ const App: React.FC = () => {
             onBack={() => setCurrentView('home')} 
             siteName={settings.siteName}
             adsenseCode={settings.adsenseCode}
+            relatedArticles={articles.filter(a => a.id !== selectedArticle.id).slice(0, 2)}
+            onArticleClick={(a) => { setSelectedArticle(a); window.scrollTo(0,0); }}
+            onLike={() => {}}
+            onAddComment={() => {}}
+            darkMode={darkMode}
           />
         )}
         {currentView === 'dashboard' && (
           !isDashboardUnlocked ? (
-            <div className="max-w-md mx-auto mt-20 p-10 bg-white rounded-[40px] shadow-2xl border border-slate-100 text-center animate-fadeIn">
-              <div className="w-20 h-20 bg-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-xl">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <h2 className="text-3xl font-black mb-8 text-slate-800">مركز الإدارة</h2>
-              <form onSubmit={handleDashboardLogin} className="space-y-4">
-                <div className="relative">
-                  <input 
-                    type={showPassword ? "text" : "password"} 
-                    className="w-full p-5 bg-slate-50 border border-slate-100 rounded-2xl text-center font-black text-xl outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
-                    placeholder="كلمة السر"
-                    value={passwordInput}
-                    onChange={(e) => setPasswordInput(e.target.value)}
-                  />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300">
-                    {showPassword ? 'إخفاء' : 'إظهار'}
-                  </button>
-                </div>
-                <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all">دخول للمنصة</button>
+            <div className="max-w-md mx-auto mt-20 p-10 bg-white rounded-[40px] shadow-2xl text-center">
+              <h2 className="text-3xl font-black mb-8 text-slate-800">لوحة التحكم</h2>
+              <form onSubmit={handleLogin} className="space-y-4">
+                <input 
+                  type="password" 
+                  className="w-full p-5 bg-slate-50 rounded-2xl text-center font-black text-xl border"
+                  placeholder="كلمة السر"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                />
+                <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-lg">دخول</button>
               </form>
             </div>
           ) : (
             <Dashboard 
               settings={settings} 
               articles={articles}
-              onUpdateSettings={(s) => { setSettings(s); localStorage.setItem('settings', JSON.stringify(s)); }}
-              onUpdateArticles={(a) => { setArticles(a); localStorage.setItem('articles', JSON.stringify(a)); }}
+              onUpdateSettings={handleUpdateSettings}
+              onUpdateArticles={handleUpdateArticles}
               onLogout={() => setIsDashboardUnlocked(false)}
             />
           )
         )}
       </main>
+      
       <WhatsAppButton />
-      <footer className="bg-white border-t py-12 text-center mt-20">
-        <p className="text-slate-400 font-bold mb-4">جميع الحقوق محفوظة © {settings.siteName}</p>
-        <button onClick={() => {setCurrentView('dashboard'); window.scrollTo(0,0);}} className="text-[10px] text-slate-200 uppercase tracking-widest font-black hover:text-emerald-500 transition-colors">Admin Dashboard</button>
+      
+      <footer className="bg-slate-900 text-white py-10 mt-20 text-center">
+        <p>© {new Date().getFullYear()} {settings.siteName} - جميع الحقوق محفوظة</p>
       </footer>
     </div>
   );
