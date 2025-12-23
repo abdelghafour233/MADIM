@@ -24,7 +24,7 @@ const App: React.FC = () => {
     adsenseCode: '',
     adsTxt: '',
     domain: 'souq-morocco.com',
-    dashboardPassword: 'admin',
+    dashboardPassword: '1234', // تم التغيير من admin إلى 1234
     siteName: 'دليلك الشرائي',
     siteDescription: 'نراجع لك أفضل المنتجات ونختار لك أفضل العروض في المغرب'
   });
@@ -85,7 +85,7 @@ const App: React.FC = () => {
 
   const handleDashboardLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordInput === (settings.dashboardPassword || 'admin')) {
+    if (passwordInput === (settings.dashboardPassword || '1234')) {
       setIsDashboardUnlocked(true);
       setPasswordInput('');
       setShowPassword(false);
