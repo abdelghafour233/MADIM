@@ -371,11 +371,11 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
             
             <div className="space-y-6">
               <div className="space-y-4">
-                <label className="block text-slate-700 font-black mr-2">كلمة مرور لوحة التحكم الجديدة</label>
+                <label className="block text-slate-700 font-black mr-2">تعديل كلمة مرور الإدارة</label>
                 <div className="relative">
                   <input 
                     type={showPassword ? "text" : "password"}
-                    className="w-full p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-rose-500 outline-none font-black text-2xl text-center pr-4 pl-16"
+                    className="w-full p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-rose-500 outline-none font-black text-2xl text-center pr-4 pl-20 transition-all"
                     placeholder="أدخل كلمة المرور الجديدة"
                     value={localSettings.dashboardPassword}
                     onChange={e => setLocalSettings({...localSettings, dashboardPassword: e.target.value})}
@@ -383,16 +383,24 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                   <button 
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-500 transition-colors"
+                    className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-600 transition-colors p-2"
+                    title={showPassword ? "إخفاء الرموز" : "إظهار الرموز (رؤية ما أكتب)"}
                   >
                     {showPassword ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                      </svg>
                     ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.04m4.533-4.533A10.01 10.01 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21m-4.225-4.225l-4.225-4.225m4.225 4.225L7 7m3.586 3.586a3 3 0 004.243 4.243" /></svg>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.04m4.533-4.533A10.01 10.01 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21m-4.225-4.225l-4.225-4.225m4.225 4.225L7 7m3.586 3.586a3 3 0 004.243 4.243" />
+                      </svg>
                     )}
                   </button>
                 </div>
-                <p className="text-sm text-slate-400 font-bold px-4 leading-relaxed">ملاحظة: يمكنك الضغط على أيقونة العين لمراجعة كلمة السر قبل الحفظ.</p>
+                <p className="text-sm text-slate-400 font-bold px-4 leading-relaxed">
+                  💡 اضغط على <span className="text-rose-500 underline">أيقونة العين 👁️</span> باليسار لرؤية كلمة السر بوضوح أثناء الكتابة.
+                </p>
               </div>
             </div>
           </div>
