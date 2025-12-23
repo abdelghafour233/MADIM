@@ -47,7 +47,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     if (!newArticle.content) return;
     setIsFixing(true);
     try {
-      // Use the GoogleGenAI SDK correctly with the API key from environment variables.
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
@@ -82,57 +81,79 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         <div className="space-y-8 animate-fadeIn">
           <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white p-8 md:p-12 rounded-[40px] shadow-2xl relative overflow-hidden">
              <div className="relative z-10">
-               <h3 className="text-3xl font-black mb-4">تهانينا على القبول! 🎉</h3>
-               <p className="text-emerald-100 font-bold max-w-xl leading-relaxed">باقي لك 3 خطوات بسيطة لتظهر الإعلانات وتبدأ بجني الأرباح على abdouweb.online.</p>
+               <h3 className="text-3xl font-black mb-4">تهانينا على القبول الرسمي! 🎉</h3>
+               <p className="text-emerald-100 font-bold max-w-xl leading-relaxed">أنت الآن شريك رسمي لجوجل. إليك كيفية إنهاء الخطوات الثلاث لتفعيل الأرباح فوراً:</p>
              </div>
              <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm">
-              <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-black mb-4">1</div>
-              <h4 className="font-black text-slate-800 mb-2">ربط الموقع</h4>
-              <p className="text-xs text-slate-500 font-bold leading-relaxed mb-4">تأكد من وجود الكود في الـ Header. (تم وضعه برمجياً)</p>
-              <button onClick={() => alert('الكود موجود بالفعل في ملف index.html')} className="text-[10px] bg-slate-100 text-slate-600 px-3 py-2 rounded-lg font-black w-full">تحقق من الكود</button>
+            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-1 h-full bg-emerald-500"></div>
+              <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-black mb-4 italic">1</div>
+              <h4 className="font-black text-slate-800 mb-2">الخطوة 1: ربط الموقع</h4>
+              <p className="text-[11px] text-slate-500 font-bold leading-relaxed mb-4">الكود موجود في موقعك بالفعل. اذهب إلى لوحة أدسنس واضغط على "تم وضع الكود" ثم "تحقق".</p>
+              <button onClick={() => alert('الكود مدمج تلقائياً في قوالب عبدو ويب.')} className="text-[10px] bg-slate-900 text-white px-3 py-2 rounded-lg font-black w-full hover:bg-emerald-600 transition-colors">تحقق من الربط</button>
             </div>
             
-            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm">
-              <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-black mb-4">2</div>
-              <h4 className="font-black text-slate-800 mb-2">ملف ads.txt</h4>
-              <p className="text-xs text-slate-500 font-bold leading-relaxed mb-4">ضروري جداً. انسخ المحتوى وضعه في ملف نصي بجانب الموقع.</p>
+            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-1 h-full bg-orange-500"></div>
+              <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center font-black mb-4 italic">2</div>
+              <h4 className="font-black text-slate-800 mb-2">الخطوة 2: ملف ads.txt</h4>
+              <p className="text-[11px] text-slate-500 font-bold leading-relaxed mb-4">انسخ هذا السطر وضعه في ملف نصي باسم ads.txt في استضافتك (أو أرسله لي لأضعه لك).</p>
               <button onClick={() => {
                 navigator.clipboard.writeText(localSettings.adsTxt);
-                alert('تم نسخ محتوى ads.txt');
-              }} className="text-[10px] bg-emerald-600 text-white px-3 py-2 rounded-lg font-black w-full shadow-lg shadow-emerald-100">نسخ محتوى الملف</button>
+                alert('تم نسخ سطر ads.txt بنجاح! قم بلصقه في ملف ads.txt');
+              }} className="text-[10px] bg-orange-600 text-white px-3 py-2 rounded-lg font-black w-full shadow-lg shadow-orange-100">نسخ سطر الهوية</button>
             </div>
 
-            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm">
-              <div className="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center font-black mb-4">3</div>
-              <h4 className="font-black text-slate-800 mb-2">الإعلانات التلقائية</h4>
-              <p className="text-xs text-slate-500 font-bold leading-relaxed mb-4">فعل خيار "Auto Ads" من لوحة أدسنس لتظهر الإعلانات فوراً.</p>
-              <a href="https://adsense.google.com" target="_blank" className="text-[10px] bg-slate-800 text-white px-3 py-2 rounded-lg font-black w-full block text-center">فتح أدسنس</a>
+            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
+              <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center font-black mb-4 italic">3</div>
+              <h4 className="font-black text-slate-800 mb-2">الخطوة 3: الإعلانات التلقائية</h4>
+              <p className="text-[11px] text-slate-500 font-bold leading-relaxed mb-4">ادخل إلى قسم "الإعلانات" في أدسنس، وافتح إعدادات موقعك وفعل خيار "الإعلانات التلقائية".</p>
+              <a href="https://adsense.google.com" target="_blank" className="text-[10px] bg-blue-600 text-white px-3 py-2 rounded-lg font-black w-full block text-center shadow-lg shadow-blue-100">فتح إعدادات الإعلانات</a>
             </div>
           </div>
 
           <div className="bg-white p-10 rounded-[40px] shadow-xl space-y-8 border border-slate-100">
-            <h3 className="text-2xl font-black text-slate-800">تحديث بيانات الأرباح</h3>
-            <div className="space-y-4">
-              <label className="block text-sm font-black text-slate-500">معرف الناشر (Publisher ID)</label>
-              <input 
-                className="w-full p-4 border rounded-2xl bg-slate-50 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500/20" 
-                value={localSettings.adsTxt.split(',')[1]?.trim() || ''} 
-                onChange={e => {
-                  const id = e.target.value.trim();
-                  setLocalSettings({...localSettings, adsTxt: `google.com, ${id}, DIRECT, f08c47fec0942fa0`});
-                }}
-                placeholder="pub-XXXXXXXXXXXXXXXX" 
-              />
+            <h3 className="text-2xl font-black text-slate-800 flex items-center gap-3">
+              تحديث بيانات المعرّف (ID)
+              <span className="text-xs bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full">تحديث ضروري</span>
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-4">
+                <label className="block text-sm font-black text-slate-500 italic">معرف الناشر الخاص بك (Publisher ID)</label>
+                <div className="relative">
+                  <input 
+                    className="w-full p-4 pr-12 border rounded-2xl bg-slate-50 font-mono text-sm outline-none focus:ring-2 focus:ring-emerald-500/20 border-slate-100" 
+                    value={localSettings.adsTxt.split(',')[1]?.trim() || ''} 
+                    onChange={e => {
+                      const id = e.target.value.trim();
+                      setLocalSettings({...localSettings, adsTxt: `google.com, ${id}, DIRECT, f08c47fec0942fa0`});
+                    }}
+                    placeholder="مثال: pub-5578524966832192" 
+                  />
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <label className="block text-sm font-black text-slate-500 italic">نطاق الموقع (Domain)</label>
+                <input 
+                  className="w-full p-4 border rounded-2xl bg-slate-50 font-mono text-sm outline-none border-slate-100" 
+                  value={localSettings.domain} 
+                  onChange={e => setLocalSettings({...localSettings, domain: e.target.value})}
+                  placeholder="abdouweb.online" 
+                />
+              </div>
             </div>
-            <div className="space-y-4">
-              <label className="block text-sm font-black text-slate-500">كود Script أدسنس الجديد (إذا تغير)</label>
-              <textarea className="w-full h-32 p-4 border rounded-2xl bg-slate-50 font-mono text-xs outline-none" value={localSettings.adsenseCode} onChange={e => setLocalSettings({...localSettings, adsenseCode: e.target.value})} />
-            </div>
-            <button onClick={handleUpdate} className="w-full bg-emerald-600 text-white py-5 rounded-3xl font-black text-xl hover:bg-emerald-700 transition-all shadow-xl">حفظ وتفعيل الأرباح</button>
+            <button onClick={handleUpdate} className="w-full bg-slate-900 text-white py-5 rounded-3xl font-black text-xl hover:bg-emerald-600 transition-all shadow-xl shadow-slate-200">
+              حفظ وتأكيد الخطوات 🚀
+            </button>
           </div>
         </div>
       )}
@@ -191,7 +212,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
             <h3 className="text-2xl font-black mb-4">تقرير جودة الأرشفة (SEO Report) 🔍</h3>
             <p className="font-bold mb-4 opacity-90">موقعك على نطاق: {settings.domain}</p>
             <div className="bg-white/10 p-6 rounded-2xl font-black text-center">
-              🎉 رائع! موقعك مستعد تماماً لتصدر نتائج البحث.
+              🎉 رائع! موقعك مستعد تماماً لتصدر نتائج البحث في المغرب.
             </div>
           </div>
         </div>
