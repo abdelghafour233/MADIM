@@ -22,7 +22,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
   const [liked, setLiked] = useState(false);
   const [copyStatus, setCopyStatus] = useState(false);
 
-  const shareUrl = window.location.href;
+  // Generate the unique article URL
+  const baseUrl = window.location.origin + window.location.pathname;
+  const shareUrl = `${baseUrl}?article=${article.id}`;
   
   const publisherId = adsenseCode?.match(/ca-pub-\d+/)?.[0] || 'ca-pub-5578524966832192';
 
@@ -87,7 +89,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
       
       return (
         <React.Fragment key={i}>
-          <p className={`mb-8 leading-[2.1] text-xl ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+          <div className={`mb-8 leading-[2.1] text-xl ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
             {parts.map((part, index) => {
               if (part.match(urlRegex)) {
                 const isTemu = part.includes('temu.to');
@@ -109,7 +111,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
               }
               return part;
             })}
-          </p>
+          </div>
           {(i === 1 || (paragraphs.length > 5 && i === 4)) && (
             <div className="my-12 border-y border-slate-100 py-4">
               <span className="block text-center text-[10px] text-slate-400 font-bold mb-2 uppercase tracking-widest">إعلان</span>

@@ -28,10 +28,39 @@ const App: React.FC = () => {
     domain: 'abdouweb.online',
     dashboardPassword: '1234',
     siteName: 'مدونة عبدو | Abdou Blog',
-    siteDescription: 'منصة معرفية متخصصة في التقنية، ريادة الأعمال، وأسلوب الحياة المعاصر.'
+    siteDescription: 'منصة معرفية متخصصة في التقنية، ريادة الأعمال، وأسلوب حياة المعاصر.'
   };
 
   const [settings, setSettings] = useState<Settings>(defaultSettings);
+
+  // Sync state with URL on initial load and back/forward
+  useEffect(() => {
+    const handleUrlChange = () => {
+      const params = new URLSearchParams(window.location.search);
+      const articleId = params.get('article');
+      const catName = params.get('category');
+      const view = params.get('view');
+
+      if (articleId) {
+        const found = articles.find(a => a.id === articleId) || INITIAL_ARTICLES.find(a => a.id === articleId);
+        if (found) {
+          setSelectedArticle(found);
+          setCurrentView('article');
+        }
+      } else if (catName) {
+        setSelectedCategory(catName as Category);
+        setCurrentView('category');
+      } else if (view === 'dashboard') {
+        setCurrentView('dashboard');
+      } else {
+        setCurrentView('home');
+      }
+    };
+
+    window.addEventListener('popstate', handleUrlChange);
+    handleUrlChange();
+    return () => window.removeEventListener('popstate', handleUrlChange);
+  }, [articles]);
 
   useEffect(() => {
     const savedArticles = localStorage.getItem('articles');
@@ -81,6 +110,27 @@ const App: React.FC = () => {
     localStorage.setItem('theme', darkMode ? 'dark' : 'light');
   }, [darkMode]);
 
+  const navigateTo = (view: View, article?: Article, category?: Category | null) => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('article');
+    url.searchParams.delete('category');
+    url.searchParams.delete('view');
+
+    if (view === 'article' && article) {
+      url.searchParams.set('article', article.id);
+      setSelectedArticle(article);
+    } else if (view === 'category' && category) {
+      url.searchParams.set('category', category);
+      setSelectedCategory(category);
+    } else if (view === 'dashboard') {
+      url.searchParams.set('view', 'dashboard');
+    }
+
+    window.history.pushState({}, '', url.toString());
+    setCurrentView(view);
+    window.scrollTo(0, 0);
+  };
+
   const handleUpdateSettings = (newSettings: Settings) => {
     setSettings(newSettings);
     localStorage.setItem('settings', JSON.stringify(newSettings));
@@ -120,7 +170,7 @@ const App: React.FC = () => {
     <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-white' : 'bg-slate-50 text-slate-900'}`}>
       <Navbar 
         currentView={currentView} 
-        setView={setCurrentView} 
+        setView={(v) => navigateTo(v)} 
         siteName={settings.siteName} 
         onSearch={setSearchQuery}
         darkMode={darkMode}
@@ -131,8 +181,8 @@ const App: React.FC = () => {
         {currentView === 'home' && (
           <Home 
             articles={filteredArticles} 
-            onArticleClick={(a) => { setSelectedArticle(a); setCurrentView('article'); window.scrollTo(0,0); }}
-            onCategoryClick={(c) => { setSelectedCategory(c); setCurrentView('category'); window.scrollTo(0,0); }}
+            onArticleClick={(a) => navigateTo('article', a)}
+            onCategoryClick={(c) => navigateTo('category', undefined, c)}
             isSearching={!!searchQuery}
             darkMode={darkMode}
           />
@@ -140,8 +190,8 @@ const App: React.FC = () => {
         {currentView === 'category' && (
           <Home 
             articles={filteredArticles} 
-            onArticleClick={(a) => { setSelectedArticle(a); setCurrentView('article'); window.scrollTo(0,0); }}
-            onCategoryClick={(c) => { setSelectedCategory(c); setCurrentView('category'); window.scrollTo(0,0); }}
+            onArticleClick={(a) => navigateTo('article', a)}
+            onCategoryClick={(c) => navigateTo('category', undefined, c)}
             filterLabel={selectedCategory || ''}
             isSearching={!!searchQuery}
             darkMode={darkMode}
@@ -150,11 +200,11 @@ const App: React.FC = () => {
         {currentView === 'article' && selectedArticle && (
           <ArticleDetail 
             article={selectedArticle} 
-            onBack={() => setCurrentView('home')} 
+            onBack={() => navigateTo('home')} 
             siteName={settings.siteName}
             adsenseCode={settings.adsenseCode}
             relatedArticles={articles.filter(a => a.id !== selectedArticle.id && a.category === selectedArticle.category).slice(0, 2)}
-            onArticleClick={(a) => { setSelectedArticle(a); window.scrollTo(0,0); }}
+            onArticleClick={(a) => navigateTo('article', a)}
             onLike={() => {}}
             onAddComment={() => {}}
             darkMode={darkMode}
@@ -215,11 +265,39 @@ const App: React.FC = () => {
       <WhatsAppButton />
       
       <footer className={`${darkMode ? 'bg-black border-t border-slate-900' : 'bg-slate-900'} text-white py-16 mt-20`}>
-        <div className="container mx-auto px-6 text-center">
-          <h3 className="text-2xl font-black mb-4 text-emerald-400">{settings.siteName}</h3>
-          <p className="text-slate-400 max-w-md mx-auto mb-8">{settings.siteDescription}</p>
-          <div className="h-px bg-slate-800 w-32 mx-auto mb-8"></div>
-          <p className="text-slate-500 font-bold">© {new Date().getFullYear()} - جميع الحقوق محفوظة</p>
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-right mb-12">
+            <div>
+              <h3 className="text-2xl font-black mb-4 text-emerald-400">{settings.siteName}</h3>
+              <p className="text-slate-400 leading-relaxed">{settings.siteDescription}</p>
+            </div>
+            <div>
+              <h4 className="text-lg font-black mb-6 text-white">الأقسام الرئيسية</h4>
+              <ul className="space-y-3">
+                {Object.values(Category).map(cat => (
+                  <li key={cat}>
+                    <button onClick={() => navigateTo('category', undefined, cat)} className="text-slate-400 hover:text-emerald-400 transition-colors font-bold">
+                      {cat}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-lg font-black mb-6 text-white">روابط سريعة لأحدث المقالات</h4>
+              <ul className="space-y-3">
+                {articles.slice(0, 5).map(art => (
+                  <li key={art.id}>
+                    <button onClick={() => navigateTo('article', art)} className="text-slate-400 hover:text-emerald-400 transition-colors text-sm font-medium text-right block w-full">
+                      {art.name}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+          <div className="h-px bg-slate-800 w-full mb-8"></div>
+          <p className="text-slate-500 font-bold text-center">© {new Date().getFullYear()} - جميع الحقوق محفوظة لـ {settings.siteName}</p>
         </div>
       </footer>
     </div>
