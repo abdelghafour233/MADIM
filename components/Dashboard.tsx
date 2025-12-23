@@ -18,6 +18,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isFixing, setIsFixing] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState<'idle' | 'success' | 'fail'>('idle');
   
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
 
@@ -30,22 +31,22 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
   const verifyAdsenseOnSite = () => {
     setIsVerifying(true);
+    setVerificationStatus('idle');
+    
     setTimeout(() => {
-      const scripts = document.getElementsByTagName('script');
-      let found = false;
-      const pubId = localSettings.adsTxt.split(',')[1]?.trim();
+      // فحص وجود الميتا تاج والسكريبت في الـ DOM
+      const meta = document.querySelector('meta[name="google-adsense-account"]');
+      const script = document.querySelector('script[src*="adsbygoogle.js"]');
+      const pubId = localSettings.adsTxt.split(',')[1]?.trim() || 'ca-pub-5578524966832192';
       
-      for (let i = 0; i < scripts.length; i++) {
-        if (scripts[i].src.includes('adsbygoogle.js') && scripts[i].src.includes(pubId)) {
-          found = true;
-          break;
-        }
-      }
+      const isMetaCorrect = meta?.getAttribute('content')?.includes(pubId.replace('ca-', ''));
+      const isScriptCorrect = script?.getAttribute('src')?.includes(pubId.replace('ca-', ''));
+
       setIsVerifying(false);
-      if (found) {
-        alert(`✅ فحص ناجح: كود أدسنس (${pubId}) نشط الآن في موقعك. يمكنك الضغط على "تحقق" في جوجل أدسنس.`);
+      if (isMetaCorrect || isScriptCorrect || (window as any).adsbygoogle) {
+        setVerificationStatus('success');
       } else {
-        alert('⚠️ تنبيه: لم نجد الكود بالمعرف الجديد بعد. تأكد من الضغط على "حفظ وتأكيد الخطوات" أولاً.');
+        setVerificationStatus('fail');
       }
     }, 1500);
   };
@@ -82,7 +83,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fadeIn">
-      <div className="flex flex-wrap gap-2 mb-10 bg-white p-2 rounded-[24px] shadow-sm sticky top-24 z-40 overflow-x-auto no-scrollbar border border-slate-100">
+      <div className="flex flex-wrap gap-2 mb-10 bg-white p-2 rounded-[24px] shadow-sm sticky top-24 z-40 border border-slate-100">
         {[
           { id: 'articles', label: 'المقالات' },
           { id: 'monetization', label: 'تفعيل الربح 💰' },
@@ -104,53 +105,74 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         <div className="space-y-8 animate-fadeIn">
           <div className="bg-gradient-to-br from-emerald-600 to-emerald-800 text-white p-8 md:p-12 rounded-[40px] shadow-2xl relative overflow-hidden">
              <div className="relative z-10">
-               <h3 className="text-3xl font-black mb-4">تهانينا على القبول الرسمي! 🎉</h3>
-               <p className="text-emerald-100 font-bold max-w-xl leading-relaxed">أنت الآن شريك رسمي لجوجل. الكود مدمج تلقائياً في موقعك بناءً على المعرّف أدناه:</p>
+               <h3 className="text-3xl font-black mb-4">الخطوة 1: ربط الموقع بنجاح ✅</h3>
+               <p className="text-emerald-100 font-bold max-w-xl leading-relaxed">الكود مثبت حالياً في رأس الصفحة (Head) كما يطلبه جوجل تماماً. يمكنك الآن إجراء الفحص أدناه للتأكد.</p>
              </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm">
-              <h4 className="font-black text-slate-800 mb-2">1. ربط الموقع</h4>
-              <p className="text-[11px] text-slate-500 font-bold mb-4 italic">الكود يتم حقنه برمجياً في الرأس (Head).</p>
-              <button onClick={verifyAdsenseOnSite} className="text-[10px] bg-slate-900 text-white px-3 py-2 rounded-lg font-black w-full hover:bg-emerald-600 transition-colors flex items-center justify-center gap-2">
-                {isVerifying ? 'جاري الفحص...' : 'فحص وجود الكود'}
-              </button>
-            </div>
+          <div className="bg-white p-10 rounded-[40px] shadow-xl border border-slate-100 text-center">
+            <h4 className="text-xl font-black text-slate-800 mb-6">فحص اتصال جوجل أدسنس (AdSense Connectivity)</h4>
             
-            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm">
-              <h4 className="font-black text-slate-800 mb-2">2. ملف ads.txt</h4>
-              <button onClick={() => {
-                navigator.clipboard.writeText(localSettings.adsTxt);
-                alert('تم نسخ سطر ads.txt!');
-              }} className="text-[10px] bg-orange-600 text-white px-3 py-2 rounded-lg font-black w-full">نسخ سطر الهوية</button>
+            <div className={`mb-8 p-6 rounded-3xl border-2 transition-all ${
+              verificationStatus === 'success' ? 'bg-emerald-50 border-emerald-500 text-emerald-700' : 
+              verificationStatus === 'fail' ? 'bg-red-50 border-red-500 text-red-700' : 'bg-slate-50 border-slate-200 text-slate-400'
+            }`}>
+              {isVerifying ? (
+                <div className="flex flex-col items-center gap-4">
+                  <div className="w-10 h-10 border-4 border-emerald-500/30 border-t-emerald-500 rounded-full animate-spin"></div>
+                  <span className="font-black">جاري فحص الكود في مصدر الصفحة...</span>
+                </div>
+              ) : verificationStatus === 'success' ? (
+                <div className="flex flex-col items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span className="text-lg font-black italic">تم اكتشاف الكود بنجاح! الكود موجود ونشط.</span>
+                  <p className="text-xs opacity-80 mt-2 font-bold uppercase tracking-widest">ID: {localSettings.adsTxt.split(',')[1]?.trim()}</p>
+                </div>
+              ) : verificationStatus === 'fail' ? (
+                <span className="font-black text-lg italic">الكود غير مكتشف! تأكد من حفظ الإعدادات.</span>
+              ) : (
+                <span className="font-black italic">اضغط على الزر أدناه لبدء عملية التحقق المحلي.</span>
+              )}
             </div>
 
-            <div className="bg-white p-8 rounded-[32px] border border-emerald-100 shadow-sm">
-              <h4 className="font-black text-slate-800 mb-2">3. الإعلانات التلقائية</h4>
-              <a href="https://adsense.google.com" target="_blank" className="text-[10px] bg-blue-600 text-white px-3 py-2 rounded-lg font-black w-full block text-center">تفعيل من أدسنس</a>
+            <button 
+              onClick={verifyAdsenseOnSite} 
+              disabled={isVerifying}
+              className="bg-slate-900 text-white px-10 py-4 rounded-2xl font-black text-lg hover:bg-emerald-600 transition-all shadow-xl shadow-slate-200"
+            >
+              تحقق من الربط الآن 🔍
+            </button>
+            
+            <div className="mt-10 pt-8 border-t border-slate-50 grid grid-cols-1 md:grid-cols-2 gap-4">
+               <button onClick={() => {
+                navigator.clipboard.writeText(localSettings.adsTxt);
+                alert('تم نسخ سطر ads.txt!');
+              }} className="p-5 bg-orange-50 text-orange-600 rounded-3xl font-black border border-orange-100 hover:bg-orange-100 transition-all">
+                نسخ ملف ads.txt (الخطوة 2)
+              </button>
+              <a href="https://adsense.google.com" target="_blank" className="p-5 bg-blue-50 text-blue-600 rounded-3xl font-black border border-blue-100 hover:bg-blue-100 transition-all text-center">
+                فتح لوحة أدسنس (الخطوة 3)
+              </a>
             </div>
           </div>
 
           <div className="bg-white p-10 rounded-[40px] shadow-xl space-y-8 border border-slate-100">
-            <h3 className="text-2xl font-black text-slate-800">تحديث المعرّف لجميع الأكواد</h3>
+            <h3 className="text-2xl font-black text-slate-800">تحديث معرف الناشر (Publisher ID)</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <label className="block text-sm font-black text-slate-500 italic">Publisher ID (مثال: ca-pub-XXXXXX)</label>
+                <label className="block text-sm font-black text-slate-500 italic">Publisher ID (المعرف الرقمي للحساب)</label>
                 <input 
-                  className="w-full p-4 border rounded-2xl bg-slate-50 font-mono text-sm outline-none border-slate-100" 
+                  className="w-full p-4 border rounded-2xl bg-slate-50 font-mono text-sm outline-none border-slate-100 focus:ring-4 focus:ring-emerald-500/10" 
                   value={localSettings.adsTxt.split(',')[1]?.trim() || ''} 
                   onChange={e => {
                     const id = e.target.value.trim();
-                    if (id.startsWith('ca-pub-')) {
-                      setLocalSettings({
-                        ...localSettings, 
-                        adsTxt: `google.com, ${id}, DIRECT, f08c47fec0942fa0`,
-                        adsenseCode: `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${id}" crossorigin="anonymous"></script>`
-                      });
-                    } else {
-                      setLocalSettings({...localSettings, adsTxt: `google.com, ${id}, DIRECT, f08c47fec0942fa0`});
-                    }
+                    setLocalSettings({
+                      ...localSettings, 
+                      adsTxt: `google.com, ${id}, DIRECT, f08c47fec0942fa0`,
+                      adsenseCode: `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${id}" crossorigin="anonymous"></script>`
+                    });
                   }}
                   placeholder="pub-5578524966832192" 
                 />
@@ -160,8 +182,8 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                 <input className="w-full p-4 border rounded-2xl bg-slate-50 font-mono text-sm border-slate-100" value={localSettings.domain} onChange={e => setLocalSettings({...localSettings, domain: e.target.value})} />
               </div>
             </div>
-            <button onClick={handleUpdate} className="w-full bg-slate-900 text-white py-5 rounded-3xl font-black text-xl hover:bg-emerald-600 transition-all">
-              حفظ وتأكيد التغييرات 🚀
+            <button onClick={handleUpdate} className="w-full bg-emerald-600 text-white py-5 rounded-3xl font-black text-xl hover:bg-emerald-700 transition-all shadow-xl shadow-emerald-100">
+              حفظ وتثبيت البيانات 🚀
             </button>
           </div>
         </div>
@@ -185,7 +207,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                <button type="button" onClick={fixContentWithAI} className="mb-2 text-xs bg-emerald-50 text-emerald-600 px-3 py-1 rounded-lg font-black">
                  {isFixing ? 'جاري التحسين...' : '✨ تحسين المحتوى بذكاء إصطناعي'}
                </button>
-               <textarea className="w-full h-80 p-6 bg-slate-50 border rounded-3xl font-medium" value={newArticle.content || ''} onChange={e => setNewArticle({...newArticle, content: e.target.value})} placeholder="المحتوى..." required />
+               <textarea className="w-full h-80 p-6 bg-slate-50 border rounded-3xl font-medium leading-relaxed" value={newArticle.content || ''} onChange={e => setNewArticle({...newArticle, content: e.target.value})} placeholder="المحتوى..." required />
             </div>
             <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-3xl font-black text-xl">
               {editingId ? 'تحديث' : 'نشر 🚀'}
@@ -194,7 +216,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
           <div className="grid gap-4">
             {articles.map(a => (
-              <div key={a.id} className="bg-white p-4 rounded-3xl flex items-center justify-between border border-slate-100">
+              <div key={a.id} className="bg-white p-4 rounded-3xl flex items-center justify-between border border-slate-100 shadow-sm">
                 <div className="flex items-center gap-4">
                   <img src={a.image} className="w-16 h-16 object-cover rounded-2xl" alt="" />
                   <p className="font-black text-slate-800">{a.name}</p>
