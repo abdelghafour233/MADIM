@@ -4,72 +4,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#10b981" />
+    
+    <!-- وسم جوجل أدسنس -->
     <meta name="google-adsense-account" content="ca-pub-5578524966832192" />
     
-    <!-- وسم إثبات الملكية لـ Google Search Console (يمكنك استبداله لاحقاً إذا كان لديك كود مختلف) -->
-    <meta name="google-site-verification" content="verification_placeholder" />
+    <!-- سيتم حقن كود التحقق من لوحة التحكم -->
+    <meta name="google-site-verification" content="verification_placeholder" id="google-verify-tag" />
+
+    <!-- الرابط الثابت لمنع مشاكل التكرار -->
+    <link rel="canonical" href="https://souq-morocco.com/" id="canonical-link" />
 
     <!-- Primary Meta Tags -->
-    <title>دليلك المغربي - أفضل المراجعات والعروض الحصرية</title>
-    <meta name="title" content="دليلك المغربي - أفضل المراجعات والعروض الحصرية" />
-    <meta name="description" content="منصة مغربية متخصصة في مراجعة أفضل المنتجات والعروض الحصرية في السوق المغربي. نوفر لك أدلة شراء ذكية ومقارنات شفافة لمنتجات تيمو وغيرها." />
+    <title>دليلك المغربي | أفضل المراجعات والعروض الحصرية في المغرب 🇲🇦</title>
+    <meta name="title" content="دليلك المغربي | مراجعات المنتجات وعروض تيمو في المغرب" />
+    <meta name="description" content="منصة مغربية متخصصة في مراجعة أفضل المنتجات. نساعدك في اختيار الأنسب من تيمو وغيرها مع أدلة شراء حصرية." />
 
-    <!-- Structured Data for Google (JSON-LD) -->
-    <script type="application/ld+json">
+    <!-- Structured Data for Google -->
+    <script type="application/ld+json" id="structured-data">
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
+      "@type": "Organization",
       "name": "دليلك المغربي",
       "url": "https://souq-morocco.com/",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://souq-morocco.com/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "logo": "https://souq-morocco.com/logo.png",
+      "sameAs": [
+        "https://facebook.com/dalilak.ma",
+        "https://instagram.com/dalilak.ma"
+      ]
     }
     </script>
-
-    <!-- Open Graph / Facebook / WhatsApp -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://souq-morocco.com/" />
-    <meta property="og:title" content="دليلك المغربي - أفضل المراجعات والعروض" />
-    <meta property="og:description" content="نراجع لك أفضل المنتجات ونختار لك أفضل العروض في المغرب. انضم لآلاف المتسوقين الأذكياء." />
-    <meta property="og:image" content="https://images.unsplash.com/photo-1472851294608-062f824d29cc?q=80&w=1200" />
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
     <style>
-      body {
-        font-family: 'Tajawal', sans-serif;
-        scroll-behavior: smooth;
-      }
-      .glass {
-        background: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-      }
-      .gradient-text {
-        background: linear-gradient(90deg, #059669, #10b981);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-      }
-      .card-shadow {
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-      }
-      .hero-pattern {
-        background-color: #f8fafc;
-        background-image: radial-gradient(#10b981 0.5px, transparent 0.5px);
-        background-size: 24px 24px;
-      }
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fadeIn {
-        animation: fadeIn 0.5s ease-out forwards;
-      }
+      body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; }
+      .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+      .gradient-text { background: linear-gradient(135deg, #059669 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
     </style>
     <script type="importmap">
     {
@@ -82,7 +56,7 @@
     }
     </script>
   </head>
-  <body class="bg-slate-50 text-slate-900">
+  <body class="bg-slate-50 text-slate-900 antialiased">
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
   </body>
