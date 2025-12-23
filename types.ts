@@ -4,7 +4,8 @@ export enum Category {
   BUSINESS = 'ريادة أعمال',
   LIFESTYLE = 'أسلوب حياة',
   PRODUCTIVITY = 'تطوير الذات',
-  NEWS = 'أخبار حصرية'
+  NEWS = 'أخبار حصرية',
+  REVIEWS = 'مراجعات المنتجات'
 }
 
 export interface Comment {
