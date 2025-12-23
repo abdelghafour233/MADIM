@@ -25,11 +25,10 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     setLocalSettings(settings); 
   }, [settings]);
 
-  // دالة التعامل مع رفع الصور وتحويلها لـ Base64
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 2 * 1024 * 1024) { // تحدد الحجم بـ 2 ميجا للحفاظ على أداء المتصفح
+      if (file.size > 2 * 1024 * 1024) {
         alert('الصورة كبيرة جداً! يرجى اختيار صورة أقل من 2 ميجابايت.');
         return;
       }
@@ -70,7 +69,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       alert('✅ تم نشر المقال الجديد بنجاح');
     }
 
-    // إعادة ضبط النموذج
     setNewArticle({ category: Category.REVIEWS, rating: 5, image: '' });
     setEditingId(null);
   };
@@ -88,17 +86,16 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
       const response = await ai.models.generateContent({
         model: 'gemini-3-flash-preview',
-        contents: `أنت خبير SEO مغربي، أعد صياغة هذا المقال ليكون احترافياً وجذاباً جداً: ${newArticle.content}`,
+        contents: `أنت خبير SEO مغربي، أعد صياغة هذا المقال ليكون احترافياً وجذاباً جداً مع الحفاظ على الروابط الموجودة فيه: ${newArticle.content}`,
       });
       if (response.text) setNewArticle(prev => ({ ...prev, content: response.text }));
     } catch (e) {
-      alert('فشل الاتصال بالذكاء الاصطناعي');
+      alert('فشل الاتصال بنظام التحسين');
     } finally { setIsFixing(false); }
   };
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fadeIn">
-      {/* القائمة العلوية */}
       <div className="flex flex-wrap gap-2 mb-10 bg-white p-3 rounded-[28px] shadow-sm sticky top-24 z-40 border border-slate-100 overflow-x-auto no-scrollbar">
         {[
           { id: 'articles', label: 'إدارة وتصحيح المقالات 📝' },
@@ -117,7 +114,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
       {tab === 'articles' && (
         <div className="space-y-12">
-          {/* منطقة إضافة وتعديل المقالات */}
           <div className={`transition-all duration-500 p-8 md:p-12 rounded-[48px] border-2 ${editingId ? 'bg-amber-50 border-amber-200' : 'bg-white border-slate-50 shadow-2xl'}`}>
             <div className="flex justify-between items-center mb-10">
               <h2 className="text-3xl font-black text-slate-800">
@@ -139,7 +135,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                   <div>
                     <label className="block text-sm font-black text-slate-400 mb-2 mr-2">عنوان المقال</label>
                     <input 
-                      className="w-full p-5 bg-slate-50 rounded-3xl font-black text-xl outline-none focus:ring-4 focus:ring-emerald-500/10 border-2 border-transparent focus:border-emerald-500/20 transition-all"
+                      className="w-full p-5 bg-slate-50 rounded-3xl font-black text-xl outline-none border-2 border-transparent focus:border-emerald-500/20 transition-all"
                       value={newArticle.name || ''}
                       onChange={e => setNewArticle({...newArticle, name: e.target.value})}
                       placeholder="مثلاً: مراجعة جاكيط تيمو الجديدة..."
@@ -159,7 +155,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-black text-slate-400 mb-2 mr-2">رابط صورة (اختياري إذا حملت صورة)</label>
+                      <label className="block text-sm font-black text-slate-400 mb-2 mr-2">رابط صورة (اختياري)</label>
                       <input 
                         className="w-full p-5 bg-slate-50 rounded-2xl font-medium outline-none border-2 border-transparent focus:border-emerald-500/20"
                         value={newArticle.image && !newArticle.image.startsWith('data:') ? newArticle.image : ''}
@@ -170,7 +166,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                   </div>
                 </div>
 
-                {/* منطقة تحميل الصورة */}
                 <div className="space-y-4">
                    <label className="block text-sm font-black text-slate-400 mb-2 mr-2">صورة المقال</label>
                    <div 
@@ -207,7 +202,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                     onClick={fixWithAI}
                     className="bg-emerald-50 text-emerald-600 px-4 py-2 rounded-xl font-black text-xs hover:bg-emerald-100 transition-all flex items-center gap-2"
                   >
-                    {isFixing ? 'جاري التحسين...' : '✨ تحسين تلقائي بالذكاء الاصطناعي'}
+                    {isFixing ? 'جاري المراجعة...' : 'تحسين وتنسيق المحتوى ✨'}
                   </button>
                 </div>
                 <textarea 
@@ -228,7 +223,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
             </form>
           </div>
 
-          {/* قائمة المقالات الحالية للمراجعة والتصحيح */}
           <div className="space-y-8">
              <div className="flex items-center justify-between px-4">
                 <h3 className="text-2xl font-black text-slate-800">المقالات المنشورة ({articles.length})</h3>
@@ -268,7 +262,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         </div>
       )}
 
-      {/* تبويبات الإعدادات الأخرى */}
       {tab === 'monetization' && (
         <div className="bg-white p-12 rounded-[48px] shadow-2xl border border-slate-50 animate-fadeIn">
           <h3 className="text-3xl font-black text-slate-800 mb-8">إعدادات الأرباح 💰</h3>
