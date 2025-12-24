@@ -29,12 +29,16 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     setTimeout(() => setSaveStatus('idle'), 3000);
   };
 
-  const handleResetArticles = () => {
-    if (confirm('تنبيه: هل تريد حقاً استعادة المقالات الافتراضية؟ سيتم حذف جميع المقالات الحالية واستبدالها بالمقالات الستة الاحترافية الجديدة.')) {
-      localStorage.removeItem('articles'); // مسح من الذاكرة
-      localStorage.setItem('app_data_version', 'v2.1'); // تحديث النسخة
-      onUpdateArticles(INITIAL_ARTICLES);
-      alert('✅ تمت عملية التحديث بنجاح! المقالات الستة ستظهر الآن في مدونتك.');
+  const handleForceReset = () => {
+    if (confirm('تنبيه هام جداً: سيتم الآن حذف كل المقالات القديمة والمحذوفة نهائياً من متصفحك وتحميل المقالات الستة الاحترافية الجديدة. هل أنت متأكد؟')) {
+      // مسح شامل لكل البيانات المخزنة
+      localStorage.clear();
+      // وضع البيانات الجديدة والنسخة الجديدة
+      localStorage.setItem('app_data_version', 'v3.0');
+      localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
+      
+      // أهم خطوة: إعادة تحميل الصفحة بالكامل لضمان تحديث الواجهة واختفاء القديم
+      window.location.reload();
     }
   };
 
@@ -58,6 +62,20 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fadeIn text-right" dir="rtl">
+      {/* Status Bar / Eye Tracking */}
+      <div className="bg-slate-900 text-white p-6 rounded-[30px] mb-8 flex items-center justify-between shadow-2xl border border-emerald-500/30">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center text-2xl animate-pulse">👁️</div>
+          <div>
+            <p className="text-xs font-black text-emerald-400 uppercase tracking-widest">حالة نظام المحتوى</p>
+            <p className="text-lg font-bold">النسخة النشطة: v3.0 | عدد المقالات: {articles.length}</p>
+          </div>
+        </div>
+        <div className="hidden md:block">
+           <span className="bg-emerald-600 px-4 py-2 rounded-xl text-xs font-black">مراقب البيانات نشط</span>
+        </div>
+      </div>
+
       <div className="flex flex-wrap gap-4 mb-12 bg-white p-4 rounded-3xl shadow-xl border border-slate-100 sticky top-24 z-40">
         <button onClick={() => setTab('articles')} className={`px-8 py-4 rounded-2xl font-black transition-all ${tab === 'articles' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-slate-50 text-slate-500'}`}>المقالات 📝</button>
         <button onClick={() => setTab('adsense')} className={`px-8 py-4 rounded-2xl font-black transition-all ${tab === 'adsense' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-slate-50 text-slate-500'}`}>الأرباح 💰</button>
@@ -67,12 +85,20 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
       {tab === 'articles' && (
         <div className="space-y-12">
-          <div className="bg-emerald-50 border border-emerald-200 p-8 rounded-[40px] flex items-center justify-between flex-wrap gap-4 shadow-inner">
-            <div className="max-w-xl">
-              <h3 className="text-emerald-900 font-black text-xl mb-2">تحديث محتوى المدونة الإجباري 🔄</h3>
-              <p className="text-emerald-700 font-bold leading-relaxed">إذا كنت لا تزال ترى المقالات القديمة، اضغط على هذا الزر ليقوم المتصفح بمسح الذاكرة القديمة وتحميل المقالات الستة الجديدة فوراً.</p>
+          {/* Enhanced Update Button with Eye Icon */}
+          <div className="bg-emerald-50 border-2 border-emerald-200 p-10 rounded-[45px] flex items-center justify-between flex-wrap gap-8 shadow-inner relative overflow-hidden">
+            <div className="absolute -right-10 -top-10 text-9xl opacity-5">👁️</div>
+            <div className="max-w-xl relative z-10">
+              <h3 className="text-emerald-900 font-black text-2xl mb-3 flex items-center gap-3">
+                تحديث جذري للمحتوى 🔄 👁️
+              </h3>
+              <p className="text-emerald-700 font-bold text-lg leading-relaxed">
+                هذا الزر سيقوم بمسح كل الآثار القديمة والمقالات المحذوفة التي تظهر بالخطأ، وسيجلب لك المقالات الستة الجديدة فوراً.
+              </p>
             </div>
-            <button onClick={handleResetArticles} className="bg-emerald-600 text-white px-10 py-5 rounded-2xl font-black shadow-xl hover:bg-emerald-700 transition-all hover:scale-105 active:scale-95">تحديث المقالات الآن ✅</button>
+            <button onClick={handleForceReset} className="relative z-10 bg-emerald-600 hover:bg-emerald-700 text-white px-12 py-6 rounded-2xl font-black text-xl shadow-2xl transition-all hover:scale-105 active:scale-95 border-b-4 border-emerald-800">
+               تحديث المقالات والذاكرة الآن ✅
+            </button>
           </div>
 
           <div className="bg-white p-12 rounded-[50px] shadow-2xl border border-slate-50">

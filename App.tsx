@@ -9,8 +9,8 @@ import Dashboard from './components/Dashboard.tsx';
 import WhatsAppButton from './components/WhatsAppButton.tsx';
 import LegalPage from './components/LegalPage.tsx';
 
-// هذا المتغير هو المفتاح لفرض التحديث على جميع المتصفحات
-const DATA_VERSION = 'v2.1'; 
+// تغيير النسخة إلى v3.0 يخبر المتصفح أن كل البيانات القديمة أصبحت غير صالحة ويجب استبدالها
+const DATA_VERSION = 'v3.0'; 
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -47,23 +47,23 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const savedArticlesStr = localStorage.getItem('articles');
-    const savedSettings = localStorage.getItem('settings');
     const savedVersion = localStorage.getItem('app_data_version');
     
-    // إذا كانت النسخة قديمة أو غير موجودة، نفرض تحميل المقالات الجديدة
+    // إذا كانت النسخة قديمة (أقل من v3.0)، نمسح كل شيء ونحمل المقالات الستة الجديدة
     if (savedVersion !== DATA_VERSION) {
-      setArticles(INITIAL_ARTICLES);
+      console.log("Detecting old version, forcing update to " + DATA_VERSION);
+      localStorage.clear(); // مسح شامل للذاكرة القديمة المحملة بالمقالات المحذوفة
       localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
       localStorage.setItem('app_data_version', DATA_VERSION);
-    } else if (savedArticlesStr) {
-      setArticles(JSON.parse(savedArticlesStr));
-    } else {
+      localStorage.setItem('settings', JSON.stringify(defaultSettings));
       setArticles(INITIAL_ARTICLES);
-      localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
+      setSettings(defaultSettings);
+    } else {
+      const savedArticlesStr = localStorage.getItem('articles');
+      const savedSettingsStr = localStorage.getItem('settings');
+      if (savedArticlesStr) setArticles(JSON.parse(savedArticlesStr));
+      if (savedSettingsStr) setSettings(JSON.parse(savedSettingsStr));
     }
-    
-    if (savedSettings) setSettings(prev => ({ ...prev, ...JSON.parse(savedSettings) }));
   }, []);
 
   const filteredArticles = useMemo(() => {
