@@ -9,8 +9,7 @@ import Dashboard from './components/Dashboard.tsx';
 import WhatsAppButton from './components/WhatsAppButton.tsx';
 import LegalPage from './components/LegalPage.tsx';
 
-// تغيير النسخة إلى v3.0 يخبر المتصفح أن كل البيانات القديمة أصبحت غير صالحة ويجب استبدالها
-const DATA_VERSION = 'v3.0'; 
+const DATA_VERSION = 'v3.1'; 
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -20,6 +19,7 @@ const App: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isDashboardUnlocked, setIsDashboardUnlocked] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   
   const defaultSettings: Settings = {
@@ -36,26 +36,41 @@ const App: React.FC = () => {
 
   const [settings, setSettings] = useState<Settings>(defaultSettings);
 
+  // وظيفة لزيادة مشاهدات المقال بشكل حقيقي
+  const incrementArticleView = useCallback((articleId: string) => {
+    setArticles(prev => {
+      const updated = prev.map(a => a.id === articleId ? { ...a, views: (a.views || 0) + 1 } : a);
+      localStorage.setItem('articles', JSON.stringify(updated));
+      return updated;
+    });
+    
+    // تسجيل زيارة عامة لليوم في المنحنى
+    const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+    const logs = JSON.parse(localStorage.getItem('visit_logs') || '{}');
+    logs[today] = (logs[today] || 0) + 1;
+    localStorage.setItem('visit_logs', JSON.stringify(logs));
+  }, []);
+
   const navigateTo = useCallback((view: View, article?: Article, category?: Category | null) => {
     if (view === 'article' && article) {
       setSelectedArticle(article);
+      incrementArticleView(article.id);
     } else if (view === 'category' && category !== undefined) {
       setSelectedCategory(category);
     }
     setCurrentView(view);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }, [incrementArticleView]);
 
   useEffect(() => {
     const savedVersion = localStorage.getItem('app_data_version');
     
-    // إذا كانت النسخة قديمة (أقل من v3.0)، نمسح كل شيء ونحمل المقالات الستة الجديدة
     if (savedVersion !== DATA_VERSION) {
-      console.log("Detecting old version, forcing update to " + DATA_VERSION);
-      localStorage.clear(); // مسح شامل للذاكرة القديمة المحملة بالمقالات المحذوفة
+      localStorage.clear(); 
       localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
       localStorage.setItem('app_data_version', DATA_VERSION);
       localStorage.setItem('settings', JSON.stringify(defaultSettings));
+      localStorage.setItem('visit_logs', JSON.stringify({ [new Date().toLocaleDateString('en-CA')]: 10 })); // بذرة أولية
       setArticles(INITIAL_ARTICLES);
       setSettings(defaultSettings);
     } else {
@@ -96,7 +111,7 @@ const App: React.FC = () => {
         )}
         {currentView === 'article' && selectedArticle && (
           <ArticleDetail 
-            article={selectedArticle} 
+            article={articles.find(a => a.id === selectedArticle.id) || selectedArticle} 
             onBack={() => navigateTo('home')} 
             siteName={settings.siteName}
             adsenseCode={settings.adsenseCode}
@@ -113,7 +128,22 @@ const App: React.FC = () => {
             <div className="max-w-md mx-auto mt-20 p-12 bg-white rounded-[50px] shadow-2xl text-center border border-slate-100">
               <h2 className="text-3xl font-black mb-8 text-slate-800">إدارة المدونة</h2>
               <form onSubmit={(e) => { e.preventDefault(); if(passwordInput === (settings.dashboardPassword || '1234')) setIsDashboardUnlocked(true); else alert('كلمة مرور خاطئة!'); }} className="space-y-6">
-                <input type="password" className="w-full p-6 bg-slate-50 rounded-2xl text-center font-black text-2xl border-2 border-transparent focus:border-emerald-500 outline-none" placeholder="كلمة السر" value={passwordInput} onChange={(e) => setPasswordInput(e.target.value)} />
+                <div className="relative">
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    className="w-full p-6 bg-slate-50 rounded-2xl text-center font-black text-2xl border-2 border-transparent focus:border-emerald-500 outline-none pr-14" 
+                    placeholder="كلمة السر" 
+                    value={passwordInput} 
+                    onChange={(e) => setPasswordInput(e.target.value)} 
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-2xl text-slate-400 hover:text-emerald-600 transition-colors"
+                  >
+                    {showPassword ? '👁️' : '🕶️'}
+                  </button>
+                </div>
                 <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-xl shadow-lg hover:bg-emerald-700 transition-colors">دخول للوحة التحكم</button>
               </form>
             </div>
