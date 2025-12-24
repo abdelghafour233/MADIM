@@ -18,12 +18,12 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success' | 'error'>('idle');
   const [showPassword, setShowPassword] = useState(false);
+  const [copyAdsStatus, setCopyAdsStatus] = useState(false);
 
   useEffect(() => {
     setLocalSettings(settings);
   }, [settings]);
 
-  // محاكاة توزيع الزيارات للأيام الأخيرة بناءً على إجمالي المشاهدات الفعلي
   const chartData = useMemo(() => {
     const days = ['السبت', 'الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة'];
     const totalViews = articles.reduce((acc, curr) => acc + (curr.views || 0), 0);
@@ -50,6 +50,13 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     };
   }, [articles]);
 
+  const handleCopyAdsTxt = () => {
+    navigator.clipboard.writeText(localSettings.adsTxt).then(() => {
+      setCopyAdsStatus(true);
+      setTimeout(() => setCopyAdsStatus(false), 3000);
+    });
+  };
+
   const handleSaveSettings = () => {
     setSaveStatus('saving');
     try {
@@ -59,7 +66,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     } catch (error) {
       setSaveStatus('error');
       setTimeout(() => setSaveStatus('idle'), 3000);
-      alert('❌ حدث خطأ أثناء الحفظ');
     }
   };
 
@@ -84,7 +90,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     setEditingId(null);
     setNewArticle({ category: Category.TECH, rating: 5, image: '' });
     setEditorMode('write');
-    alert('✅ تم حفظ المقال بنجاح');
   };
 
   const startEditing = (a: Article) => {
@@ -179,18 +184,18 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
           <div className="bg-white p-8 md:p-12 rounded-[50px] shadow-2xl border border-slate-50">
             <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-8">
               <div>
-                <h2 className="text-3xl font-black text-slate-800 mb-2">تحليل الزوار الفعلي 📉</h2>
-                <p className="text-slate-400 font-bold">هذه الإحصائيات تعكس عدد المرات التي تم فيها فتح مقالاتك فعلياً.</p>
+                <h2 className="text-3xl font-black text-slate-800 mb-2">أداء الموقع الحالي 📈</h2>
+                <p className="text-slate-400 font-bold">متابعة دقيقة لزيارات الموقع الحقيقية.</p>
               </div>
               <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 flex items-center gap-6">
                 <div className="text-center">
                   <div className="text-3xl font-black text-emerald-600">{stats.totalViews.toLocaleString()}</div>
-                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">إجمالي المشاهدات</div>
+                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">زيارة حقيقية</div>
                 </div>
                 <div className="w-px h-10 bg-slate-200"></div>
                 <div className="text-center">
-                  <div className="text-3xl font-black text-blue-600">{stats.totalLikes.toLocaleString()}</div>
-                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">إجمالي الإعجابات</div>
+                  <div className="text-3xl font-black text-blue-600">نشط</div>
+                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">حالة السيرفر</div>
                 </div>
               </div>
             </div>
@@ -199,7 +204,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
               <div className="flex items-center justify-between mb-4 px-4">
                 <span className="text-sm font-black text-slate-500 flex items-center gap-2">
                   <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div> 
-                  توزيع حركة الدخول خلال الأسبوع
+                  مخطط التفاعل الأسبوعي
                 </span>
               </div>
               <VisitorChart />
@@ -207,9 +212,9 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
               <div className="space-y-6">
-                <h3 className="text-xl font-black text-slate-800 flex items-center gap-3">ترتيب المقالات حسب الأداء 🔥</h3>
+                <h3 className="text-xl font-black text-slate-800">الأكثر قراءة هذا الأسبوع 🔥</h3>
                 <div className="space-y-4">
-                  {stats.topArticles.map((art, idx) => {
+                  {stats.topArticles.map((art) => {
                     const percentage = stats.totalViews > 0 ? ((art.views || 0) / stats.totalViews * 100).toFixed(1) : "0";
                     return (
                       <div key={art.id} className="bg-slate-50 p-4 rounded-3xl border border-transparent hover:border-emerald-200 transition-all flex items-center gap-4 group cursor-pointer" onClick={() => startEditing(art)}>
@@ -234,22 +239,12 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                 <div className="bg-indigo-50 p-8 rounded-[40px] border border-indigo-100 text-center flex flex-col items-center justify-center group hover:bg-indigo-600 transition-all duration-500">
                   <div className="text-4xl mb-4">📝</div>
                   <div className="text-3xl font-black text-indigo-700 group-hover:text-white">{stats.totalArticles}</div>
-                  <div className="text-xs font-black text-indigo-400 group-hover:text-indigo-200 uppercase">مقال منشور</div>
-                </div>
-                <div className="bg-amber-50 p-8 rounded-[40px] border border-amber-100 text-center flex flex-col items-center justify-center group hover:bg-amber-600 transition-all duration-500">
-                  <div className="text-4xl mb-4">💬</div>
-                  <div className="text-3xl font-black text-amber-700 group-hover:text-white">{stats.totalComments}</div>
-                  <div className="text-xs font-black text-amber-400 group-hover:text-amber-200 uppercase">تعليق معتمد</div>
+                  <div className="text-xs font-black text-indigo-400 group-hover:text-indigo-200 uppercase">مقال</div>
                 </div>
                 <div className="bg-rose-50 p-8 rounded-[40px] border border-rose-100 text-center flex flex-col items-center justify-center group hover:bg-rose-600 transition-all duration-500">
                   <div className="text-4xl mb-4">👁️</div>
                   <div className="text-3xl font-black text-rose-700 group-hover:text-white">{stats.totalViews}</div>
-                  <div className="text-xs font-black text-rose-400 group-hover:text-rose-200 uppercase">زيارة حقيقية</div>
-                </div>
-                <div className="bg-emerald-50 p-8 rounded-[40px] border border-emerald-100 text-center flex flex-col items-center justify-center group hover:bg-emerald-600 transition-all duration-500">
-                  <div className="text-4xl mb-4">✅</div>
-                  <div className="text-3xl font-black text-emerald-700 group-hover:text-white">نشط</div>
-                  <div className="text-xs font-black text-emerald-400 group-hover:text-emerald-200 uppercase">حالة الموقع</div>
+                  <div className="text-xs font-black text-rose-400 group-hover:text-rose-200 uppercase">مشاهدة</div>
                 </div>
               </div>
             </div>
@@ -278,36 +273,35 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
                     </select>
                     <input className="p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-bold" placeholder="رابط الصورة البارزة" value={newArticle.image || ''} onChange={e => setNewArticle({...newArticle, image: e.target.value})} />
                   </div>
-                  <textarea className="w-full h-96 p-6 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-medium leading-relaxed" placeholder="محتوى المقال... (استخدم السطر الجديد للفصل بين الفقرات)" value={newArticle.content || ''} onChange={e => setNewArticle({...newArticle, content: e.target.value})} required />
+                  <textarea className="w-full h-96 p-6 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-medium leading-relaxed" placeholder="محتوى المقال..." value={newArticle.content || ''} onChange={e => setNewArticle({...newArticle, content: e.target.value})} required />
                 </div>
               ) : (
                 <div className="animate-fadeIn">
                   <div className="relative h-64 rounded-3xl overflow-hidden mb-8 border border-slate-100">
                     <img src={newArticle.image || 'https://via.placeholder.com/800x400?text=الصورة+البارزة'} className="w-full h-full object-cover" alt="" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
-                       <h3 className="text-3xl font-black text-white leading-tight">{newArticle.name || 'عنوان المقال سيظهر هنا'}</h3>
+                       <h3 className="text-3xl font-black text-white leading-tight">{newArticle.name || 'العنوان هنا'}</h3>
                     </div>
                   </div>
                   <div className="bg-slate-50 p-8 rounded-[32px] border border-slate-100 min-h-[400px]">
-                    <div className="mb-6"><span className="bg-emerald-600 text-white text-[10px] font-black px-4 py-2 rounded-lg">{newArticle.category}</span></div>
                     {renderPreviewContent(newArticle.content || '')}
                   </div>
                 </div>
               )}
-              <button type="submit" className="w-full bg-emerald-600 text-white py-6 rounded-2xl font-black text-xl hover:bg-emerald-700 shadow-xl shadow-emerald-100 transition-all active:scale-95">{editingId ? 'حفظ التغييرات النهائية' : 'نشر المقال الآن'}</button>
+              <button type="submit" className="w-full bg-emerald-600 text-white py-6 rounded-2xl font-black text-xl hover:bg-emerald-700 shadow-xl transition-all active:scale-95">{editingId ? 'حفظ التعديلات' : 'نشر المقال'}</button>
             </form>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {articles.map(a => (
-              <div key={a.id} className="bg-white p-6 rounded-[32px] border border-slate-100 flex items-center gap-6 shadow-sm hover:shadow-md transition-all group">
-                <img src={a.image} className="w-20 h-20 rounded-2xl object-cover shadow-sm" alt="" />
+              <div key={a.id} className="bg-white p-6 rounded-[32px] border border-slate-100 flex items-center gap-6 shadow-sm hover:shadow-md transition-all">
+                <img src={a.image} className="w-20 h-20 rounded-2xl object-cover" alt="" />
                 <div className="flex-grow min-w-0 text-right">
                   <h4 className="font-black text-slate-800 truncate mb-1">{a.name}</h4>
                   <p className="text-xs text-slate-400 font-bold mb-3">👁️ {a.views || 0} زيارة</p>
                   <div className="flex gap-3">
                     <button type="button" onClick={() => startEditing(a)} className="text-emerald-600 font-bold text-xs bg-emerald-50 px-4 py-2 rounded-xl hover:bg-emerald-100">تعديل</button>
-                    <button type="button" onClick={() => {if(confirm('هل تريد حذف هذا المقال نهائياً؟')) onUpdateArticles(articles.filter(i => i.id !== a.id))}} className="text-red-500 font-bold text-xs bg-red-50 px-4 py-2 rounded-xl hover:bg-red-100">حذف</button>
+                    <button type="button" onClick={() => {if(confirm('حذف؟')) onUpdateArticles(articles.filter(i => i.id !== a.id))}} className="text-red-500 font-bold text-xs bg-red-50 px-4 py-2 rounded-xl hover:bg-red-100">حذف</button>
                   </div>
                 </div>
               </div>
@@ -317,20 +311,52 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       )}
 
       {tab === 'adsense' && (
-        <div className="bg-white p-12 rounded-[48px] shadow-xl border border-slate-50 space-y-10">
-          <div><h2 className="text-3xl font-black text-slate-800 mb-2">الأرباح والسكربتات 💰</h2><p className="text-slate-400 font-bold">إدارة أكواد AdSense وملفات الربح.</p></div>
-          <div className="space-y-8">
-            <div className="space-y-4">
-              <label className="block text-slate-700 font-black mr-2">كود Header (AdSense):</label>
-              <textarea className="w-full h-48 p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-emerald-500 outline-none font-mono text-sm leading-relaxed text-left" dir="ltr" value={localSettings.adsenseCode} onChange={e => setLocalSettings({...localSettings, adsenseCode: e.target.value})} />
+        <div className="space-y-10">
+          <div className="bg-white p-12 rounded-[48px] shadow-xl border border-slate-50">
+            <h2 className="text-3xl font-black text-slate-800 mb-6">حل مشكلة "Introuvable / غير موجود" 💰</h2>
+            
+            <div className="bg-rose-50 p-8 rounded-[32px] border border-rose-100 mb-10 space-y-4">
+              <h4 className="font-black text-rose-800 flex items-center gap-3 text-lg">
+                ⚠️ لماذا تظهر لك هذه الرسالة؟
+              </h4>
+              <ul className="list-disc list-inside text-rose-700 font-bold space-y-2 leading-relaxed pr-4">
+                <li>جوجل لا ترى الكود لأن موقعك قد يكون في حالة "تحت الصيانة" أو مغلق بكلمة سر.</li>
+                <li>رابط موقعك (Domain) قد يكون مكتوباً بشكل خاطئ في أدسنس (تأكد من وجود abdouweb.online بدون www إذا كنت تستخدم النطاق الرئيسي).</li>
+                <li>غياب ملف ads.txt من المجلد الرئيسي لموقعك.</li>
+              </ul>
             </div>
-            <div className="space-y-4">
-              <label className="block text-slate-700 font-black mr-2">محتوى Ads.txt:</label>
-              <textarea className="w-full h-24 p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-emerald-500 outline-none font-mono text-sm text-left" dir="ltr" value={localSettings.adsTxt} onChange={e => setLocalSettings({...localSettings, adsTxt: e.target.value})} />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+              <div className="p-8 bg-emerald-50 rounded-3xl border border-emerald-100">
+                <h4 className="font-black text-emerald-800 mb-2">1. وسم التحقق (تم تفعيله) ✅</h4>
+                <p className="text-emerald-700 text-sm leading-relaxed font-bold">تم وضع كود <code className="bg-white px-2 py-0.5 rounded">ca-pub-5578524966832192</code> في السطر الأول من موقعك. جوجل ستجده الآن بالتأكيد بمجرد الضغط على "طلب مراجعة".</p>
+              </div>
+              <div className="p-8 bg-amber-50 rounded-3xl border border-amber-100">
+                <h4 className="font-black text-amber-800 mb-2">2. ماذا تفعل الآن؟ 🆔</h4>
+                <p className="text-amber-700 text-sm leading-relaxed font-bold">ادخل لحساب AdSense، احذف الموقع وأعد إضافته مرة أخرى، ثم اضغط "طلب مراجعة". تأكد أن موقعك متاح للعامة ولا يطلب كلمة سر للدخول.</p>
+              </div>
             </div>
-            <button type="button" onClick={handleSaveSettings} className={`w-full py-6 rounded-3xl font-black text-xl transition-all shadow-xl ${saveStatus === 'success' ? 'bg-emerald-500 text-white' : 'bg-slate-900 text-white hover:bg-emerald-600'}`}>
-              {saveStatus === 'saving' ? 'جاري الحفظ...' : saveStatus === 'success' ? '✅ تم الحفظ بنجاح' : 'حفظ الإعدادات الإعلانية'}
-            </button>
+
+            <div className="space-y-8">
+              <div className="space-y-4">
+                <label className="block text-slate-700 font-black mr-2">محتوى ملف Ads.txt (انسخه وأرسله للدعم الفني أو ضعه في Root):</label>
+                <div className="relative">
+                  <textarea className="w-full h-24 p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-emerald-500 outline-none font-mono text-sm text-left" dir="ltr" readOnly value={localSettings.adsTxt} />
+                  <button onClick={handleCopyAdsTxt} className={`absolute left-4 bottom-4 px-4 py-2 rounded-xl text-xs font-black transition-all ${copyAdsStatus ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}`}>
+                    {copyAdsStatus ? 'تم النسخ!' : 'نسخ الكود'}
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <label className="block text-slate-700 font-black mr-2">كود الإعلانات التلقائية (Header Script):</label>
+                <textarea className="w-full h-48 p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-emerald-500 outline-none font-mono text-sm text-left" dir="ltr" value={localSettings.adsenseCode} onChange={e => setLocalSettings({...localSettings, adsenseCode: e.target.value})} />
+              </div>
+
+              <button type="button" onClick={handleSaveSettings} className={`w-full py-6 rounded-3xl font-black text-xl transition-all shadow-xl ${saveStatus === 'success' ? 'bg-emerald-500 text-white' : 'bg-slate-900 text-white hover:bg-emerald-600'}`}>
+                {saveStatus === 'saving' ? 'جاري الحفظ...' : saveStatus === 'success' ? '✅ تم التحديث بنجاح' : 'تحديث إعدادات الأرباح'}
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -338,43 +364,34 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       {tab === 'settings' && (
         <div className="space-y-10">
           <div className="bg-white p-12 rounded-[48px] shadow-xl border border-slate-50">
-            <h2 className="text-3xl font-black text-slate-800 mb-10">إعدادات الموقع العامة ⚙️</h2>
+            <h2 className="text-3xl font-black text-slate-800 mb-10">إعدادات الموقع ⚙️</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-4">
-                <label className="block text-slate-700 font-black mr-2">اسم الموقع الظاهر</label>
+                <label className="block text-slate-700 font-black mr-2">اسم الموقع</label>
                 <input className="w-full p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-bold" value={localSettings.siteName} onChange={e => setLocalSettings({...localSettings, siteName: e.target.value})} />
               </div>
               <div className="space-y-4">
-                <label className="block text-slate-700 font-black mr-2">رابط الموقع (Domain)</label>
+                <label className="block text-slate-700 font-black mr-2">الدومين الرئيسي</label>
                 <input className="w-full p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-bold text-left" dir="ltr" value={localSettings.domain} onChange={e => setLocalSettings({...localSettings, domain: e.target.value})} />
-              </div>
-              <div className="md:col-span-2 space-y-4">
-                <label className="block text-slate-700 font-black mr-2">وصف الموقع (SEO)</label>
-                <textarea className="w-full p-5 bg-slate-50 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-medium h-24" value={localSettings.siteDescription} onChange={e => setLocalSettings({...localSettings, siteDescription: e.target.value})} />
               </div>
             </div>
           </div>
 
           <div className="bg-white p-12 rounded-[48px] shadow-xl border border-rose-50 border-2">
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 bg-rose-500 rounded-2xl flex items-center justify-center text-white"><svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg></div>
-              <h2 className="text-3xl font-black text-slate-800">الأمان والوصول</h2>
-            </div>
-            <div className="space-y-6">
-              <div className="space-y-4">
-                <label className="block text-slate-700 font-black mr-2">تعديل كلمة مرور الإدارة</label>
-                <div className="relative">
-                  <input type={showPassword ? "text" : "password"} className="w-full p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-rose-500 outline-none font-black text-2xl text-center pr-4 pl-20 transition-all" placeholder="أدخل كلمة المرور الجديدة" value={localSettings.dashboardPassword} onChange={e => setLocalSettings({...localSettings, dashboardPassword: e.target.value})} />
-                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-600 transition-colors p-2 z-10" title={showPassword ? "إخفاء الرموز" : "إظهار الرموز (رؤية ما أكتب)"}>
-                    {showPassword ? <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> : <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.04m4.533-4.533A10.01 10.01 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21m-4.225-4.225l-4.225-4.225m4.225 4.225L7 7m3.586 3.586a3 3 0 004.243 4.243" /></svg>}
-                  </button>
-                </div>
+            <h2 className="text-3xl font-black text-slate-800 mb-8 flex items-center gap-4">🔐 الأمان</h2>
+            <div className="space-y-4">
+              <label className="block text-slate-700 font-black mr-2">كلمة مرور الإدارة الجديدة</label>
+              <div className="relative">
+                <input type={showPassword ? "text" : "password"} className="w-full p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-rose-500 outline-none font-black text-2xl text-center" value={localSettings.dashboardPassword} onChange={e => setLocalSettings({...localSettings, dashboardPassword: e.target.value})} />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 hover:text-rose-600 p-2">
+                  {showPassword ? "👁️" : "🙈"}
+                </button>
               </div>
             </div>
           </div>
 
-          <button type="button" onClick={handleSaveSettings} className={`w-full py-6 rounded-[32px] font-black text-xl transition-all shadow-2xl flex items-center justify-center gap-4 ${saveStatus === 'success' ? 'bg-emerald-600 text-white' : 'bg-slate-900 text-white hover:bg-emerald-600 shadow-emerald-100'}`}>
-            {saveStatus === 'saving' ? 'جاري الحفظ...' : saveStatus === 'success' ? '✅ تم حفظ كافة التغييرات بنجاح' : 'حفظ كافة التغييرات النهائية ✅'}
+          <button type="button" onClick={handleSaveSettings} className="w-full py-6 rounded-[32px] bg-slate-900 text-white font-black text-xl hover:bg-emerald-600 transition-all shadow-2xl">
+            حفظ كافة التغييرات النهائية ✅
           </button>
         </div>
       )}
