@@ -24,8 +24,8 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   });
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success'>('idle');
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  // استرجاع البيانات الحقيقية لآخر 7 أيام
   const { realTrafficData, realDays } = useMemo(() => {
     const logs = JSON.parse(localStorage.getItem('visit_logs') || '{}');
     const data: number[] = [];
@@ -40,7 +40,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       data.push(logs[key] || 0);
     }
     
-    // إذا كانت البيانات كلها أصفار، نضع بعض الأرقام الافتراضية للجمالية فقط في البداية
     const isAllZero = data.every(v => v === 0);
     return { 
       realTrafficData: isAllZero ? [5, 12, 8, 20, 15, 25, 30] : data, 
@@ -54,6 +53,24 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   useEffect(() => {
     setLocalSettings(settings);
   }, [settings]);
+
+  // وظيفة زر التحديث الذكي
+  const handleSmartUpdate = () => {
+    setIsUpdating(true);
+    setTimeout(() => {
+      // جلب المقالات المفقودة من INITIAL_ARTICLES
+      const existingIds = new Set(articles.map(a => a.id));
+      const newArticlesFromCode = INITIAL_ARTICLES.filter(a => !existingIds.has(a.id));
+      
+      if (newArticlesFromCode.length > 0) {
+        onUpdateArticles([...newArticlesFromCode, ...articles]);
+        alert(`تم بنجاح إضافة ${newArticlesFromCode.length} مقالات جديدة من قاعدة البيانات!`);
+      } else {
+        alert('الموقع محدث بالفعل، لا توجد مقالات جديدة لإضافتها.');
+      }
+      setIsUpdating(false);
+    }, 800);
+  };
 
   const handleForceReset = () => {
     if (confirm('تنبيه: سيتم مسح الذاكرة وتحميل المقالات الجديدة. هل أنت متأكد؟')) {
@@ -101,7 +118,21 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   return (
     <div className="max-w-7xl mx-auto pb-24 animate-fadeIn text-right" dir="rtl">
       
-      {/* إحصائيات علوية */}
+      <div className="flex items-center justify-between mb-8 bg-white p-6 rounded-[35px] border border-slate-100 shadow-sm">
+        <h2 className="text-2xl font-black text-slate-800">مرحباً بك في لوحة الإدارة 👋</h2>
+        <div className="flex gap-3">
+          <button 
+            onClick={handleSmartUpdate} 
+            disabled={isUpdating}
+            className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm transition-all shadow-md active:scale-95 ${isUpdating ? 'bg-slate-200 text-slate-400' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}
+          >
+            <span className={isUpdating ? 'animate-spin' : ''}>🔄</span>
+            {isUpdating ? 'جاري التحديث...' : 'تحديث البيانات'}
+          </button>
+          <button onClick={onLogout} className="px-6 py-3 rounded-2xl bg-red-50 text-red-600 font-black text-sm hover:bg-red-100 transition-all">خروج</button>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
         <div className="bg-slate-900 text-white p-6 rounded-[30px] border border-emerald-500/30 flex items-center justify-between">
            <div>
@@ -133,13 +164,11 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
         </div>
       </div>
 
-      {/* التبويبات */}
       <div className="flex flex-wrap gap-3 mb-12 bg-white p-3 rounded-[30px] shadow-xl border border-slate-100 sticky top-24 z-40">
         <button onClick={() => setTab('articles')} className={`px-8 py-4 rounded-2xl font-black transition-all ${tab === 'articles' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-slate-50 text-slate-500'}`}>المقالات والمحرر ✍️</button>
         <button onClick={() => setTab('analytics')} className={`px-8 py-4 rounded-2xl font-black transition-all ${tab === 'analytics' ? 'bg-blue-600 text-white shadow-lg' : 'bg-slate-50 text-slate-500'}`}>منحنى الزوار الحقيقي 📊</button>
         <button onClick={() => setTab('adsense')} className={`px-8 py-4 rounded-2xl font-black transition-all ${tab === 'adsense' ? 'bg-orange-600 text-white shadow-lg' : 'bg-slate-50 text-slate-500'}`}>الأرباح 💰</button>
         <button onClick={() => setTab('settings')} className={`px-8 py-4 rounded-2xl font-black transition-all ${tab === 'settings' ? 'bg-slate-900 text-white shadow-lg' : 'bg-slate-50 text-slate-500'}`}>الإعدادات ⚙️</button>
-        <button onClick={onLogout} className="mr-auto px-6 py-4 text-red-500 font-black hover:bg-red-50 rounded-2xl">خروج</button>
       </div>
 
       {tab === 'analytics' && (
@@ -180,7 +209,6 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
       {tab === 'articles' && (
         <div className="space-y-12">
-          {/* محرر المقالات والمعاينة */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
             <div className="bg-white p-8 md:p-12 rounded-[50px] shadow-2xl border border-slate-50">
               <h2 className="text-3xl font-black text-slate-800 mb-8 flex items-center gap-3">
