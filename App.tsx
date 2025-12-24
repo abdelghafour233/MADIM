@@ -34,7 +34,6 @@ const App: React.FC = () => {
   const [settings, setSettings] = useState<Settings>(defaultSettings);
 
   const navigateTo = useCallback((view: View, article?: Article, category?: Category | null) => {
-    // 1. تحديث الحالة فوراً
     if (view === 'article' && article) {
       setSelectedArticle(article);
     } else if (view === 'category' && category !== undefined) {
@@ -46,7 +45,6 @@ const App: React.FC = () => {
 
     setCurrentView(view);
 
-    // 2. تحديث الرابط في المتصفح
     const url = new URL(window.location.origin + window.location.pathname);
     if (view === 'article' && article) url.searchParams.set('article', article.id);
     if (view === 'category' && category) url.searchParams.set('category', category);
@@ -87,19 +85,39 @@ const App: React.FC = () => {
     };
 
     window.addEventListener('popstate', handlePopState);
-    handlePopState(); // التزامن عند التحميل الأول
+    handlePopState();
     return () => window.removeEventListener('popstate', handlePopState);
   }, [articles]);
 
   useEffect(() => {
-    const savedArticles = localStorage.getItem('articles');
+    const savedArticlesStr = localStorage.getItem('articles');
     const savedSettings = localStorage.getItem('settings');
     const savedTheme = localStorage.getItem('theme');
     
-    if (savedArticles) {
-      setArticles(JSON.parse(savedArticles));
+    // ميزة المزامنة الذكية: ندمج المقالات الجديدة في الكود مع ما هو مخزن محلياً
+    if (savedArticlesStr) {
+      const savedArticles: Article[] = JSON.parse(savedArticlesStr);
+      const savedIds = new Set(savedArticles.map(a => a.id));
+      
+      // نبحث عن المقالات الموجودة في INITIAL_ARTICLES وغير موجودة في التخزين المحلي
+      const newArticles = INITIAL_ARTICLES.filter(a => !savedIds.has(a.id)).map(a => ({
+        ...a,
+        likes: Math.floor(Math.random() * 50) + 10,
+        views: Math.floor(Math.random() * 2000) + 500,
+        comments: []
+      }));
+
+      // نضع المقالات الجديدة في البداية ثم نتبعها بالمقالات المخزنة سابقاً
+      const merged = [...newArticles, ...savedArticles];
+      setArticles(merged);
+      // تحديث التخزين المحلي لضمان بقائها
+      if (newArticles.length > 0) {
+        localStorage.setItem('articles', JSON.stringify(merged));
+      }
     } else {
-      setArticles(INITIAL_ARTICLES.map(a => ({ ...a, likes: 24, views: 1540, comments: [] })));
+      const initial = INITIAL_ARTICLES.map(a => ({ ...a, likes: 24, views: 1540, comments: [] }));
+      setArticles(initial);
+      localStorage.setItem('articles', JSON.stringify(initial));
     }
 
     if (savedSettings) {
@@ -132,7 +150,11 @@ const App: React.FC = () => {
         siteName={settings.siteName} 
         onSearch={setSearchQuery}
         darkMode={darkMode}
-        toggleDarkMode={() => setDarkMode(!darkMode)}
+        toggleDarkMode={() => {
+          const next = !darkMode;
+          setDarkMode(next);
+          localStorage.setItem('theme', next ? 'dark' : 'light');
+        }}
       />
       
       <main className="flex-grow container mx-auto px-4 py-8">
