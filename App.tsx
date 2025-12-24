@@ -6,10 +6,10 @@ import Navbar from './components/Navbar.tsx';
 import Home from './components/Home.tsx';
 import ArticleDetail from './components/ArticleDetail.tsx';
 import Dashboard from './components/Dashboard.tsx';
-import WhatsAppButton from './components/WhatsAppButton.tsx';
 import LegalPage from './components/LegalPage.tsx';
+import WhatsAppButton from './components/WhatsAppButton.tsx';
 
-const DATA_VERSION = 'v3.1'; 
+const DATA_VERSION = 'v3.3'; 
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -36,7 +36,6 @@ const App: React.FC = () => {
 
   const [settings, setSettings] = useState<Settings>(defaultSettings);
 
-  // وظيفة لزيادة مشاهدات المقال بشكل حقيقي
   const incrementArticleView = useCallback((articleId: string) => {
     setArticles(prev => {
       const updated = prev.map(a => a.id === articleId ? { ...a, views: (a.views || 0) + 1 } : a);
@@ -44,8 +43,7 @@ const App: React.FC = () => {
       return updated;
     });
     
-    // تسجيل زيارة عامة لليوم في المنحنى
-    const today = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+    const today = new Date().toLocaleDateString('en-CA');
     const logs = JSON.parse(localStorage.getItem('visit_logs') || '{}');
     logs[today] = (logs[today] || 0) + 1;
     localStorage.setItem('visit_logs', JSON.stringify(logs));
@@ -70,7 +68,6 @@ const App: React.FC = () => {
       localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
       localStorage.setItem('app_data_version', DATA_VERSION);
       localStorage.setItem('settings', JSON.stringify(defaultSettings));
-      localStorage.setItem('visit_logs', JSON.stringify({ [new Date().toLocaleDateString('en-CA')]: 10 })); // بذرة أولية
       setArticles(INITIAL_ARTICLES);
       setSettings(defaultSettings);
     } else {
@@ -136,15 +133,11 @@ const App: React.FC = () => {
                     value={passwordInput} 
                     onChange={(e) => setPasswordInput(e.target.value)} 
                   />
-                  <button 
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-2xl text-slate-400 hover:text-emerald-600 transition-colors"
-                  >
+                  <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-2xl text-slate-400">
                     {showPassword ? '👁️' : '🕶️'}
                   </button>
                 </div>
-                <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-xl shadow-lg hover:bg-emerald-700 transition-colors">دخول للوحة التحكم</button>
+                <button type="submit" className="w-full bg-emerald-600 text-white py-5 rounded-2xl font-black text-xl shadow-lg hover:bg-emerald-700">دخول للوحة التحكم</button>
               </form>
             </div>
           ) : (
