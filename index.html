@@ -5,30 +5,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- 1. AdSense Verification (The very first thing) -->
+    <!-- 1. Google AdSense Verification - TOP PRIORITY -->
     <meta name="google-adsense-account" content="ca-pub-5578524966832192" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5578524966832192" crossorigin="anonymous"></script>
 
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="theme-color" content="#10b981" />
-    
-    <!-- Google Consent Mode v2 -->
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      if (!localStorage.getItem('google_consent_choice')) {
-        gtag('consent', 'default', {
-          'ad_storage': 'denied',
-          'ad_user_data': 'denied',
-          'ad_personalization': 'denied',
-          'analytics_storage': 'denied',
-          'wait_for_update': 500
-        });
-      } else {
-        const savedConsent = JSON.parse(localStorage.getItem('google_consent_choice'));
-        gtag('consent', 'default', savedConsent);
-      }
-    </script>
     
     <link rel="canonical" href="https://abdouweb.online/" id="canonical-link" />
 
@@ -58,12 +40,13 @@
     </script>
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased">
-    <!-- Static content for crawlers to avoid 'empty page' error -->
+    <!-- Static content for crawlers to avoid 'Introuvable' error -->
     <div id="root">
-      <div style="padding: 20px; text-align: center; font-family: sans-serif;">
-        <h1>عبدو ويب - Abdou Web</h1>
-        <p>جاري تحميل المحتوى... نعتذر عن التأخير.</p>
-        <p>هذا الموقع متخصص في مراجعات المنتجات وأخبار التقنية في المغرب.</p>
+      <div style="padding: 50px; text-align: center; font-family: 'Tajawal', sans-serif; direction: rtl;">
+        <h1 style="color: #059669;">عبدو ويب - Abdou Web</h1>
+        <p style="color: #64748b; font-size: 18px;">جاري تحميل أفضل المراجعات التقنية في المغرب...</p>
+        <div style="margin: 20px auto; width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #059669; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
       </div>
     </div>
     <script type="module" src="./index.tsx"></script>
