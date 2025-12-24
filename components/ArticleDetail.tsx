@@ -17,7 +17,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
   const [scrollProgress, setScrollProgress] = useState(0);
   const publisherId = adsenseCode?.match(/ca-pub-\d+/)?.[0] || 'ca-pub-5578524966832192';
 
-  // JSON-LD Structured Data for Google
   useEffect(() => {
     const script = document.createElement('script');
     script.type = 'application/ld+json';
@@ -85,9 +84,36 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
     if (url) window.open(url, '_blank', 'width=600,height=400');
   };
 
+  // وظيفة لتحويل الروابط إلى أزرار أو روابط قابلة للنقر
+  const renderParagraph = (text: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const parts = text.split(urlRegex);
+    
+    if (parts.length === 1) return text;
+
+    return parts.map((part, i) => {
+      if (part.match(urlRegex)) {
+        const isTemu = part.includes('temu.to') || part.includes('temu.com');
+        return (
+          <div key={i} className="my-6 text-center">
+            <a 
+              href={part} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className={`inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-black text-xl transition-all shadow-xl hover:scale-105 active:scale-95 ${isTemu ? 'bg-orange-600 text-white hover:bg-orange-700' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}
+            >
+              <span>{isTemu ? 'اشتري الآن من تيمو 🛒' : 'زيارة الرابط المباشر 🔗'}</span>
+            </a>
+            <p className="text-[10px] text-slate-400 mt-2 font-bold uppercase tracking-tighter">{part}</p>
+          </div>
+        );
+      }
+      return part;
+    });
+  };
+
   return (
     <article className="max-w-4xl mx-auto pb-24 animate-fadeIn relative text-right" dir="rtl">
-      {/* Reading Progress Bar */}
       <div className="fixed top-0 right-0 h-2 bg-emerald-500 z-[100] transition-all duration-300" style={{ width: `${scrollProgress}%` }}></div>
       
       <button onClick={onBack} className="mt-8 mb-10 text-slate-500 font-black flex items-center gap-2 hover:text-emerald-600 transition-all group">
@@ -121,7 +147,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
           <div className={`prose prose-xl max-w-none mb-16 font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'} leading-[1.8]`}>
             {paragraphs.map((p, i) => (
               <React.Fragment key={i}>
-                <p className="mb-8">{p}</p>
+                <div className="mb-8">{renderParagraph(p)}</div>
                 {i === 2 && (
                   <div className="my-12 py-8 border-y border-slate-100 dark:border-slate-800">
                     <AdUnit publisherId={publisherId} />
