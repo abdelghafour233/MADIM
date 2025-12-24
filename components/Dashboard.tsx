@@ -30,9 +30,11 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   };
 
   const handleResetArticles = () => {
-    if (confirm('هل تريد حقاً استعادة المقالات الافتراضية؟ سيؤدي هذا إلى ظهور المقالات الستة الجديدة وحذف أي تعديلات يدوية قمت بها.')) {
+    if (confirm('تنبيه: هل تريد حقاً استعادة المقالات الافتراضية؟ سيتم حذف جميع المقالات الحالية واستبدالها بالمقالات الستة الاحترافية الجديدة.')) {
+      localStorage.removeItem('articles'); // مسح من الذاكرة
+      localStorage.setItem('app_data_version', 'v2.1'); // تحديث النسخة
       onUpdateArticles(INITIAL_ARTICLES);
-      alert('تمت استعادة المقالات بنجاح! ستظهر الآن في الصفحة الرئيسية.');
+      alert('✅ تمت عملية التحديث بنجاح! المقالات الستة ستظهر الآن في مدونتك.');
     }
   };
 
@@ -65,12 +67,12 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
       {tab === 'articles' && (
         <div className="space-y-12">
-          <div className="bg-emerald-50 border border-emerald-100 p-8 rounded-[40px] flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <h3 className="text-emerald-900 font-black text-xl mb-2">تحديث محتوى المدونة</h3>
-              <p className="text-emerald-700 font-bold">إذا لم تظهر لك المقالات الستة الجديدة، اضغط على هذا الزر:</p>
+          <div className="bg-emerald-50 border border-emerald-200 p-8 rounded-[40px] flex items-center justify-between flex-wrap gap-4 shadow-inner">
+            <div className="max-w-xl">
+              <h3 className="text-emerald-900 font-black text-xl mb-2">تحديث محتوى المدونة الإجباري 🔄</h3>
+              <p className="text-emerald-700 font-bold leading-relaxed">إذا كنت لا تزال ترى المقالات القديمة، اضغط على هذا الزر ليقوم المتصفح بمسح الذاكرة القديمة وتحميل المقالات الستة الجديدة فوراً.</p>
             </div>
-            <button onClick={handleResetArticles} className="bg-emerald-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg hover:bg-emerald-700 transition-all">استعادة المقالات الستة 🔄</button>
+            <button onClick={handleResetArticles} className="bg-emerald-600 text-white px-10 py-5 rounded-2xl font-black shadow-xl hover:bg-emerald-700 transition-all hover:scale-105 active:scale-95">تحديث المقالات الآن ✅</button>
           </div>
 
           <div className="bg-white p-12 rounded-[50px] shadow-2xl border border-slate-50">

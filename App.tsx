@@ -9,6 +9,9 @@ import Dashboard from './components/Dashboard.tsx';
 import WhatsAppButton from './components/WhatsAppButton.tsx';
 import LegalPage from './components/LegalPage.tsx';
 
+// هذا المتغير هو المفتاح لفرض التحديث على جميع المتصفحات
+const DATA_VERSION = 'v2.1'; 
+
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -46,16 +49,15 @@ const App: React.FC = () => {
   useEffect(() => {
     const savedArticlesStr = localStorage.getItem('articles');
     const savedSettings = localStorage.getItem('settings');
+    const savedVersion = localStorage.getItem('app_data_version');
     
-    // Logic to force update if the count is too low (meaning user hasn't received the new updates)
-    if (savedArticlesStr) {
-      const savedArticles = JSON.parse(savedArticlesStr);
-      if (savedArticles.length <= 2) {
-        setArticles(INITIAL_ARTICLES);
-        localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
-      } else {
-        setArticles(savedArticles);
-      }
+    // إذا كانت النسخة قديمة أو غير موجودة، نفرض تحميل المقالات الجديدة
+    if (savedVersion !== DATA_VERSION) {
+      setArticles(INITIAL_ARTICLES);
+      localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
+      localStorage.setItem('app_data_version', DATA_VERSION);
+    } else if (savedArticlesStr) {
+      setArticles(JSON.parse(savedArticlesStr));
     } else {
       setArticles(INITIAL_ARTICLES);
       localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
