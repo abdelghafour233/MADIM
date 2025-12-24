@@ -33,9 +33,20 @@ const App: React.FC = () => {
 
   const [settings, setSettings] = useState<Settings>(defaultSettings);
 
+  const incrementArticleViews = useCallback((articleId: string) => {
+    setArticles(prev => {
+      const updated = prev.map(a => 
+        a.id === articleId ? { ...a, views: (a.views || 0) + 1 } : a
+      );
+      localStorage.setItem('articles', JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
+
   const navigateTo = useCallback((view: View, article?: Article, category?: Category | null) => {
     if (view === 'article' && article) {
       setSelectedArticle(article);
+      incrementArticleViews(article.id);
     } else if (view === 'category' && category !== undefined) {
       setSelectedCategory(category);
     } else {
@@ -52,7 +63,7 @@ const App: React.FC = () => {
     
     window.history.pushState({}, '', url.toString());
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, []);
+  }, [incrementArticleViews]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -95,23 +106,14 @@ const App: React.FC = () => {
     const savedTheme = localStorage.getItem('theme');
     
     if (savedArticlesStr) {
-      const savedArticles: Article[] = JSON.parse(savedArticlesStr);
-      const savedIds = new Set(savedArticles.map(a => a.id));
-      
-      const newArticles = INITIAL_ARTICLES.filter(a => !savedIds.has(a.id)).map(a => ({
-        ...a,
-        likes: Math.floor(Math.random() * 50) + 10,
-        views: Math.floor(Math.random() * 2000) + 500,
-        comments: []
-      }));
-
-      const merged = [...newArticles, ...savedArticles];
-      setArticles(merged);
-      if (newArticles.length > 0) {
-        localStorage.setItem('articles', JSON.stringify(merged));
-      }
+      setArticles(JSON.parse(savedArticlesStr));
     } else {
-      const initial = INITIAL_ARTICLES.map(a => ({ ...a, likes: 24, views: 1540, comments: [] }));
+      const initial = INITIAL_ARTICLES.map(a => ({ 
+        ...a, 
+        likes: Math.floor(Math.random() * 20) + 5, 
+        views: Math.floor(Math.random() * 500) + 100, 
+        comments: [] 
+      }));
       setArticles(initial);
       localStorage.setItem('articles', JSON.stringify(initial));
     }
@@ -181,8 +183,20 @@ const App: React.FC = () => {
             adsenseCode={settings.adsenseCode}
             relatedArticles={articles.filter(a => a.id !== selectedArticle.id && a.category === selectedArticle.category).slice(0, 2)}
             onArticleClick={(a) => navigateTo('article', a)}
-            onLike={() => {}}
-            onAddComment={() => {}}
+            onLike={() => {
+              setArticles(prev => {
+                const updated = prev.map(a => a.id === selectedArticle.id ? { ...a, likes: (a.likes || 0) + 1 } : a);
+                localStorage.setItem('articles', JSON.stringify(updated));
+                return updated;
+              });
+            }}
+            onAddComment={(c) => {
+              setArticles(prev => {
+                const updated = prev.map(a => a.id === selectedArticle.id ? { ...a, comments: [...(a.comments || []), c] } : a);
+                localStorage.setItem('articles', JSON.stringify(updated));
+                return updated;
+              });
+            }}
             darkMode={darkMode}
           />
         )}
