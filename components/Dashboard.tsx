@@ -18,6 +18,11 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
   const [editingId, setEditingId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'success'>('idle');
 
+  // إحصائيات سريعة للعين
+  const totalViews = articles.reduce((sum, art) => sum + (art.views || 0), 0);
+  const categoriesCount = new Set(articles.map(a => a.category)).size;
+  const topArticle = [...articles].sort((a, b) => (b.views || 0) - (a.views || 0))[0];
+
   useEffect(() => {
     setLocalSettings(settings);
   }, [settings]);
@@ -31,13 +36,9 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
   const handleForceReset = () => {
     if (confirm('تنبيه هام جداً: سيتم الآن حذف كل المقالات القديمة والمحذوفة نهائياً من متصفحك وتحميل المقالات الستة الاحترافية الجديدة. هل أنت متأكد؟')) {
-      // مسح شامل لكل البيانات المخزنة
       localStorage.clear();
-      // وضع البيانات الجديدة والنسخة الجديدة
       localStorage.setItem('app_data_version', 'v3.0');
       localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
-      
-      // أهم خطوة: إعادة تحميل الصفحة بالكامل لضمان تحديث الواجهة واختفاء القديم
       window.location.reload();
     }
   };
@@ -62,17 +63,38 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
   return (
     <div className="max-w-6xl mx-auto pb-24 animate-fadeIn text-right" dir="rtl">
-      {/* Status Bar / Eye Tracking */}
-      <div className="bg-slate-900 text-white p-6 rounded-[30px] mb-8 flex items-center justify-between shadow-2xl border border-emerald-500/30">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center text-2xl animate-pulse">👁️</div>
+      {/* 👁️ رادار الأرقام - مراقب المحتوى الذكي */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-slate-900 text-white p-6 rounded-[35px] shadow-2xl border border-emerald-500/30 flex items-center gap-4 group">
+          <div className="w-14 h-14 bg-emerald-500/20 rounded-2xl flex items-center justify-center text-3xl animate-pulse group-hover:rotate-12 transition-transform">👁️</div>
           <div>
-            <p className="text-xs font-black text-emerald-400 uppercase tracking-widest">حالة نظام المحتوى</p>
-            <p className="text-lg font-bold">النسخة النشطة: v3.0 | عدد المقالات: {articles.length}</p>
+            <p className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">عدد المقالات</p>
+            <p className="text-2xl font-black">{articles.length}</p>
           </div>
         </div>
-        <div className="hidden md:block">
-           <span className="bg-emerald-600 px-4 py-2 rounded-xl text-xs font-black">مراقب البيانات نشط</span>
+        
+        <div className="bg-slate-900 text-white p-6 rounded-[35px] shadow-2xl border border-blue-500/30 flex items-center gap-4">
+          <div className="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center text-3xl">📊</div>
+          <div>
+            <p className="text-[10px] font-black text-blue-400 uppercase tracking-widest">إجمالي المشاهدات</p>
+            <p className="text-2xl font-black">{totalViews.toLocaleString()}</p>
+          </div>
+        </div>
+
+        <div className="bg-slate-900 text-white p-6 rounded-[35px] shadow-2xl border border-purple-500/30 flex items-center gap-4">
+          <div className="w-14 h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center text-3xl">🗂️</div>
+          <div>
+            <p className="text-[10px] font-black text-purple-400 uppercase tracking-widest">الأقسام النشطة</p>
+            <p className="text-2xl font-black">{categoriesCount}</p>
+          </div>
+        </div>
+
+        <div className="bg-slate-900 text-white p-6 rounded-[35px] shadow-2xl border border-orange-500/30 flex items-center gap-4">
+          <div className="w-14 h-14 bg-orange-500/20 rounded-2xl flex items-center justify-center text-3xl">🏆</div>
+          <div className="min-w-0">
+            <p className="text-[10px] font-black text-orange-400 uppercase tracking-widest">الأكثر قراءة</p>
+            <p className="text-sm font-black truncate">{topArticle?.name || '---'}</p>
+          </div>
         </div>
       </div>
 
