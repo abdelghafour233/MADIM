@@ -1,11 +1,11 @@
 
 export enum Category {
   TECH = 'تقنية وتكنولوجيا',
-  BUSINESS = 'ريادة أعمال',
+  MOROCCO = 'أخبار المغرب',
   LIFESTYLE = 'أسلوب حياة',
   PRODUCTIVITY = 'تطوير الذات',
-  NEWS = 'أخبار حصرية',
-  REVIEWS = 'مراجعات المنتجات'
+  NEWS = 'أخبار عاجلة',
+  REVIEWS = 'مراجعات تقنية'
 }
 
 export interface Comment {
@@ -18,7 +18,6 @@ export interface Comment {
 export interface Article {
   id: string;
   name: string;
-  price: number;
   content: string;
   image: string;
   category: Category;
@@ -26,6 +25,8 @@ export interface Article {
   likes?: number;
   views?: number;
   comments?: Comment[];
+  author?: string;
+  date?: string;
 }
 
 export interface Settings {
