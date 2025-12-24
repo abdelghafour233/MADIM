@@ -7,6 +7,7 @@ import Home from './components/Home.tsx';
 import ArticleDetail from './components/ArticleDetail.tsx';
 import Dashboard from './components/Dashboard.tsx';
 import WhatsAppButton from './components/WhatsAppButton.tsx';
+import LegalPage from './components/LegalPage.tsx';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -27,7 +28,7 @@ const App: React.FC = () => {
     domain: 'abdouweb.online',
     dashboardPassword: '1234',
     siteName: 'عبدو ويب | Abdou Web',
-    siteDescription: 'منصتك الأولى لمتابعة آخر مراجعات التقنية وأخبار المغرب والعالم.'
+    siteDescription: 'منصتك الأولى لمتابعة آخر مراجعات التقنية وأخبار المغرب والعالم بأسلوب احترافى وموثوق.'
   };
 
   const [settings, setSettings] = useState<Settings>(defaultSettings);
@@ -92,6 +93,9 @@ const App: React.FC = () => {
             darkMode={darkMode}
           />
         )}
+        {(currentView === 'about' || currentView === 'privacy' || currentView === 'contact') && (
+          <LegalPage type={currentView} darkMode={darkMode} siteName={settings.siteName} />
+        )}
         {currentView === 'dashboard' && (
           !isDashboardUnlocked ? (
             <div className="max-w-md mx-auto mt-20 p-12 bg-white rounded-[50px] shadow-2xl text-center border border-slate-100">
@@ -109,28 +113,31 @@ const App: React.FC = () => {
       
       <WhatsAppButton />
       
-      <footer className={`${darkMode ? 'bg-black' : 'bg-slate-900'} text-white py-16 mt-20`}>
-        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-right">
+      <footer className={`${darkMode ? 'bg-black' : 'bg-slate-900'} text-white py-16 mt-20 border-t ${darkMode ? 'border-slate-800' : 'border-slate-100'}`}>
+        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 text-right">
           <div>
-            <h3 className="text-2xl font-black mb-6">{settings.siteName}</h3>
+            <h3 className="text-2xl font-black mb-6 gradient-text">{settings.siteName}</h3>
             <p className="text-slate-400 font-medium leading-relaxed">{settings.siteDescription}</p>
           </div>
           <div>
-            <h4 className="text-lg font-black mb-6 text-emerald-500">روابط سريعة</h4>
+            <h4 className="text-lg font-black mb-6 text-emerald-500">روابط هامة</h4>
+            <ul className="space-y-4 text-slate-300 font-bold">
+              <li className="cursor-pointer hover:text-emerald-400" onClick={() => navigateTo('about')}>من نحن</li>
+              <li className="cursor-pointer hover:text-emerald-400" onClick={() => navigateTo('privacy')}>سياسة الخصوصية</li>
+              <li className="cursor-pointer hover:text-emerald-400" onClick={() => navigateTo('contact')}>اتصل بنا</li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-lg font-black mb-6 text-emerald-500">تصنيفات شائعة</h4>
             <ul className="space-y-4 text-slate-300 font-bold">
               {Object.values(Category).slice(0, 4).map(c => (
                 <li key={c} className="cursor-pointer hover:text-emerald-400" onClick={() => navigateTo('category', undefined, c)}>{c}</li>
               ))}
             </ul>
           </div>
-          <div className="flex flex-col items-center md:items-start">
-            <h4 className="text-lg font-black mb-6 text-emerald-500">تواصل معنا</h4>
-            <p className="text-slate-400 font-bold mb-4">للتعاون أو الاستفسارات التقنية</p>
-            <a href="https://wa.me/212649075664" className="bg-emerald-600 px-6 py-3 rounded-xl font-black hover:bg-emerald-500 transition-all">مراسلة الفريق عبر واتساب</a>
-          </div>
         </div>
         <div className="container mx-auto px-6 mt-16 pt-8 border-t border-slate-800 text-center">
-           <p className="text-slate-500 font-bold">© {new Date().getFullYear()} - جميع الحقوق محفوظة لمدونة عبدو ويب التقنية.</p>
+           <p className="text-slate-500 font-bold">© {new Date().getFullYear()} - جميع الحقوق محفوظة لمدونة {settings.siteName}.</p>
         </div>
       </footer>
     </div>

@@ -41,4 +41,4 @@ export interface Settings {
   siteDescription: string;
 }
 
-export type View = 'home' | 'article' | 'category' | 'dashboard';
+export type View = 'home' | 'article' | 'category' | 'dashboard' | 'about' | 'privacy' | 'contact';

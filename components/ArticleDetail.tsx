@@ -17,6 +17,35 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
   const [scrollProgress, setScrollProgress] = useState(0);
   const publisherId = adsenseCode?.match(/ca-pub-\d+/)?.[0] || 'ca-pub-5578524966832192';
 
+  // JSON-LD Structured Data for Google
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    const jsonLd = {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": article.name,
+      "image": article.image,
+      "author": {
+        "@type": "Organization",
+        "name": siteName
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": siteName,
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://abdouweb.online/logo.png"
+        }
+      },
+      "datePublished": article.date || new Date().toISOString(),
+      "description": article.content.substring(0, 160)
+    };
+    script.innerHTML = JSON.stringify(jsonLd);
+    document.head.appendChild(script);
+    return () => { document.head.removeChild(script); };
+  }, [article, siteName]);
+
   useEffect(() => {
     const handleScroll = () => {
       const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -28,6 +57,33 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
   }, []);
 
   const paragraphs = article.content.split('\n').filter(p => p.trim() !== '');
+  const shareUrl = window.location.href;
+  const shareTitle = article.name;
+
+  const handleShare = (platform: string) => {
+    let url = '';
+    switch (platform) {
+      case 'facebook':
+        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+        break;
+      case 'twitter':
+        url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${encodeURIComponent(shareUrl)}`;
+        break;
+      case 'whatsapp':
+        url = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareTitle + ' ' + shareUrl)}`;
+        break;
+      case 'pinterest':
+        url = `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&media=${encodeURIComponent(article.image)}&description=${encodeURIComponent(shareTitle)}`;
+        break;
+      case 'native':
+        if (navigator.share) {
+          navigator.share({ title: shareTitle, url: shareUrl }).catch(console.error);
+          return;
+        }
+        break;
+    }
+    if (url) window.open(url, '_blank', 'width=600,height=400');
+  };
 
   return (
     <article className="max-w-4xl mx-auto pb-24 animate-fadeIn relative text-right" dir="rtl">
@@ -57,7 +113,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
         </header>
 
         <div className="px-6 md:px-16 py-12 md:py-20">
-          {/* Middle Ad Placeholder */}
           <div className="mb-12 p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
              <span className="block text-center text-[10px] font-black text-slate-400 mb-4 tracking-widest">إعلان مخصص</span>
              <AdUnit publisherId={publisherId} />
@@ -67,7 +122,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
             {paragraphs.map((p, i) => (
               <React.Fragment key={i}>
                 <p className="mb-8">{p}</p>
-                {/* Insert ad every 4 paragraphs */}
                 {i === 2 && (
                   <div className="my-12 py-8 border-y border-slate-100 dark:border-slate-800">
                     <AdUnit publisherId={publisherId} />
@@ -77,7 +131,18 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
             ))}
           </div>
 
-          <footer className="mt-20 pt-12 border-t border-slate-100 dark:border-slate-800">
+          <div className="mt-16 p-8 bg-slate-50 dark:bg-slate-800/50 rounded-[35px] border border-slate-100 dark:border-slate-800">
+            <h3 className={`text-xl font-black mb-8 text-center ${darkMode ? 'text-white' : 'text-slate-900'}`}>هل أعجبك المقال؟ شاركه مع أصدقائك 🚀</h3>
+            <div className="flex flex-wrap justify-center gap-4">
+              <button onClick={() => handleShare('facebook')} className="flex items-center gap-3 px-6 py-4 bg-[#1877F2] text-white rounded-2xl font-black transition-all hover:scale-105 shadow-lg shadow-blue-500/20"><span>فيسبوك</span></button>
+              <button onClick={() => handleShare('twitter')} className="flex items-center gap-3 px-6 py-4 bg-[#000000] text-white rounded-2xl font-black transition-all hover:scale-105 shadow-lg shadow-black/20"><span>تويتر</span></button>
+              <button onClick={() => handleShare('whatsapp')} className="flex items-center gap-3 px-6 py-4 bg-[#25D366] text-white rounded-2xl font-black transition-all hover:scale-105 shadow-lg shadow-green-500/20"><span>واتساب</span></button>
+              <button onClick={() => handleShare('pinterest')} className="flex items-center gap-3 px-6 py-4 bg-[#E60023] text-white rounded-2xl font-black transition-all hover:scale-105 shadow-lg shadow-red-500/20"><span>بنتريست</span></button>
+              <button onClick={() => handleShare('native')} className="flex items-center gap-3 px-6 py-4 bg-emerald-600 text-white rounded-2xl font-black transition-all hover:scale-105 shadow-lg shadow-emerald-500/20"><span>مشاركة عبر...</span></button>
+            </div>
+          </div>
+
+          <footer className="mt-16 pt-12 border-t border-slate-100 dark:border-slate-800">
              <div className="flex flex-col md:flex-row items-center justify-between gap-8">
                 <div className="flex items-center gap-4">
                    <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center text-2xl">✍️</div>
@@ -85,9 +150,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
                       <h4 className={`font-black text-xl ${darkMode ? 'text-white' : 'text-slate-900'}`}>فريق التحرير</h4>
                       <p className="text-slate-500 font-bold">متخصصون في مراجعة أحدث التقنيات المغربية.</p>
                    </div>
-                </div>
-                <div className="flex gap-4">
-                   <button className="bg-slate-100 dark:bg-slate-800 p-4 rounded-2xl font-black hover:bg-emerald-500 hover:text-white transition-all">مشاركة المقال 🔗</button>
                 </div>
              </div>
           </footer>
@@ -98,11 +160,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
         <h3 className={`text-3xl font-black mb-10 ${darkMode ? 'text-white' : 'text-slate-900'}`}>مقالات قد تهمك أيضاً ✨</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {relatedArticles.map(art => (
-            <div 
-              key={art.id} 
-              onClick={() => onArticleClick(art)}
-              className={`cursor-pointer group rounded-3xl overflow-hidden border transition-all ${darkMode ? 'bg-slate-900 border-slate-800 hover:border-emerald-500' : 'bg-white border-slate-100 hover:shadow-xl'}`}
-            >
+            <div key={art.id} onClick={() => onArticleClick(art)} className={`cursor-pointer group rounded-3xl overflow-hidden border transition-all ${darkMode ? 'bg-slate-900 border-slate-800 hover:border-emerald-500' : 'bg-white border-slate-100 hover:shadow-xl'}`}>
                <img src={art.image} className="w-full h-48 object-cover group-hover:scale-105 transition-transform" alt="" />
                <div className="p-6">
                   <span className="text-emerald-500 text-xs font-black mb-2 block">{art.category}</span>
