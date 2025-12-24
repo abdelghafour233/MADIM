@@ -44,13 +44,23 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const savedArticles = localStorage.getItem('articles');
+    const savedArticlesStr = localStorage.getItem('articles');
     const savedSettings = localStorage.getItem('settings');
-    if (savedArticles) setArticles(JSON.parse(savedArticles));
-    else {
+    
+    // Logic to force update if the count is too low (meaning user hasn't received the new updates)
+    if (savedArticlesStr) {
+      const savedArticles = JSON.parse(savedArticlesStr);
+      if (savedArticles.length <= 2) {
+        setArticles(INITIAL_ARTICLES);
+        localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
+      } else {
+        setArticles(savedArticles);
+      }
+    } else {
       setArticles(INITIAL_ARTICLES);
       localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
     }
+    
     if (savedSettings) setSettings(prev => ({ ...prev, ...JSON.parse(savedSettings) }));
   }, []);
 

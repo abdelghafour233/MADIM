@@ -1,6 +1,7 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Article, Settings, Category } from '../types.ts';
+import { INITIAL_ARTICLES } from '../constants.tsx';
 
 interface DashboardProps {
   articles: Article[];
@@ -26,6 +27,13 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
     onUpdateSettings(localSettings);
     setSaveStatus('success');
     setTimeout(() => setSaveStatus('idle'), 3000);
+  };
+
+  const handleResetArticles = () => {
+    if (confirm('هل تريد حقاً استعادة المقالات الافتراضية؟ سيؤدي هذا إلى ظهور المقالات الستة الجديدة وحذف أي تعديلات يدوية قمت بها.')) {
+      onUpdateArticles(INITIAL_ARTICLES);
+      alert('تمت استعادة المقالات بنجاح! ستظهر الآن في الصفحة الرئيسية.');
+    }
   };
 
   const handleArticleSubmit = (e: React.FormEvent) => {
@@ -57,6 +65,14 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
       {tab === 'articles' && (
         <div className="space-y-12">
+          <div className="bg-emerald-50 border border-emerald-100 p-8 rounded-[40px] flex items-center justify-between flex-wrap gap-4">
+            <div>
+              <h3 className="text-emerald-900 font-black text-xl mb-2">تحديث محتوى المدونة</h3>
+              <p className="text-emerald-700 font-bold">إذا لم تظهر لك المقالات الستة الجديدة، اضغط على هذا الزر:</p>
+            </div>
+            <button onClick={handleResetArticles} className="bg-emerald-600 text-white px-8 py-4 rounded-2xl font-black shadow-lg hover:bg-emerald-700 transition-all">استعادة المقالات الستة 🔄</button>
+          </div>
+
           <div className="bg-white p-12 rounded-[50px] shadow-2xl border border-slate-50">
             <h2 className="text-3xl font-black text-slate-800 mb-8">{editingId ? 'تعديل المقال' : 'نشر مقال جديد'}</h2>
             <form onSubmit={handleArticleSubmit} className="space-y-6">

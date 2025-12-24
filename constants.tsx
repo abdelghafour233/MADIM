@@ -91,7 +91,7 @@ export const INITIAL_ARTICLES: Article[] = [
 5. Canva: للتصميم السريع والاحترافي للعروض والمحتوى.
 
 الاستخدام الصحيح لهذه الأدوات يمكن أن يوفر لك ساعات من الوقت الضائع يومياً، مما يسمح لك بالتركيز على تطوير مهاراتك والنجاح في مسارك الدراسي أو المهني.`,
-    image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&q=80&w=1200',
     category: Category.PRODUCTIVITY,
     rating: 4.6,
     date: '14 فبراير 2025',
