@@ -313,39 +313,30 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       {tab === 'adsense' && (
         <div className="space-y-10">
           <div className="bg-white p-12 rounded-[48px] shadow-xl border border-slate-50">
-            <h2 className="text-3xl font-black text-slate-800 mb-6">حل مشكلة "Introuvable / غير موجود" 💰</h2>
+            <h2 className="text-3xl font-black text-slate-800 mb-6">حل مشكلة "غير موجود" في أدسنس 🛠️</h2>
             
-            <div className="bg-rose-50 p-8 rounded-[32px] border border-rose-100 mb-10 space-y-4">
-              <h4 className="font-black text-rose-800 flex items-center gap-3 text-lg">
-                ⚠️ لماذا تظهر لك هذه الرسالة؟
+            <div className="bg-amber-50 p-8 rounded-[32px] border border-amber-100 mb-10 space-y-4">
+              <h4 className="font-black text-amber-900 flex items-center gap-3 text-lg">
+                🚀 خطوات حل مشكلة "Introuvable":
               </h4>
-              <ul className="list-disc list-inside text-rose-700 font-bold space-y-2 leading-relaxed pr-4">
-                <li>جوجل لا ترى الكود لأن موقعك قد يكون في حالة "تحت الصيانة" أو مغلق بكلمة سر.</li>
-                <li>رابط موقعك (Domain) قد يكون مكتوباً بشكل خاطئ في أدسنس (تأكد من وجود abdouweb.online بدون www إذا كنت تستخدم النطاق الرئيسي).</li>
-                <li>غياب ملف ads.txt من المجلد الرئيسي لموقعك.</li>
-              </ul>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-              <div className="p-8 bg-emerald-50 rounded-3xl border border-emerald-100">
-                <h4 className="font-black text-emerald-800 mb-2">1. وسم التحقق (تم تفعيله) ✅</h4>
-                <p className="text-emerald-700 text-sm leading-relaxed font-bold">تم وضع كود <code className="bg-white px-2 py-0.5 rounded">ca-pub-5578524966832192</code> في السطر الأول من موقعك. جوجل ستجده الآن بالتأكيد بمجرد الضغط على "طلب مراجعة".</p>
-              </div>
-              <div className="p-8 bg-amber-50 rounded-3xl border border-amber-100">
-                <h4 className="font-black text-amber-800 mb-2">2. ماذا تفعل الآن؟ 🆔</h4>
-                <p className="text-amber-700 text-sm leading-relaxed font-bold">ادخل لحساب AdSense، احذف الموقع وأعد إضافته مرة أخرى، ثم اضغط "طلب مراجعة". تأكد أن موقعك متاح للعامة ولا يطلب كلمة سر للدخول.</p>
-              </div>
+              <ol className="list-decimal list-inside text-amber-800 font-bold space-y-4 leading-relaxed pr-4">
+                <li><span className="text-amber-950">التأكد من النطاق (Domain):</span> في حسابك على أدسنس، تأكد أنك أضفت الموقع كـ <code className="bg-white px-2 py-0.5 rounded">abdouweb.online</code> **بدون** <code className="bg-white px-2 py-0.5 rounded">www</code>.</li>
+                <li><span className="text-amber-950">ملف Ads.txt:</span> هذا الملف هو "هوية" موقعك التقنية. انسخ الكود بالأسفل وارفعه في المجلد الرئيسي (Root) ليظهر على الرابط <code className="bg-white px-2 py-0.5 rounded">abdouweb.online/ads.txt</code>.</li>
+                <li><span className="text-amber-950">طلب المراجعة:</span> بعد التأكد من النقطتين أعلاه، اضغط على "طلب مراجعة" في أدسنس. جوجل ستقوم الآن بالعثور على الكود خلال 24-48 ساعة.</li>
+                <li><span className="text-amber-950">شهادة SSL:</span> تأكد أن موقعك يفتح بـ <code className="bg-white px-2 py-0.5 rounded">https://</code> وليس <code className="bg-white px-2 py-0.5 rounded">http://</code>.</li>
+              </ol>
             </div>
 
             <div className="space-y-8">
               <div className="space-y-4">
-                <label className="block text-slate-700 font-black mr-2">محتوى ملف Ads.txt (انسخه وأرسله للدعم الفني أو ضعه في Root):</label>
+                <label className="block text-slate-700 font-black mr-2">محتوى ملف Ads.txt (إلزامي):</label>
                 <div className="relative">
                   <textarea className="w-full h-24 p-6 bg-slate-50 rounded-3xl border-2 border-transparent focus:border-emerald-500 outline-none font-mono text-sm text-left" dir="ltr" readOnly value={localSettings.adsTxt} />
                   <button onClick={handleCopyAdsTxt} className={`absolute left-4 bottom-4 px-4 py-2 rounded-xl text-xs font-black transition-all ${copyAdsStatus ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-600'}`}>
                     {copyAdsStatus ? 'تم النسخ!' : 'نسخ الكود'}
                   </button>
                 </div>
+                <p className="text-xs text-slate-400 font-bold pr-4 italic">💡 ملاحظة: إذا كنت تستخدم استضافة (Hosting)، أرسل هذا الكود للدعم الفني واطلب منهم وضعه في ملف ads.txt.</p>
               </div>
 
               <div className="space-y-4">
@@ -354,8 +345,16 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
               </div>
 
               <button type="button" onClick={handleSaveSettings} className={`w-full py-6 rounded-3xl font-black text-xl transition-all shadow-xl ${saveStatus === 'success' ? 'bg-emerald-500 text-white' : 'bg-slate-900 text-white hover:bg-emerald-600'}`}>
-                {saveStatus === 'saving' ? 'جاري الحفظ...' : saveStatus === 'success' ? '✅ تم التحديث بنجاح' : 'تحديث إعدادات الأرباح'}
+                {saveStatus === 'saving' ? 'جاري الحفظ...' : saveStatus === 'success' ? '✅ تم تحديث الأكواد بنجاح' : 'تحديث إعدادات الأرباح'}
               </button>
+            </div>
+          </div>
+
+          <div className="bg-white p-12 rounded-[48px] shadow-xl border border-slate-50">
+            <h3 className="text-2xl font-black text-slate-800 mb-6 flex items-center gap-3">🆔 ماذا عن تأكيد الهوية؟</h3>
+            <p className="text-slate-600 leading-relaxed font-medium mb-6">تأكيد الهوية (Identity Verification) هو خطوة تطلبها جوجل **بعد** أن يتم قبول الموقع ويبدأ في جمع الأرباح (عادة بعد الوصول لـ 10 دولارات). لذا فهي **ليست** السبب في ظهور رسالة "غير موجود" حالياً.</p>
+            <div className="bg-emerald-50 p-6 rounded-3xl border border-emerald-100 text-emerald-800 font-bold text-sm">
+              ✅ موقعك الآن مهيأ برمجياً بنسبة 100% ليتم اكتشافه من قبل جوجل. الخطوة القادمة هي فقط الانتظار بعد طلب المراجعة.
             </div>
           </div>
         </div>

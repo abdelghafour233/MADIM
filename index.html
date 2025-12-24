@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Google AdSense - CRITICAL: PLACE THIS AT THE VERY TOP OF HEAD -->
+    <!-- 1. AdSense Verification (The very first thing) -->
     <meta name="google-adsense-account" content="ca-pub-5578524966832192" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5578524966832192" crossorigin="anonymous"></script>
 
@@ -32,8 +32,8 @@
     
     <link rel="canonical" href="https://abdouweb.online/" id="canonical-link" />
 
-    <title>Abdou Web | عبدو ويب - مراجعات وأخبار تقنية 🇲🇦</title>
-    <meta name="description" content="منصة عبدو ويب الرسمية لمراجعة أحدث المنتجات والتقنيات في السوق المغربي." />
+    <title>عبدو ويب | Abdou Web - مراجعات تقنية وأخبار المغرب 🇲🇦</title>
+    <meta name="description" content="منصة عبدو ويب لمراجعة المنتجات وأحدث الأخبار التقنية في المغرب. دليلك الموثوق للتسوق والمعرفة." />
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;500;700;800;900&display=swap" rel="stylesheet">
@@ -41,8 +41,6 @@
       body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; }
       .glass { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
       .gradient-text { background: linear-gradient(135deg, #059669 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-      @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-      .animate-slideUp { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
       @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       .animate-fadeIn { animation: fadeIn 0.4s ease-out forwards; }
       .no-scrollbar::-webkit-scrollbar { display: none; }
@@ -60,7 +58,14 @@
     </script>
   </head>
   <body class="bg-slate-50 text-slate-900 antialiased">
-    <div id="root"></div>
+    <!-- Static content for crawlers to avoid 'empty page' error -->
+    <div id="root">
+      <div style="padding: 20px; text-align: center; font-family: sans-serif;">
+        <h1>عبدو ويب - Abdou Web</h1>
+        <p>جاري تحميل المحتوى... نعتذر عن التأخير.</p>
+        <p>هذا الموقع متخصص في مراجعات المنتجات وأخبار التقنية في المغرب.</p>
+      </div>
+    </div>
     <script type="module" src="./index.tsx"></script>
   </body>
 </html>
