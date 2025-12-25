@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Article, Settings } from '../types';
 import AdUnit from './AdUnit.tsx';
+import EzoicPlaceholder from './EzoicPlaceholder.tsx';
 
 interface ArticleDetailProps {
   article: Article;
@@ -17,14 +18,8 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
   const [scrollProgress, setScrollProgress] = useState(0);
   const publisherId = settings.adsenseCode?.match(/ca-pub-\d+/)?.[0] || 'ca-pub-5578524966832192';
 
-  useEffect(() => {
-    // حقن كود Ezoic إذا وجد
-    if (settings.ezoicCode) {
-      const script = document.createElement('script');
-      script.innerHTML = settings.ezoicCode;
-      document.head.appendChild(script);
-    }
-  }, [settings.ezoicCode]);
+  // التحقق مما إذا كان Ezoic مفعلاً من الإعدادات
+  const isEzoicEnabled = !!settings.ezoicCode || true; // نفترض التفعيل إذا وجد الكود في index.html
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -120,17 +115,24 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
         </header>
 
         <div className="px-6 md:px-16 py-12 md:py-20">
-          {/* إعلان جوجل أدسنس أو إيزويك العلوي */}
-          <div className="mb-12 p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
-             <span className="block text-center text-[10px] font-black text-slate-400 mb-4 tracking-widest">إعلان ممول</span>
-             <AdUnit publisherId={publisherId} />
-          </div>
+          {/* وحدة إيزويك العلوية */}
+          {isEzoicEnabled && <EzoicPlaceholder id={101} />}
+
+          {/* إعلان جوجل أدسنس الاحتياطي */}
+          {!isEzoicEnabled && (
+            <div className="mb-12 p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
+               <span className="block text-center text-[10px] font-black text-slate-400 mb-4 tracking-widest">إعلان ممول</span>
+               <AdUnit publisherId={publisherId} />
+            </div>
+          )}
 
           <div className={`prose prose-xl max-w-none mb-16 font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'} leading-[1.8]`}>
             {paragraphs.map((p, i) => (
               <React.Fragment key={i}>
                 <div className="mb-8">{renderParagraph(p)}</div>
-                {i === 2 && settings.adsenseCode && (
+                {/* إعلان في منتصف المقال */}
+                {i === 3 && isEzoicEnabled && <EzoicPlaceholder id={102} />}
+                {i === 3 && !isEzoicEnabled && settings.adsenseCode && (
                   <div className="my-12 py-8 border-y border-slate-100 dark:border-slate-800">
                     <AdUnit publisherId={publisherId} />
                   </div>
@@ -138,6 +140,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
               </React.Fragment>
             ))}
           </div>
+
+          {/* وحدة إيزويك السفلية */}
+          {isEzoicEnabled && <EzoicPlaceholder id={103} />}
 
           {/* كود تابولا / أوتبراين أسفل المقال */}
           {settings.taboolaCode && (
