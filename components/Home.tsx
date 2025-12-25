@@ -6,90 +6,68 @@ interface HomeProps {
   articles: Article[];
   onArticleClick: (a: Article) => void;
   onCategoryClick: (c: Category) => void;
-  filterLabel?: string;
   darkMode: boolean;
+  filterLabel?: string;
 }
 
-const Home: React.FC<HomeProps> = ({ articles, onArticleClick, onCategoryClick, filterLabel, darkMode }) => {
-  const safeArticles = Array.isArray(articles) ? articles : [];
-  const featuredArticle = !filterLabel ? safeArticles[0] : null;
-  const gridArticles = !filterLabel ? safeArticles.slice(1) : safeArticles;
-
+const Home: React.FC<HomeProps> = ({ articles, onArticleClick, onCategoryClick, darkMode, filterLabel }) => {
   return (
-    <div className="animate-fadeIn">
-      {!filterLabel && featuredArticle && (
-        <section 
-          className="relative mb-24 group cursor-pointer overflow-hidden rounded-[50px] md:rounded-[70px] shadow-2xl h-[450px] md:h-[650px]"
-          onClick={() => onArticleClick(featuredArticle)}
-        >
-          <img 
-            src={featuredArticle.image} 
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
-            alt={featuredArticle.name} 
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/20 to-transparent"></div>
-          <div className="absolute bottom-12 right-10 left-10 md:bottom-24 md:right-20 md:left-20">
-            <span className="bg-emerald-600 text-white px-8 py-3 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] mb-8 inline-block shadow-lg">مقال اليوم المميز ✨</span>
-            <h2 className="text-4xl md:text-7xl font-black text-white leading-tight mb-8 max-w-5xl group-hover:text-emerald-400 transition-colors drop-shadow-2xl">{featuredArticle.name}</h2>
-            <div className="flex items-center gap-8 text-white/80 font-bold text-sm">
-              <span className="flex items-center gap-2">📅 {featuredArticle.date || 'فبراير 2025'}</span>
-              <span className="flex items-center gap-2">👁️ {featuredArticle.views?.toLocaleString()} مشاهدة</span>
-            </div>
-          </div>
-        </section>
-      )}
-
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-20 border-b-4 border-emerald-500/10 pb-10">
-        <div>
-           <span className="text-emerald-600 font-black text-sm uppercase tracking-widest mb-4 block">تصفح حسب الاهتمام</span>
-           <h2 className={`text-5xl font-black ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-              {filterLabel ? `قسم: ${filterLabel}` : 'آخر التحديثات 🔥'} 
-           </h2>
+    <div className="animate-slideUp">
+      <div className="mb-16 py-10">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="h-1 w-12 bg-emerald-500 rounded-full"></div>
+          <span className="text-emerald-500 font-black tracking-widest uppercase text-xs">Abdou Web Blog</span>
         </div>
-        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
-          {Object.values(Category).map(cat => (
-            <button 
-              key={cat} 
-              onClick={() => onCategoryClick(cat)} 
-              className={`px-10 py-4 rounded-2xl text-sm font-black whitespace-nowrap transition-all duration-300 border-2 ${filterLabel === cat ? 'bg-emerald-600 text-white border-emerald-600 shadow-xl' : (darkMode ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-emerald-500' : 'bg-white border-slate-100 text-slate-500 hover:border-emerald-500 shadow-sm')}`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+        <h2 className={`text-4xl md:text-6xl font-black mb-6 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+          {filterLabel ? `قسم: ${filterLabel}` : 'اكتشف جديد التقنية 🚀'}
+        </h2>
+        <p className="text-slate-500 font-bold max-w-2xl leading-relaxed">نشارككم آخر الأخبار والمقالات التحليلية حول التكنولوجيا والإنتاجية في المغرب والعالم.</p>
       </div>
 
-      {gridArticles.length === 0 ? (
-        <div className="text-center py-40 bg-white dark:bg-slate-900 rounded-[60px] border-4 border-dashed border-slate-100 dark:border-slate-800">
-          <div className="text-9xl mb-8">🔭</div>
-          <p className="text-slate-400 font-black text-4xl">لا يوجد محتوى في هذا القسم حالياً.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-14">
-          {gridArticles.map(article => (
-            <div 
-              key={article.id}
-              onClick={() => onArticleClick(article)}
-              className={`group rounded-[50px] overflow-hidden cursor-pointer transition-all duration-500 flex flex-col ${darkMode ? 'bg-slate-900 hover:bg-slate-800/50' : 'bg-white shadow-xl hover:shadow-2xl'}`}
-            >
-              <div className="h-80 overflow-hidden relative">
-                <img src={article.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={article.name} />
-                <div className="absolute top-8 right-8">
-                   <span className="bg-emerald-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-wider shadow-xl">{article.category}</span>
-                </div>
-              </div>
-              <div className="p-12 flex-grow flex flex-col">
-                <h3 className={`font-black text-2xl mb-10 leading-snug line-clamp-2 transition-colors flex-grow ${darkMode ? 'text-white group-hover:text-emerald-400' : 'text-slate-800 group-hover:text-emerald-600'}`}>{article.name}</h3>
-                <div className="flex items-center justify-between pt-8 border-t border-slate-100 dark:border-slate-800">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center text-xl">👤</div>
-                    <span className="text-sm font-black text-slate-500">إدارة عبدو</span>
-                  </div>
-                  <span className="text-xs font-bold text-slate-400">👁️ {(article.views || 0).toLocaleString()}</span>
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        {articles.map(article => (
+          <article 
+            key={article.id}
+            onClick={() => onArticleClick(article)}
+            className={`group rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 flex flex-col h-full ${darkMode ? 'bg-slate-900 border border-slate-800 hover:border-emerald-500/50' : 'bg-white shadow-xl hover:shadow-2xl'}`}
+          >
+            <div className="h-64 overflow-hidden relative">
+              <img src={article.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={article.name} />
+              <div className="absolute top-6 right-6">
+                 <span className="bg-emerald-600/90 backdrop-blur-md text-white px-5 py-2 rounded-xl text-[10px] font-black shadow-xl">
+                   {article.category}
+                 </span>
               </div>
             </div>
-          ))}
+            <div className="p-8 flex flex-col flex-grow">
+              <div className="flex items-center gap-3 mb-4 text-xs font-bold text-slate-400">
+                <span>👤 {article.author || 'المدير'}</span>
+                <span>•</span>
+                <span>📅 {article.date}</span>
+              </div>
+              <h3 className={`font-black text-xl mb-6 leading-snug line-clamp-2 group-hover:text-emerald-500 transition-colors ${darkMode ? 'text-white' : 'text-slate-900'}`}>
+                {article.name}
+              </h3>
+              <p className="text-slate-500 text-sm line-clamp-3 mb-8 leading-relaxed font-medium">
+                {article.content.substring(0, 150)}...
+              </p>
+              <div className="mt-auto flex items-center justify-between pt-6 border-t border-slate-100 dark:border-slate-800">
+                 <div className="flex items-center gap-2">
+                    <span className="text-emerald-500">👁️</span>
+                    <span className="text-xs font-black text-slate-400">{(article.views || 0).toLocaleString()} مشاهدة</span>
+                 </div>
+                 <span className="text-emerald-500 font-black text-xs hover:underline">اقرأ المزيد ←</span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      {articles.length === 0 && (
+        <div className="text-center py-20 bg-slate-100 dark:bg-slate-900/50 rounded-[40px] border-2 border-dashed border-slate-200 dark:border-slate-800">
+           <span className="text-6xl block mb-6">🔍</span>
+           <h3 className="text-2xl font-black text-slate-400">لم نجد أي مقالات تطابق بحثك..</h3>
+           <p className="mt-2 text-slate-500 font-bold">جرب كلمات مفتاحية أخرى</p>
         </div>
       )}
     </div>

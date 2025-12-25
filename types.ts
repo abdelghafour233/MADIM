@@ -15,7 +15,6 @@ export interface Comment {
   date: string;
 }
 
-/* Fix: Added price property to Article interface to support ProductDetail and Cart components */
 export interface Article {
   id: string;
   name: string;
@@ -28,10 +27,11 @@ export interface Article {
   comments?: Comment[];
   author?: string;
   date?: string;
+  // Added price property to support e-commerce components like ProductDetail and Cart
   price?: number;
 }
 
-/* Fix: Exporting CartItem interface which was missing and causing errors in components/Cart.tsx */
+// Added CartItem interface to resolve the missing export error in components/Cart.tsx
 export interface CartItem extends Article {
   quantity: number;
 }
@@ -41,13 +41,11 @@ export interface Settings {
   googleAnalytics: string;
   tiktokPixel: string;
   adsenseCode: string;
-  ezoicCode?: string;
   adsTxt: string;
   domain: string;
   dashboardPassword?: string;
   siteName: string;
   siteDescription: string;
-  affiliateTemuLink?: string;
 }
 
 export type View = 'home' | 'article' | 'category' | 'dashboard' | 'about' | 'privacy' | 'contact';
