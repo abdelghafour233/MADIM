@@ -5,7 +5,8 @@ export enum Category {
   LIFESTYLE = 'أسلوب حياة',
   PRODUCTIVITY = 'تطوير الذات',
   NEWS = 'أخبار عاجلة',
-  REVIEWS = 'مراجعات تقنية'
+  REVIEWS = 'مراجعات وتقييمات',
+  STORE = 'المتجر الإلكتروني'
 }
 
 export interface Comment {
@@ -27,6 +28,12 @@ export interface Article {
   comments?: Comment[];
   author?: string;
   date?: string;
+  price?: number; // السعر بالدرهم المغربي
+  isProduct?: boolean;
+}
+
+export interface CartItem extends Article {
+  quantity: number;
 }
 
 export interface Settings {
@@ -46,4 +53,4 @@ export interface Settings {
   affiliateAmazonLink?: string;
 }
 
-export type View = 'home' | 'article' | 'category' | 'dashboard' | 'about' | 'privacy' | 'contact';
+export type View = 'home' | 'article' | 'category' | 'dashboard' | 'about' | 'privacy' | 'contact' | 'store' | 'cart';

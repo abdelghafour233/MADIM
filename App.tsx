@@ -1,15 +1,18 @@
 
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { View, Article, Category, Settings } from './types.ts';
+import { View, Article, Category, Settings, CartItem } from './types.ts';
 import { INITIAL_ARTICLES } from './constants.tsx';
 import Navbar from './components/Navbar.tsx';
 import Home from './components/Home.tsx';
 import ArticleDetail from './components/ArticleDetail.tsx';
+import ProductDetail from './components/ProductDetail.tsx';
+import Cart from './components/Cart.tsx';
+import Checkout from './components/Checkout.tsx';
 import Dashboard from './components/Dashboard.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import WhatsAppButton from './components/WhatsAppButton.tsx';
 
-const DATA_VERSION = 'v3.6'; 
+const DATA_VERSION = 'v3.9'; 
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -17,6 +20,8 @@ const App: React.FC = () => {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [articles, setArticles] = useState<Article[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [showCart, setShowCart] = useState(false);
   const [isDashboardUnlocked, setIsDashboardUnlocked] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -47,11 +52,6 @@ const App: React.FC = () => {
       localStorage.setItem('articles', JSON.stringify(updated));
       return updated;
     });
-    
-    const today = new Date().toLocaleDateString('en-CA');
-    const logs = JSON.parse(localStorage.getItem('visit_logs') || '{}');
-    logs[today] = (logs[today] || 0) + 1;
-    localStorage.setItem('visit_logs', JSON.stringify(logs));
   }, []);
 
   const navigateTo = useCallback((view: View, article?: Article, category?: Category | null) => {
@@ -68,11 +68,18 @@ const App: React.FC = () => {
   useEffect(() => {
     const savedVersion = localStorage.getItem('app_data_version');
     
+    // إضافة بيانات الأسعار للمنتجات المختارة بشكل تلقائي للتوضيح
+    const enrichedArticles = INITIAL_ARTICLES.map(a => ({
+      ...a,
+      price: a.id.includes('jacket') ? 349 : (a.category === Category.REVIEWS ? 199 : undefined),
+      isProduct: a.id.includes('jacket') || a.category === Category.REVIEWS
+    }));
+
     if (savedVersion !== DATA_VERSION) {
-      localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
+      localStorage.setItem('articles', JSON.stringify(enrichedArticles));
       localStorage.setItem('app_data_version', DATA_VERSION);
       localStorage.setItem('settings', JSON.stringify(defaultSettings));
-      setArticles(INITIAL_ARTICLES);
+      setArticles(enrichedArticles);
       setSettings(defaultSettings);
     } else {
       const savedArticlesStr = localStorage.getItem('articles');
@@ -81,6 +88,26 @@ const App: React.FC = () => {
       if (savedSettingsStr) setSettings(JSON.parse(savedSettingsStr));
     }
   }, []);
+
+  const addToCart = (product: Article) => {
+    setCartItems(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+      }
+      return [...prev, { ...product, quantity: 1 }];
+    });
+    setShowCart(true);
+  };
+
+  const removeFromCart = (id: string) => {
+    setCartItems(prev => prev.filter(item => item.id !== id));
+  };
+  
+  const updateCartQuantity = (id: string, q: number) => {
+    if (q < 1) return removeFromCart(id);
+    setCartItems(prev => prev.map(item => item.id === id ? { ...item, quantity: q } : item));
+  };
 
   const filteredArticles = useMemo(() => {
     let result = articles;
@@ -101,6 +128,8 @@ const App: React.FC = () => {
         onSearch={setSearchQuery}
         darkMode={darkMode}
         toggleDarkMode={() => setDarkMode(!darkMode)}
+        cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+        onShowCart={() => setShowCart(true)}
       />
       
       <main className="flex-grow container mx-auto px-4 py-8">
@@ -111,15 +140,35 @@ const App: React.FC = () => {
           <Home articles={filteredArticles} onArticleClick={(a) => navigateTo('article', a)} onCategoryClick={(c) => navigateTo('category', undefined, c)} filterLabel={selectedCategory || ''} darkMode={darkMode} />
         )}
         {currentView === 'article' && selectedArticle && (
-          <ArticleDetail 
-            article={articles.find(a => a.id === selectedArticle.id) || selectedArticle} 
-            onBack={() => navigateTo('home')} 
-            siteName={settings.siteName}
-            settings={settings}
-            relatedArticles={articles.filter(a => a.id !== selectedArticle.id && a.category === selectedArticle.category).slice(0, 3)}
-            onArticleClick={(a) => navigateTo('article', a)}
-            darkMode={darkMode}
-          />
+          selectedArticle.isProduct ? (
+            <ProductDetail product={selectedArticle} onAddToCart={addToCart} onBack={() => navigateTo('home')} darkMode={darkMode} />
+          ) : (
+            <ArticleDetail 
+              article={articles.find(a => a.id === selectedArticle.id) || selectedArticle} 
+              onBack={() => navigateTo('home')} 
+              siteName={settings.siteName}
+              settings={settings}
+              relatedArticles={articles.filter(a => a.id !== selectedArticle.id && a.category === selectedArticle.category).slice(0, 3)}
+              onArticleClick={(a) => navigateTo('article', a)}
+              darkMode={darkMode}
+            />
+          )
+        )}
+        {currentView === 'cart' && (
+          <div className="max-w-4xl mx-auto py-12 animate-fadeIn">
+            <h1 className={`text-4xl font-black mb-12 text-center ${darkMode ? 'text-white' : 'text-slate-900'}`}>مراجعة طلبك وتأكيده</h1>
+            <Checkout 
+              total={cartItems.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0)} 
+              onPlaceOrder={(data) => {
+                const total = cartItems.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
+                const itemsStr = cartItems.map(item => `📦 ${item.name} (${item.quantity}x)`).join('\n');
+                const message = `طلب جديد من ${data.name}!\nالمدينة: ${data.city}\nالهاتف: ${data.phone}\nالمنتجات:\n${itemsStr}\nالمجموع: ${total} درهم.`;
+                window.open(`https://wa.me/212649075664?text=${encodeURIComponent(message)}`);
+                setCartItems([]);
+                setCurrentView('home');
+              }}
+            />
+          </div>
         )}
         {(currentView === 'about' || currentView === 'privacy' || currentView === 'contact') && (
           <LegalPage type={currentView} darkMode={darkMode} siteName={settings.siteName} />
@@ -127,7 +176,7 @@ const App: React.FC = () => {
         {currentView === 'dashboard' && (
           !isDashboardUnlocked ? (
             <div className="max-w-md mx-auto mt-20 p-12 bg-white rounded-[50px] shadow-2xl text-center border border-slate-100">
-              <h2 className="text-3xl font-black mb-8 text-slate-800">إدارة المدونة</h2>
+              <h2 className="text-3xl font-black mb-8 text-slate-800">إدارة الموقع</h2>
               <form onSubmit={(e) => { e.preventDefault(); if(passwordInput === (settings.dashboardPassword || '1234')) setIsDashboardUnlocked(true); else alert('كلمة مرور خاطئة!'); }} className="space-y-6">
                 <div className="relative">
                   <input 
@@ -150,6 +199,17 @@ const App: React.FC = () => {
         )}
       </main>
       
+      {showCart && (
+        <Cart 
+          items={cartItems} 
+          onRemove={removeFromCart} 
+          onUpdateQuantity={updateCartQuantity} 
+          onCheckout={() => { setShowCart(false); setCurrentView('cart'); }} 
+          onClose={() => setShowCart(false)}
+          darkMode={darkMode}
+        />
+      )}
+
       <WhatsAppButton />
       
       <footer className={`${darkMode ? 'bg-black' : 'bg-slate-900'} text-white py-16 mt-20 border-t ${darkMode ? 'border-slate-800' : 'border-slate-100'}`}>
@@ -159,7 +219,7 @@ const App: React.FC = () => {
             <p className="text-slate-400 font-medium leading-relaxed">{settings.siteDescription}</p>
           </div>
           <div>
-            <h4 className="text-lg font-black mb-6 text-emerald-500">روابط هامة</h4>
+            <h4 className="text-lg font-black mb-6 text-emerald-500">روابط سريعة</h4>
             <ul className="space-y-4 text-slate-300 font-bold">
               <li className="cursor-pointer hover:text-emerald-400" onClick={() => navigateTo('about')}>من نحن</li>
               <li className="cursor-pointer hover:text-emerald-400" onClick={() => navigateTo('privacy')}>سياسة الخصوصية</li>
@@ -167,7 +227,7 @@ const App: React.FC = () => {
             </ul>
           </div>
           <div>
-            <h4 className="text-lg font-black mb-6 text-emerald-500">تصنيفات شائعة</h4>
+            <h4 className="text-lg font-black mb-6 text-emerald-500">الأقسام الرئيسية</h4>
             <ul className="space-y-4 text-slate-300 font-bold">
               {Object.values(Category).slice(0, 4).map(c => (
                 <li key={c} className="cursor-pointer hover:text-emerald-400" onClick={() => navigateTo('category', undefined, c)}>{c}</li>
@@ -176,7 +236,7 @@ const App: React.FC = () => {
           </div>
         </div>
         <div className="container mx-auto px-6 mt-16 pt-8 border-t border-slate-800 text-center">
-           <p className="text-slate-500 font-bold">© {new Date().getFullYear()} - جميع الحقوق محفوظة لمدونة {settings.siteName}.</p>
+           <p className="text-slate-500 font-bold">© {new Date().getFullYear()} - جميع الحقوق محفوظة لـ {settings.siteName}.</p>
         </div>
       </footer>
     </div>

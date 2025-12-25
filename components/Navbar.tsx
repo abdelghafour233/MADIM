@@ -9,13 +9,15 @@ interface NavbarProps {
   onSearch: (query: string) => void;
   darkMode: boolean;
   toggleDarkMode: () => void;
+  cartCount: number;
+  onShowCart: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearch, darkMode, toggleDarkMode }) => {
+const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearch, darkMode, toggleDarkMode, cartCount, onShowCart }) => {
   const [searchValue, setSearchValue] = useState('');
 
   return (
-    <header className="sticky top-0 z-50">
+    <header className="sticky top-0 z-[150]">
       <nav className={`glass border-b transition-colors duration-300 ${darkMode ? 'bg-slate-900/90 border-slate-800 text-white' : 'bg-white/90 border-slate-100 text-slate-900'} backdrop-blur-md`}>
         <div className="container mx-auto px-6 h-20 flex items-center justify-between gap-4">
           <div 
@@ -34,17 +36,31 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
             <span className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
             <input 
               type="text" 
-              placeholder="ابحث عن مراجعة، خبر، أو مقال تقني..." 
+              placeholder="ابحث عن منتج، مراجعة، أو خبر..." 
               value={searchValue}
               onChange={(e) => {setSearchValue(e.target.value); onSearch(e.target.value);}}
               className={`w-full rounded-2xl py-3.5 pr-12 pl-4 font-bold text-sm outline-none border-2 border-transparent focus:border-emerald-500/50 transition-all ${darkMode ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'}`}
             />
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <button 
+              onClick={onShowCart} 
+              className="relative p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 transition-all hover:scale-110 active:scale-90 group"
+              aria-label="سلة التسوق"
+            >
+              <span className="text-2xl">🛒</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -left-1 bg-red-500 text-white text-[10px] font-black w-6 h-6 flex items-center justify-center rounded-full border-2 border-white dark:border-slate-900 animate-bounce">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+
             <button onClick={toggleDarkMode} className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 transition-all hover:scale-110">
                {darkMode ? '🌙' : '☀️'}
             </button>
+            
             <button 
               onClick={() => setView('dashboard')} 
               className="px-6 py-3 rounded-2xl bg-emerald-600 text-white font-black text-sm hidden md:block hover:bg-emerald-700 transition-all shadow-md active:scale-95"
