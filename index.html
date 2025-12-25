@@ -5,41 +5,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Ezoic & Ads Management -->
-    <script data-cfasync="false" src="https://cmp.gatekeeperconsent.com/min.js"></script>
-    <script data-cfasync="false" src="https://the.gatekeeperconsent.com/cmp.min.js"></script>
-    <script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
-    <script>
-        window.ezstandalone = window.ezstandalone || {};
-        ezstandalone.cmd = ezstandalone.cmd || [];
-    </script>
-    
     <!-- Google AdSense -->
     <meta name="google-adsense-account" content="ca-pub-5578524966832192" />
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5578524966832192" crossorigin="anonymous"></script>
 
     <!-- SEO & Identity -->
-    <title>عبدو ويب V2 | التقنية بلمسة مغربية 🇲🇦</title>
-    <meta name="description" content="أضخم منصة مغربية لمراجعات التقنية، أخبار التكنولوجيا، وأفضل العروض الحصرية بأسلوب عصري." />
+    <title>عبدو ويب | Abdou Web V2</title>
+    <meta name="description" content="منصة عبدو ويب التقنية - مراجعات، أخبار، وحلول تكنولوجية بلمسة مغربية." />
     <meta name="theme-color" content="#059669" />
-    <link rel="canonical" href="https://abdouweb.online/" />
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
-      .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
-      .dark .glass { background: rgba(15, 23, 42, 0.8); }
+      body { 
+        font-family: 'Tajawal', sans-serif; 
+        scroll-behavior: smooth; 
+        overflow-x: hidden;
+      }
+      .glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+      .dark .glass { background: rgba(15, 23, 42, 0.9); }
       .gradient-text { background: linear-gradient(135deg, #10b981 0%, #059669 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-      .hero-gradient { background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent 50%), radial-gradient(circle at bottom left, rgba(5, 150, 105, 0.05), transparent 50%); }
       
-      @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
       .animate-fadeIn { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-      
-      .no-scrollbar::-webkit-scrollbar { display: none; }
       
       #initial-loader {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -48,14 +39,16 @@
       }
       .loader-logo { font-size: 3rem; font-weight: 900; color: #10b981; margin-bottom: 20px; letter-spacing: -2px; }
       .progress-bar { width: 200px; height: 4px; background: #1e293b; border-radius: 10px; overflow: hidden; }
-      .progress-inner { width: 0%; height: 100%; background: #10b981; animation: progress 2s ease-in-out infinite; }
+      .progress-inner { width: 0%; height: 100%; background: #10b981; animation: progress 1.5s ease-in-out infinite; }
       @keyframes progress { 0% { width: 0%; } 50% { width: 100%; } 100% { width: 0%; } }
     </style>
+    
     <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@19.0.0",
-    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "react": "https://esm.sh/react@18.2.0",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
     "@google/genai": "https://esm.sh/@google/genai@1.3.0",
     "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
     "react/": "https://esm.sh/react@^19.2.3/"
@@ -63,15 +56,15 @@
 }
 </script>
   </head>
-  <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased">
+  <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
     <div id="initial-loader">
       <div class="loader-logo">Abdou Web</div>
       <div class="progress-bar"><div class="progress-inner"></div></div>
     </div>
-    
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
     <script>
+      // إخفاء المحمل بعد التحميل
       window.addEventListener('load', () => {
         setTimeout(() => {
           const loader = document.getElementById('initial-loader');
@@ -80,7 +73,7 @@
             loader.style.transition = 'opacity 0.5s ease-out';
             setTimeout(() => loader.remove(), 500);
           }
-        }, 1000);
+        }, 800);
       });
     </script>
   </body>
