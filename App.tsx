@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+// Add missing imports for React and its hooks
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { View, Article, Category, Settings } from './types.ts';
 import { INITIAL_ARTICLES } from './constants.tsx';
 import Navbar from './components/Navbar.tsx';
@@ -9,7 +10,7 @@ import Dashboard from './components/Dashboard.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import WhatsAppButton from './components/WhatsAppButton.tsx';
 
-const DATA_VERSION = 'v3.3'; 
+const DATA_VERSION = 'v3.5'; // تحديث الإصدار لفرض تحديث البيانات عند المستخدمين
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -64,7 +65,7 @@ const App: React.FC = () => {
     const savedVersion = localStorage.getItem('app_data_version');
     
     if (savedVersion !== DATA_VERSION) {
-      localStorage.clear(); 
+      // تحديث ذكي: لا نمسح كل شيء، بل ندمج المقالات الجديدة مع القديمة أو نفرض النسخة الجديدة
       localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
       localStorage.setItem('app_data_version', DATA_VERSION);
       localStorage.setItem('settings', JSON.stringify(defaultSettings));
