@@ -5,8 +5,7 @@ export enum Category {
   LIFESTYLE = 'أسلوب حياة',
   PRODUCTIVITY = 'تطوير الذات',
   NEWS = 'أخبار عاجلة',
-  REVIEWS = 'مراجعات وتقييمات',
-  STORE = 'المتجر الإلكتروني'
+  REVIEWS = 'مراجعات وتقييمات'
 }
 
 export interface Comment {
@@ -16,6 +15,7 @@ export interface Comment {
   date: string;
 }
 
+/* Fix: Added price property to Article interface to support ProductDetail and Cart components */
 export interface Article {
   id: string;
   name: string;
@@ -28,10 +28,10 @@ export interface Article {
   comments?: Comment[];
   author?: string;
   date?: string;
-  price?: number; // السعر بالدرهم المغربي
-  isProduct?: boolean;
+  price?: number;
 }
 
+/* Fix: Exporting CartItem interface which was missing and causing errors in components/Cart.tsx */
 export interface CartItem extends Article {
   quantity: number;
 }
@@ -42,15 +42,12 @@ export interface Settings {
   tiktokPixel: string;
   adsenseCode: string;
   ezoicCode?: string;
-  taboolaCode?: string;
-  propellerCode?: string;
   adsTxt: string;
   domain: string;
   dashboardPassword?: string;
   siteName: string;
   siteDescription: string;
   affiliateTemuLink?: string;
-  affiliateAmazonLink?: string;
 }
 
-export type View = 'home' | 'article' | 'category' | 'dashboard' | 'about' | 'privacy' | 'contact' | 'store' | 'cart';
+export type View = 'home' | 'article' | 'category' | 'dashboard' | 'about' | 'privacy' | 'contact';

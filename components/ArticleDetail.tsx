@@ -18,26 +18,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
   const [scrollProgress, setScrollProgress] = useState(0);
   const publisherId = settings.adsenseCode?.match(/ca-pub-\d+/)?.[0] || 'ca-pub-5578524966832192';
 
-  // التحقق مما إذا كان Ezoic مفعلاً من الإعدادات
-  const isEzoicEnabled = !!settings.ezoicCode || true; // نفترض التفعيل إذا وجد الكود في index.html
-
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    const jsonLd = {
-      "@context": "https://schema.org",
-      "@type": "BlogPosting",
-      "headline": article.name,
-      "image": article.image,
-      "author": { "@type": "Organization", "name": siteName },
-      "publisher": { "@type": "Organization", "name": siteName },
-      "datePublished": article.date || new Date().toISOString()
-    };
-    script.innerHTML = JSON.stringify(jsonLd);
-    document.head.appendChild(script);
-    return () => { document.head.removeChild(script); };
-  }, [article, siteName]);
-
   useEffect(() => {
     const handleScroll = () => {
       const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -59,33 +39,17 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
     return parts.map((part, i) => {
       if (part.match(urlRegex)) {
         const isImage = /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(part);
-        const isTemu = part.includes('temu.to') || part.includes('temu.com');
-        const finalUrl = isTemu ? (settings.affiliateTemuLink || part) : part;
-
         if (isImage) {
           return (
-            <div key={i} className="my-10 animate-fadeIn">
-              <div className="relative rounded-[30px] overflow-hidden shadow-2xl border-4 border-white dark:border-slate-800">
-                <img src={part} alt="محتوى توضيحي" className="w-full h-auto object-cover max-h-[600px]" loading="lazy" />
-              </div>
+            <div key={i} className="my-10">
+              <img src={part} alt="محتوى توضيحي" className="w-full h-auto rounded-[30px] shadow-lg border border-slate-100 dark:border-slate-800" loading="lazy" />
             </div>
           );
         }
-
         return (
-          <div key={i} className="my-6 text-center">
-            {isTemu && (
-              <p className="text-[11px] text-orange-500 font-bold mb-3">⚠️ إفصاح: قد نحصل على عمولة بسيطة عند الشراء لدعم استمرار الموقع.</p>
-            )}
-            <a 
-              href={finalUrl} 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className={`inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-black text-xl transition-all shadow-xl hover:scale-105 active:scale-95 ${isTemu ? 'bg-orange-600 text-white hover:bg-orange-700' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}
-            >
-              <span>{isTemu ? 'تسوق الآن من تيمو 🛒' : 'زيارة الرابط المباشر 🔗'}</span>
-            </a>
-          </div>
+          <a key={i} href={part} target="_blank" rel="noopener noreferrer" className="text-emerald-600 font-black underline decoration-2 underline-offset-4">
+            {part}
+          </a>
         );
       }
       return part;
@@ -101,59 +65,37 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
       </button>
 
       <div className={`rounded-[40px] md:rounded-[60px] shadow-2xl overflow-hidden border ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-white'}`}>
-        <header className="relative h-[400px] md:h-[550px]">
+        <header className="relative h-[400px] md:h-[500px]">
           <img src={article.image} alt={article.name} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent"></div>
-          <div className="absolute bottom-10 right-8 left-8 md:bottom-16 md:right-16 md:left-16">
-              <div className="flex flex-wrap items-center gap-3 mb-6">
-                <span className="bg-emerald-600 text-white text-xs font-black px-4 py-2 rounded-xl shadow-lg uppercase tracking-wider">{article.category}</span>
-                <span className="text-white/70 text-sm font-bold">📅 {article.date || 'اليوم'}</span>
-                <span className="text-white/70 text-sm font-bold">👁️ {(article.views || 0).toLocaleString()} مشاهدة</span>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+          <div className="absolute bottom-10 right-8 left-8">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="bg-emerald-600 text-white text-[10px] font-black px-4 py-2 rounded-xl uppercase tracking-wider">{article.category}</span>
+                <span className="text-white/80 text-sm font-bold">📅 {article.date || 'فبراير 2025'}</span>
               </div>
-              <h1 className="text-3xl md:text-5xl font-black text-white leading-[1.3] md:leading-tight">{article.name}</h1>
+              <h1 className="text-3xl md:text-5xl font-black text-white leading-tight">{article.name}</h1>
           </div>
         </header>
 
-        <div className="px-6 md:px-16 py-12 md:py-20">
-          {/* وحدة إيزويك العلوية */}
-          {isEzoicEnabled && <EzoicPlaceholder id={101} />}
+        <div className="px-6 md:px-16 py-12">
+          <EzoicPlaceholder id={101} />
 
-          {/* إعلان جوجل أدسنس الاحتياطي */}
-          {!isEzoicEnabled && (
-            <div className="mb-12 p-6 bg-slate-50 dark:bg-slate-800 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700">
-               <span className="block text-center text-[10px] font-black text-slate-400 mb-4 tracking-widest">إعلان ممول</span>
-               <AdUnit publisherId={publisherId} />
-            </div>
-          )}
-
-          <div className={`prose prose-xl max-w-none mb-16 font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'} leading-[1.8]`}>
+          <div className={`prose prose-xl max-w-none mb-16 font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'} leading-[2]`}>
             {paragraphs.map((p, i) => (
               <React.Fragment key={i}>
-                <div className="mb-8">{renderParagraph(p)}</div>
-                {/* إعلان في منتصف المقال */}
-                {i === 3 && isEzoicEnabled && <EzoicPlaceholder id={102} />}
-                {i === 3 && !isEzoicEnabled && settings.adsenseCode && (
-                  <div className="my-12 py-8 border-y border-slate-100 dark:border-slate-800">
-                    <AdUnit publisherId={publisherId} />
-                  </div>
-                )}
+                <div className="mb-6">{renderParagraph(p)}</div>
+                {i === 2 && <AdUnit publisherId={publisherId} />}
               </React.Fragment>
             ))}
           </div>
 
-          {/* وحدة إيزويك السفلية */}
-          {isEzoicEnabled && <EzoicPlaceholder id={103} />}
-
-          {/* كود تابولا / أوتبراين أسفل المقال */}
-          {settings.taboolaCode && (
-            <div className="my-12" dangerouslySetInnerHTML={{ __html: settings.taboolaCode }} />
-          )}
+          <EzoicPlaceholder id={102} />
 
           <div className="mt-16 p-8 bg-slate-50 dark:bg-slate-800/50 rounded-[35px] border border-slate-100 dark:border-slate-800 text-center">
-            <h3 className={`text-xl font-black mb-8 ${darkMode ? 'text-white' : 'text-slate-900'}`}>هل أعجبك المحتوى؟ شاركه مع أصدقائك 🚀</h3>
-            <div className="flex flex-wrap justify-center gap-4">
-              <button onClick={() => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(article.name + ' ' + window.location.href)}`)} className="px-8 py-4 bg-[#25D366] text-white rounded-2xl font-black shadow-lg">واتساب</button>
-              <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`)} className="px-8 py-4 bg-[#1877F2] text-white rounded-2xl font-black shadow-lg">فيسبوك</button>
+            <h3 className={`text-xl font-black mb-6 ${darkMode ? 'text-white' : 'text-slate-900'}`}>شارك هذا المقال 🚀</h3>
+            <div className="flex justify-center gap-4">
+              <button onClick={() => window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(article.name + ' ' + window.location.href)}`)} className="px-10 py-4 bg-[#25D366] text-white rounded-2xl font-black">واتساب</button>
+              <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`)} className="px-10 py-4 bg-[#1877F2] text-white rounded-2xl font-black">فيسبوك</button>
             </div>
           </div>
         </div>

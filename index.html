@@ -1,84 +1,79 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Ezoic CMP - نظام إدارة الموافقة والخصوصية -->
+    <!-- Ezoic & Ads Management -->
     <script data-cfasync="false" src="https://cmp.gatekeeperconsent.com/min.js"></script>
     <script data-cfasync="false" src="https://the.gatekeeperconsent.com/cmp.min.js"></script>
-    
-    <!-- Ezoic Standalone & SA - إدارة الإعلانات والوحدات -->
     <script async src="//www.ezojs.com/ezoic/sa.min.js"></script>
     <script>
         window.ezstandalone = window.ezstandalone || {};
         ezstandalone.cmd = ezstandalone.cmd || [];
     </script>
     
-    <!-- تحسين تحميل الخطوط -->
+    <!-- Google AdSense -->
+    <meta name="google-adsense-account" content="ca-pub-5578524966832192" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5578524966832192" crossorigin="anonymous"></script>
+
+    <!-- SEO & Identity -->
+    <title>عبدو ويب | Abdou Web - متجر ومراجعات تقنية بالمغرب 🇲🇦</title>
+    <meta name="description" content="منصتك المغربية الأولى للحصول على أفضل المنتجات، مراجعات التقنية الحقيقية، وآخر أخبار المملكة بأسلوب عصري وموثوق." />
+    <meta name="theme-color" content="#10b981" />
+    <link rel="canonical" href="https://abdouweb.online/" />
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    
-    <meta name="google-adsense-account" content="ca-pub-5578524966832192" />
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5578524966832192" crossorigin="anonymous" fetchpriority="low"></script>
-    <script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js" fetchpriority="low"></script>
-
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="theme-color" content="#10b981" />
-    
-    <link rel="canonical" href="https://abdouweb.online/" id="canonical-link" />
-
-    <title>عبدو ويب | Abdou Web - مراجعات تقنية وأخبار المغرب 🇲🇦</title>
-    <meta name="description" content="منصة عبدو ويب لمراجعة المنتجات وأحدث الأخبار التقنية في المغرب. دليلك الموثوق للتسوق والمعرفة." />
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
+      body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; }
       .gradient-text { background: linear-gradient(135deg, #059669 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
       .no-scrollbar::-webkit-scrollbar { display: none; }
+      .animate-shake { animation: shake 5s infinite; }
+      @keyframes shake { 0%, 100% { transform: scale(1); } 10%, 20% { transform: scale(1.1) rotate(-3deg); } 30%, 50%, 70% { transform: scale(1.1) rotate(3deg); } 40%, 60% { transform: scale(1.1) rotate(-3deg); } 80% { transform: scale(1); } }
       
       #initial-loader {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: white; display: flex; flex-direction: column;
+        background: #f8fafc; display: flex; flex-direction: column;
         align-items: center; justify-content: center; z-index: 9999;
-        transition: opacity 0.2s;
+        transition: opacity 0.5s ease-out;
       }
       .spinner {
-        width: 30px; height: 30px; border: 3px solid #f3f3f3;
-        border-top: 3px solid #10b981; border-radius: 50%;
-        animation: spin 0.6s linear infinite;
+        width: 50px; height: 50px; border: 5px solid #e2e8f0;
+        border-top: 5px solid #10b981; border-radius: 50%;
+        animation: spin 1s linear infinite;
       }
       @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
     <script type="importmap">
-    {
-      "imports": {
-        "react/": "https://esm.sh/react@^19.2.3/",
-        "react": "https://esm.sh/react@^19.2.3",
-        "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-        "@google/genai": "https://esm.sh/@google/genai@^1.34.0"
-      }
-    }
-    </script>
+{
+  "imports": {
+    "react": "https://esm.sh/react@19.0.0",
+    "react-dom": "https://esm.sh/react-dom@19.0.0",
+    "@google/genai": "https://esm.sh/@google/genai@1.3.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
   </head>
-  <body class="bg-slate-50 text-slate-900 antialiased">
-    <amp-auto-ads type="adsense" data-ad-client="ca-pub-5578524966832192"></amp-auto-ads>
-
+  <body class="bg-slate-50 text-slate-900 antialiased overflow-x-hidden">
     <div id="initial-loader">
       <div class="spinner"></div>
-      <p style="margin-top: 15px; font-weight: 900; color: #10b981; font-family: sans-serif; font-size: 14px;">Abdou Web</p>
+      <p style="margin-top: 20px; font-weight: 900; color: #10b981; font-size: 18px;">عبدو ويب .. جاري التحميل</p>
     </div>
     
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
-    <script type="module">
+    <script>
       window.addEventListener('load', () => {
         const loader = document.getElementById('initial-loader');
         if (loader) {
           loader.style.opacity = '0';
-          setTimeout(() => loader.remove(), 200);
+          setTimeout(() => loader.remove(), 500);
         }
       });
     </script>
