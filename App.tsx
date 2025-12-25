@@ -8,10 +8,10 @@ import ArticleDetail from './components/ArticleDetail.tsx';
 import Dashboard from './components/Dashboard.tsx';
 import LegalPage from './components/LegalPage.tsx';
 
-// مفاتيح جديدة تماماً لإجبار المتصفح على تحديث البيانات
-const STORAGE_KEY_ARTICLES = 'abdou_web_articles_v8_final';
-const STORAGE_KEY_SETTINGS = 'abdou_web_settings_v8_final';
-const STORAGE_KEY_VERSION = 'abdou_web_version_v8_final';
+// مفاتيح تخزين جديدة تماماً (V9) لحل مشكلة عدم الظهور بشكل نهائي
+const STORAGE_KEY_ARTICLES = 'abdou_web_articles_v9_final';
+const STORAGE_KEY_SETTINGS = 'abdou_web_settings_v9_final';
+const STORAGE_KEY_VERSION = 'abdou_web_version_v9_final';
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -21,6 +21,7 @@ const App: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isDashboardUnlocked, setIsDashboardUnlocked] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false); // حالة لإظهار/إخفاء كلمة السر
   const [darkMode, setDarkMode] = useState(false);
   
   const defaultSettings: Settings = {
@@ -62,24 +63,24 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const savedVersion = localStorage.getItem(STORAGE_KEY_VERSION);
-    
-    // إذا لم تكن النسخة V8 موجودة، نقوم بمسح القديم وتحميل الافتراضي فوراً
-    if (savedVersion !== '8.0') {
+    const savedArticles = localStorage.getItem(STORAGE_KEY_ARTICLES);
+    const savedSettings = localStorage.getItem(STORAGE_KEY_SETTINGS);
+
+    // إذا كانت النسخة جديدة أو البيانات فارغة، نفرض التحميل من الثوابت
+    if (savedVersion !== '9.0' || !savedArticles || JSON.parse(savedArticles).length === 0) {
       localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(INITIAL_ARTICLES));
       localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(defaultSettings));
-      localStorage.setItem(STORAGE_KEY_VERSION, '8.0');
+      localStorage.setItem(STORAGE_KEY_VERSION, '9.0');
       setArticles(INITIAL_ARTICLES);
       setSettings(defaultSettings);
     } else {
-      const savedArticles = localStorage.getItem(STORAGE_KEY_ARTICLES);
-      const savedSettings = localStorage.getItem(STORAGE_KEY_SETTINGS);
-      if (savedArticles) setArticles(JSON.parse(savedArticles));
-      if (savedSettings) setSettings(JSON.parse(savedSettings));
+      setArticles(JSON.parse(savedArticles));
+      setSettings(JSON.parse(savedSettings));
     }
   }, []);
 
   const filteredArticles = useMemo(() => {
-    if (!articles) return [];
+    if (!articles || articles.length === 0) return [];
     let result = articles;
     if (selectedCategory && currentView === 'category') {
       result = result.filter(a => a.category === selectedCategory);
@@ -125,16 +126,25 @@ const App: React.FC = () => {
         )}
         {currentView === 'dashboard' && (
           !isDashboardUnlocked ? (
-            <div className="max-w-md mx-auto mt-20 p-12 bg-white dark:bg-slate-900 rounded-[50px] shadow-2xl text-center border border-slate-100 dark:border-slate-800">
+            <div className="max-w-md mx-auto mt-20 p-10 bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl text-center border border-slate-100 dark:border-slate-800 animate-fadeIn">
               <h2 className="text-3xl font-black mb-8">دخول الإدارة</h2>
               <form onSubmit={(e) => { e.preventDefault(); if(passwordInput === (settings.dashboardPassword || '1234')) setIsDashboardUnlocked(true); else alert('كلمة مرور خاطئة!'); }} className="space-y-6">
-                <input 
-                  type="password"
-                  className="w-full p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl text-center font-black text-2xl outline-none border-2 border-transparent focus:border-emerald-500" 
-                  placeholder="كلمة السر" 
-                  value={passwordInput} 
-                  onChange={(e) => setPasswordInput(e.target.value)} 
-                />
+                <div className="relative">
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    className="w-full p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl text-center font-black text-2xl outline-none border-2 border-transparent focus:border-emerald-500 pr-14 pl-14 transition-all" 
+                    placeholder="كلمة السر" 
+                    value={passwordInput} 
+                    onChange={(e) => setPasswordInput(e.target.value)} 
+                  />
+                  <button 
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-2xl opacity-50 hover:opacity-100 transition-opacity"
+                  >
+                    {showPassword ? '👁️' : '🔒'}
+                  </button>
+                </div>
                 <button type="submit" className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-xl shadow-lg hover:bg-emerald-600 transition-all">دخول</button>
               </form>
             </div>
