@@ -1,5 +1,4 @@
 
-// Add missing imports for React and its hooks
 import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import { View, Article, Category, Settings } from './types.ts';
 import { INITIAL_ARTICLES } from './constants.tsx';
@@ -10,7 +9,7 @@ import Dashboard from './components/Dashboard.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import WhatsAppButton from './components/WhatsAppButton.tsx';
 
-const DATA_VERSION = 'v3.5'; // تحديث الإصدار لفرض تحديث البيانات عند المستخدمين
+const DATA_VERSION = 'v3.6'; 
 
 const App: React.FC = () => {
   const [currentView, setCurrentView] = useState<View>('home');
@@ -27,12 +26,17 @@ const App: React.FC = () => {
     fbPixel: '',
     googleAnalytics: '',
     tiktokPixel: '',
-    adsenseCode: '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5578524966832192" crossorigin="anonymous"></script>',
+    adsenseCode: '',
+    ezoicCode: '',
+    taboolaCode: '',
+    propellerCode: '',
     adsTxt: 'google.com, pub-5578524966832192, DIRECT, f08c47fec0942fa0',
     domain: 'abdouweb.online',
     dashboardPassword: '1234',
     siteName: 'عبدو ويب | Abdou Web',
-    siteDescription: 'منصتك الأولى لمتابعة آخر مراجعات التقنية وأخبار المغرب والعالم بأسلوب احترافى وموثوق.'
+    siteDescription: 'منصتك الأولى لمتابعة آخر مراجعات التقنية وأخبار المغرب والعالم بأسلوب احترافى وموثوق.',
+    affiliateTemuLink: 'https://temu.to/k/ej9j3nai23s',
+    affiliateAmazonLink: ''
   };
 
   const [settings, setSettings] = useState<Settings>(defaultSettings);
@@ -65,7 +69,6 @@ const App: React.FC = () => {
     const savedVersion = localStorage.getItem('app_data_version');
     
     if (savedVersion !== DATA_VERSION) {
-      // تحديث ذكي: لا نمسح كل شيء، بل ندمج المقالات الجديدة مع القديمة أو نفرض النسخة الجديدة
       localStorage.setItem('articles', JSON.stringify(INITIAL_ARTICLES));
       localStorage.setItem('app_data_version', DATA_VERSION);
       localStorage.setItem('settings', JSON.stringify(defaultSettings));
@@ -112,7 +115,7 @@ const App: React.FC = () => {
             article={articles.find(a => a.id === selectedArticle.id) || selectedArticle} 
             onBack={() => navigateTo('home')} 
             siteName={settings.siteName}
-            adsenseCode={settings.adsenseCode}
+            settings={settings}
             relatedArticles={articles.filter(a => a.id !== selectedArticle.id && a.category === selectedArticle.category).slice(0, 3)}
             onArticleClick={(a) => navigateTo('article', a)}
             darkMode={darkMode}

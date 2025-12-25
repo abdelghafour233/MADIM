@@ -34,11 +34,16 @@ export interface Settings {
   googleAnalytics: string;
   tiktokPixel: string;
   adsenseCode: string;
+  ezoicCode?: string;
+  taboolaCode?: string;
+  propellerCode?: string;
   adsTxt: string;
   domain: string;
   dashboardPassword?: string;
   siteName: string;
   siteDescription: string;
+  affiliateTemuLink?: string;
+  affiliateAmazonLink?: string;
 }
 
 export type View = 'home' | 'article' | 'category' | 'dashboard' | 'about' | 'privacy' | 'contact';
