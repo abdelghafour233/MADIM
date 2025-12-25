@@ -1,75 +1,80 @@
 
 import React from 'react';
-import { Article, Category } from '../types.ts';
+import { Article } from '../types.ts';
 
 interface HomeProps {
   articles: Article[];
-  onArticleClick: (a: Article) => void;
-  onCategoryClick: (c: Category) => void;
+  onItemClick: (item: Article) => void;
   darkMode: boolean;
-  filterLabel?: string;
 }
 
-const Home: React.FC<HomeProps> = ({ articles, onArticleClick, onCategoryClick, darkMode, filterLabel }) => {
+const Home: React.FC<HomeProps> = ({ articles, onItemClick, darkMode }) => {
+  const products = articles.filter(a => a.isProduct);
+  const posts = articles.filter(a => !a.isProduct);
+
   return (
-    <div className="animate-slideUp">
-      <div className="mb-16 py-10">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="h-1 w-12 bg-emerald-500 rounded-full"></div>
-          <span className="text-emerald-500 font-black tracking-widest uppercase text-xs">Abdou Web Blog</span>
+    <div className="animate-slideUp space-y-20">
+      {/* قسم المتجر */}
+      <section>
+        <div className="flex items-center justify-between mb-10">
+          <div>
+            <h2 className="text-3xl md:text-5xl font-black">المتجر الحصري 🛍️</h2>
+            <p className="text-slate-500 font-bold mt-2">توصيل مجاني لجميع المدن المغربية والدفع عند الاستلام</p>
+          </div>
         </div>
-        <h2 className={`text-4xl md:text-6xl font-black mb-6 ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-          {filterLabel ? `قسم: ${filterLabel}` : 'اكتشف جديد التقنية 🚀'}
-        </h2>
-        <p className="text-slate-500 font-bold max-w-2xl leading-relaxed">نشارككم آخر الأخبار والمقالات التحليلية حول التكنولوجيا والإنتاجية في المغرب والعالم.</p>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-        {articles.map(article => (
-          <article 
-            key={article.id}
-            onClick={() => onArticleClick(article)}
-            className={`group rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 flex flex-col h-full ${darkMode ? 'bg-slate-900 border border-slate-800 hover:border-emerald-500/50' : 'bg-white shadow-xl hover:shadow-2xl'}`}
-          >
-            <div className="h-64 overflow-hidden relative">
-              <img src={article.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={article.name} />
-              <div className="absolute top-6 right-6">
-                 <span className="bg-emerald-600/90 backdrop-blur-md text-white px-5 py-2 rounded-xl text-[10px] font-black shadow-xl">
-                   {article.category}
-                 </span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {products.map(item => (
+            <div 
+              key={item.id} onClick={() => onItemClick(item)}
+              className={`group rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 border h-full flex flex-col ${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-100 shadow-xl hover:shadow-2xl'}`}
+            >
+              <div className="h-64 overflow-hidden relative">
+                <img src={item.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+                <div className="absolute top-4 right-4 bg-orange-500 text-white px-4 py-1 rounded-full text-[10px] font-black">الأكثر مبيعاً</div>
+              </div>
+              <div className="p-6 flex flex-col flex-grow">
+                <h3 className="font-black text-lg mb-4 line-clamp-1">{item.name}</h3>
+                <div className="mt-auto flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-2xl font-black text-emerald-600">{item.price} <small className="text-xs">د.م</small></span>
+                    <span className="text-[10px] text-slate-400 line-through">{(item.price || 0) + 100} د.م</span>
+                  </div>
+                  <button className="bg-emerald-600 text-white p-3 rounded-2xl shadow-lg shadow-emerald-500/20 group-hover:translate-x-[-5px] transition-transform">🛒</button>
+                </div>
               </div>
             </div>
-            <div className="p-8 flex flex-col flex-grow">
-              <div className="flex items-center gap-3 mb-4 text-xs font-bold text-slate-400">
-                <span>👤 {article.author || 'المدير'}</span>
-                <span>•</span>
-                <span>📅 {article.date}</span>
-              </div>
-              <h3 className={`font-black text-xl mb-6 leading-snug line-clamp-2 group-hover:text-emerald-500 transition-colors ${darkMode ? 'text-white' : 'text-slate-900'}`}>
-                {article.name}
-              </h3>
-              <p className="text-slate-500 text-sm line-clamp-3 mb-8 leading-relaxed font-medium">
-                {article.content.substring(0, 150)}...
-              </p>
-              <div className="mt-auto flex items-center justify-between pt-6 border-t border-slate-100 dark:border-slate-800">
-                 <div className="flex items-center gap-2">
-                    <span className="text-emerald-500">👁️</span>
-                    <span className="text-xs font-black text-slate-400">{(article.views || 0).toLocaleString()} مشاهدة</span>
-                 </div>
-                 <span className="text-emerald-500 font-black text-xs hover:underline">اقرأ المزيد ←</span>
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
-
-      {articles.length === 0 && (
-        <div className="text-center py-20 bg-slate-100 dark:bg-slate-900/50 rounded-[40px] border-2 border-dashed border-slate-200 dark:border-slate-800">
-           <span className="text-6xl block mb-6">🔍</span>
-           <h3 className="text-2xl font-black text-slate-400">لم نجد أي مقالات تطابق بحثك..</h3>
-           <p className="mt-2 text-slate-500 font-bold">جرب كلمات مفتاحية أخرى</p>
+          ))}
         </div>
-      )}
+      </section>
+
+      {/* قسم المدونة */}
+      <section>
+        <div className="mb-10">
+          <h2 className="text-3xl md:text-5xl font-black">آخر الأخبار التقنية 🚀</h2>
+          <p className="text-slate-500 font-bold mt-2">تحليلات، مراجعات، ومستجدات التكنولوجيا في المغرب</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {posts.map(post => (
+            <article 
+              key={post.id} onClick={() => onItemClick(post)}
+              className={`group rounded-[40px] overflow-hidden cursor-pointer transition-all duration-500 ${darkMode ? 'bg-slate-900/50' : 'bg-white shadow-lg'}`}
+            >
+              <div className="h-56 overflow-hidden">
+                <img src={post.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="" />
+              </div>
+              <div className="p-8">
+                <span className="text-emerald-500 text-xs font-black uppercase tracking-widest">{post.category}</span>
+                <h3 className="font-black text-xl mt-3 mb-4 leading-snug line-clamp-2">{post.name}</h3>
+                <p className="text-slate-500 text-sm line-clamp-2 mb-6">{post.content}</p>
+                <div className="flex items-center justify-between pt-6 border-t border-slate-100 dark:border-slate-800">
+                  <span className="text-xs font-bold text-slate-400">📅 {post.date}</span>
+                  <span className="text-emerald-500 font-black text-xs">اقرأ المزيد ←</span>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };

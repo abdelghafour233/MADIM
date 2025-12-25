@@ -4,15 +4,8 @@ export enum Category {
   MOROCCO = 'أخبار المغرب',
   LIFESTYLE = 'أسلوب حياة',
   PRODUCTIVITY = 'تطوير الذات',
-  NEWS = 'أخبار عاجلة',
-  REVIEWS = 'مراجعات وتقييمات'
-}
-
-export interface Comment {
-  id: string;
-  userName: string;
-  text: string;
-  date: string;
+  REVIEWS = 'مراجعات وتقييمات',
+  STORE = 'المتجر'
 }
 
 export interface Article {
@@ -22,16 +15,13 @@ export interface Article {
   image: string;
   category: Category;
   rating: number;
-  likes?: number;
+  price?: number; // للمنتجات
   views?: number;
-  comments?: Comment[];
   author?: string;
   date?: string;
-  // Added price property to support e-commerce components like ProductDetail and Cart
-  price?: number;
+  isProduct?: boolean;
 }
 
-// Added CartItem interface to resolve the missing export error in components/Cart.tsx
 export interface CartItem extends Article {
   quantity: number;
 }
@@ -48,4 +38,4 @@ export interface Settings {
   siteDescription: string;
 }
 
-export type View = 'home' | 'article' | 'category' | 'dashboard' | 'about' | 'privacy' | 'contact';
+export type View = 'home' | 'article' | 'product' | 'category' | 'dashboard' | 'about' | 'privacy' | 'contact' | 'checkout';
