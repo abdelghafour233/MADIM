@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
   <head>
@@ -18,35 +19,37 @@
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5578524966832192" crossorigin="anonymous"></script>
 
     <!-- SEO & Identity -->
-    <title>عبدو ويب | Abdou Web - متجر ومراجعات تقنية بالمغرب 🇲🇦</title>
-    <meta name="description" content="منصتك المغربية الأولى للحصول على أفضل المنتجات، مراجعات التقنية الحقيقية، وآخر أخبار المملكة بأسلوب عصري وموثوق." />
-    <meta name="theme-color" content="#10b981" />
+    <title>عبدو ويب V2 | التقنية بلمسة مغربية 🇲🇦</title>
+    <meta name="description" content="أضخم منصة مغربية لمراجعات التقنية، أخبار التكنولوجيا، وأفضل العروض الحصرية بأسلوب عصري." />
+    <meta name="theme-color" content="#059669" />
     <link rel="canonical" href="https://abdouweb.online/" />
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-      body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; }
-      .gradient-text { background: linear-gradient(135deg, #059669 0%, #10b981 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      body { font-family: 'Tajawal', sans-serif; scroll-behavior: smooth; overflow-x: hidden; }
+      .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+      .dark .glass { background: rgba(15, 23, 42, 0.8); }
+      .gradient-text { background: linear-gradient(135deg, #10b981 0%, #059669 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+      .hero-gradient { background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.1), transparent 50%), radial-gradient(circle at bottom left, rgba(5, 150, 105, 0.05), transparent 50%); }
+      
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+      .animate-fadeIn { animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+      
       .no-scrollbar::-webkit-scrollbar { display: none; }
-      .animate-shake { animation: shake 5s infinite; }
-      @keyframes shake { 0%, 100% { transform: scale(1); } 10%, 20% { transform: scale(1.1) rotate(-3deg); } 30%, 50%, 70% { transform: scale(1.1) rotate(3deg); } 40%, 60% { transform: scale(1.1) rotate(-3deg); } 80% { transform: scale(1); } }
       
       #initial-loader {
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: #f8fafc; display: flex; flex-direction: column;
+        background: #0f172a; display: flex; flex-direction: column;
         align-items: center; justify-content: center; z-index: 9999;
-        transition: opacity 0.5s ease-out;
       }
-      .spinner {
-        width: 50px; height: 50px; border: 5px solid #e2e8f0;
-        border-top: 5px solid #10b981; border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin { 100% { transform: rotate(360deg); } }
+      .loader-logo { font-size: 3rem; font-weight: 900; color: #10b981; margin-bottom: 20px; letter-spacing: -2px; }
+      .progress-bar { width: 200px; height: 4px; background: #1e293b; border-radius: 10px; overflow: hidden; }
+      .progress-inner { width: 0%; height: 100%; background: #10b981; animation: progress 2s ease-in-out infinite; }
+      @keyframes progress { 0% { width: 0%; } 50% { width: 100%; } 100% { width: 0%; } }
     </style>
     <script type="importmap">
 {
@@ -60,21 +63,24 @@
 }
 </script>
   </head>
-  <body class="bg-slate-50 text-slate-900 antialiased overflow-x-hidden">
+  <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 antialiased">
     <div id="initial-loader">
-      <div class="spinner"></div>
-      <p style="margin-top: 20px; font-weight: 900; color: #10b981; font-size: 18px;">عبدو ويب .. جاري التحميل</p>
+      <div class="loader-logo">Abdou Web</div>
+      <div class="progress-bar"><div class="progress-inner"></div></div>
     </div>
     
     <div id="root"></div>
     <script type="module" src="./index.tsx"></script>
     <script>
       window.addEventListener('load', () => {
-        const loader = document.getElementById('initial-loader');
-        if (loader) {
-          loader.style.opacity = '0';
-          setTimeout(() => loader.remove(), 500);
-        }
+        setTimeout(() => {
+          const loader = document.getElementById('initial-loader');
+          if (loader) {
+            loader.style.opacity = '0';
+            loader.style.transition = 'opacity 0.5s ease-out';
+            setTimeout(() => loader.remove(), 500);
+          }
+        }, 1000);
       });
     </script>
   </body>
