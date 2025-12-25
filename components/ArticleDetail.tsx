@@ -84,7 +84,7 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
     if (url) window.open(url, '_blank', 'width=600,height=400');
   };
 
-  // وظيفة لتحويل الروابط إلى أزرار أو روابط قابلة للنقر
+  // وظيفة لتحويل الروابط إلى أزرار أو صور أو روابط قابلة للنقر
   const renderParagraph = (text: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const parts = text.split(urlRegex);
@@ -93,7 +93,24 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
 
     return parts.map((part, i) => {
       if (part.match(urlRegex)) {
+        const isImage = /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(part);
         const isTemu = part.includes('temu.to') || part.includes('temu.com');
+
+        if (isImage) {
+          return (
+            <div key={i} className="my-10 animate-fadeIn">
+              <div className="relative rounded-[30px] overflow-hidden shadow-2xl border-4 border-white dark:border-slate-800">
+                <img 
+                  src={part} 
+                  alt="محتوى توضيحي" 
+                  className="w-full h-auto object-cover max-h-[600px]" 
+                  loading="lazy"
+                />
+              </div>
+            </div>
+          );
+        }
+
         return (
           <div key={i} className="my-6 text-center">
             <a 
