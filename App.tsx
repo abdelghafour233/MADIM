@@ -8,7 +8,6 @@ import ArticleDetail from './components/ArticleDetail.tsx';
 import Dashboard from './components/Dashboard.tsx';
 import LegalPage from './components/LegalPage.tsx';
 
-// مفاتيح تخزين جديدة تماماً (V9) لحل مشكلة عدم الظهور بشكل نهائي
 const STORAGE_KEY_ARTICLES = 'abdou_web_articles_v9_final';
 const STORAGE_KEY_SETTINGS = 'abdou_web_settings_v9_final';
 const STORAGE_KEY_VERSION = 'abdou_web_version_v9_final';
@@ -21,7 +20,7 @@ const App: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [isDashboardUnlocked, setIsDashboardUnlocked] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
-  const [showPassword, setShowPassword] = useState(false); // حالة لإظهار/إخفاء كلمة السر
+  const [showPassword, setShowPassword] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   
   const defaultSettings: Settings = {
@@ -66,7 +65,6 @@ const App: React.FC = () => {
     const savedArticles = localStorage.getItem(STORAGE_KEY_ARTICLES);
     const savedSettings = localStorage.getItem(STORAGE_KEY_SETTINGS);
 
-    // إذا كانت النسخة جديدة أو البيانات فارغة، نفرض التحميل من الثوابت
     if (savedVersion !== '9.0' || !savedArticles || JSON.parse(savedArticles).length === 0) {
       localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(INITIAL_ARTICLES));
       localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(defaultSettings));
@@ -127,9 +125,10 @@ const App: React.FC = () => {
         {currentView === 'dashboard' && (
           !isDashboardUnlocked ? (
             <div className="max-w-md mx-auto mt-20 p-10 bg-white dark:bg-slate-900 rounded-[40px] shadow-2xl text-center border border-slate-100 dark:border-slate-800 animate-fadeIn">
+              <div className="bg-emerald-600 w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-6 shadow-lg shadow-emerald-500/20">🔐</div>
               <h2 className="text-3xl font-black mb-8">دخول الإدارة</h2>
               <form onSubmit={(e) => { e.preventDefault(); if(passwordInput === (settings.dashboardPassword || '1234')) setIsDashboardUnlocked(true); else alert('كلمة مرور خاطئة!'); }} className="space-y-6">
-                <div className="relative">
+                <div className="relative group">
                   <input 
                     type={showPassword ? "text" : "password"} 
                     className="w-full p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl text-center font-black text-2xl outline-none border-2 border-transparent focus:border-emerald-500 pr-14 pl-14 transition-all" 
@@ -140,12 +139,13 @@ const App: React.FC = () => {
                   <button 
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-2xl opacity-50 hover:opacity-100 transition-opacity"
+                    className="absolute right-5 top-1/2 -translate-y-1/2 text-2xl p-2 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                    title={showPassword ? "إخفاء" : "إظهار"}
                   >
                     {showPassword ? '👁️' : '🔒'}
                   </button>
                 </div>
-                <button type="submit" className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-xl shadow-lg hover:bg-emerald-600 transition-all">دخول</button>
+                <button type="submit" className="w-full bg-slate-900 dark:bg-emerald-600 text-white py-5 rounded-2xl font-black text-xl shadow-lg hover:bg-emerald-600 dark:hover:bg-emerald-500 transition-all transform active:scale-95">دخول</button>
               </form>
             </div>
           ) : (
@@ -154,7 +154,7 @@ const App: React.FC = () => {
               articles={articles} 
               onUpdateSettings={(s) => {setSettings(s); localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(s));}} 
               onUpdateArticles={(a) => {setArticles(a); localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(a));}} 
-              onLogout={() => setIsDashboardUnlocked(false)} 
+              onLogout={() => {setIsDashboardUnlocked(false); setPasswordInput('');}} 
             />
           )
         )}
@@ -164,10 +164,11 @@ const App: React.FC = () => {
         <div className="container mx-auto px-6 text-center">
           <h3 className="text-2xl font-black mb-6 text-emerald-500">{settings.siteName}</h3>
           <p className="text-slate-400 font-medium mb-10 max-w-xl mx-auto">{settings.siteDescription}</p>
-          <div className="flex justify-center gap-8 mb-10 text-sm font-bold">
-            <span className="cursor-pointer hover:text-emerald-400" onClick={() => navigateTo('about')}>من نحن</span>
-            <span className="cursor-pointer hover:text-emerald-400" onClick={() => navigateTo('privacy')}>سياسة الخصوصية</span>
-            <span className="cursor-pointer hover:text-emerald-400" onClick={() => navigateTo('contact')}>اتصل بنا</span>
+          <div className="flex flex-wrap justify-center gap-6 sm:gap-10 mb-10 text-sm font-bold">
+            <span className="cursor-pointer hover:text-emerald-400 transition-colors" onClick={() => navigateTo('about')}>من نحن</span>
+            <span className="cursor-pointer hover:text-emerald-400 transition-colors" onClick={() => navigateTo('privacy')}>سياسة الخصوصية</span>
+            <span className="cursor-pointer hover:text-emerald-400 transition-colors" onClick={() => navigateTo('contact')}>اتصل بنا</span>
+            <span className="cursor-pointer text-slate-500 hover:text-emerald-400 transition-colors" onClick={() => navigateTo('dashboard')}>لوحة الإدارة ⚙️</span>
           </div>
           <p className="text-slate-500 text-xs">© {new Date().getFullYear()} - جميع الحقوق محفوظة لـ {settings.siteName}.</p>
         </div>

@@ -22,7 +22,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
             className="text-2xl font-black cursor-pointer flex items-center gap-3 group" 
             onClick={() => {setView('home'); setSearchValue(''); onSearch('');}}
           >
-            <div className="bg-emerald-600 text-white p-2 rounded-xl">✍️</div>
+            <div className="bg-emerald-600 text-white p-2 rounded-xl shadow-lg shadow-emerald-500/20 group-hover:rotate-12 transition-transform">✍️</div>
             <span className="hidden sm:block font-black tracking-tighter text-2xl">{siteName}</span>
           </div>
 
@@ -36,15 +36,16 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
             />
           </div>
 
-          <div className="flex items-center gap-4">
-            <button onClick={toggleDarkMode} className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 transition-all">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <button onClick={toggleDarkMode} className="p-3 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 transition-all hover:scale-110">
                {darkMode ? '🌙' : '☀️'}
             </button>
             <button 
               onClick={() => setView('dashboard')} 
-              className="px-6 py-3 rounded-2xl bg-slate-900 text-white font-black text-sm hidden sm:block hover:bg-emerald-600 transition-all"
+              className="px-4 py-3 sm:px-6 rounded-2xl bg-slate-900 text-white font-black text-sm flex items-center gap-2 hover:bg-emerald-600 transition-all shadow-lg active:scale-95"
             >
-              الإدارة
+              <span className="text-lg">⚙️</span>
+              <span className="hidden xs:block">الإدارة</span>
             </button>
           </div>
         </div>
