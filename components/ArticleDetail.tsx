@@ -84,7 +84,6 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
     if (url) window.open(url, '_blank', 'width=600,height=400');
   };
 
-  // وظيفة لتحويل الروابط إلى أزرار أو صور أو روابط قابلة للنقر
   const renderParagraph = (text: string) => {
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const parts = text.split(urlRegex);
@@ -113,6 +112,9 @@ const ArticleDetail: React.FC<ArticleDetailProps> = ({ article, onBack, siteName
 
         return (
           <div key={i} className="my-6 text-center">
+            {isTemu && (
+              <p className="text-[11px] text-orange-500 font-bold mb-3">⚠️ إفصاح: قد نحصل على عمولة بسيطة عند الشراء عبر هذا الرابط لدعم استمرارية الموقع.</p>
+            )}
             <a 
               href={part} 
               target="_blank" 
