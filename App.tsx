@@ -18,7 +18,6 @@ const App: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [articles, setArticles] = useState<Article[]>([]);
-  const [isDashboardUnlocked, setIsDashboardUnlocked] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   
   const defaultSettings: Settings = {
@@ -58,7 +57,6 @@ const App: React.FC = () => {
   const navigateTo = useCallback((view: View, article?: Article, category?: Category | null) => {
     if (view === 'article' && article) {
       setSelectedArticle(article);
-      // تحديث المشاهدات
       setArticles(prev => {
         const updated = prev.map(a => a.id === article.id ? { ...a, views: (a.views || 0) + 1 } : a);
         localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(updated));
@@ -133,6 +131,7 @@ const App: React.FC = () => {
             onUpdateSettings={(s) => {setSettings(s); localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(s));}} 
             onUpdateArticles={(a) => {setArticles(a); localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(a));}} 
             onLogout={() => setCurrentView('home')} 
+            onPreviewArticle={(a) => navigateTo('article', a)}
           />
         )}
       </main>
