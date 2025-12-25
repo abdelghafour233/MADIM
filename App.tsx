@@ -6,6 +6,7 @@ import Navbar from './components/Navbar.tsx';
 import Home from './components/Home.tsx';
 import ArticleDetail from './components/ArticleDetail.tsx';
 import Dashboard from './components/Dashboard.tsx';
+import Login from './components/Login.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import WhatsAppButton from './components/WhatsAppButton.tsx';
 
@@ -19,6 +20,7 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [articles, setArticles] = useState<Article[]>([]);
   const [darkMode, setDarkMode] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   const defaultSettings: Settings = {
     fbPixel: '',
@@ -125,14 +127,22 @@ const App: React.FC = () => {
           <LegalPage type={currentView} darkMode={darkMode} siteName={settings.siteName} />
         )}
         {currentView === 'dashboard' && (
-          <Dashboard 
-            settings={settings} 
-            articles={articles} 
-            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(s));}} 
-            onUpdateArticles={(a) => {setArticles(a); localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(a));}} 
-            onLogout={() => setCurrentView('home')} 
-            onPreviewArticle={(a) => navigateTo('article', a)}
-          />
+          !isAuthenticated ? (
+            <Login 
+              correctPassword={settings.dashboardPassword || '1234'} 
+              onSuccess={() => setIsAuthenticated(true)} 
+              darkMode={darkMode}
+            />
+          ) : (
+            <Dashboard 
+              settings={settings} 
+              articles={articles} 
+              onUpdateSettings={(s) => {setSettings(s); localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(s));}} 
+              onUpdateArticles={(a) => {setArticles(a); localStorage.setItem(STORAGE_KEY_ARTICLES, JSON.stringify(a));}} 
+              onLogout={() => {setIsAuthenticated(false); setCurrentView('home');}} 
+              onPreviewArticle={(a) => navigateTo('article', a)}
+            />
+          )
         )}
       </main>
       

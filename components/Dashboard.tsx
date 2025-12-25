@@ -8,14 +8,14 @@ interface DashboardProps {
   onUpdateSettings: (s: Settings) => void;
   onUpdateArticles: (a: Article[]) => void;
   onLogout: () => void;
-  onPreviewArticle: (a: Article) => void; // وظيفة جديدة للمعاينة
+  onPreviewArticle: (a: Article) => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSettings, onUpdateArticles, onLogout, onPreviewArticle }) => {
-  const [tab, setTab] = useState<'articles' | 'ads' | 'new-article'>('articles');
+  const [tab, setTab] = useState<'articles' | 'ads' | 'new-article' | 'settings'>('articles');
   const [localSettings, setLocalSettings] = useState<Settings>(settings);
+  const [showPass, setShowPass] = useState(false);
   
-  // حالات المقال الجديد للمعاينة الحية
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
   const [newImage, setNewImage] = useState('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=1200');
@@ -69,6 +69,7 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
       <div className="flex flex-wrap gap-4 mb-12">
         <button onClick={() => setTab('articles')} className={`px-10 py-5 rounded-2xl font-black text-lg transition-all ${tab === 'articles' ? 'bg-slate-900 text-white shadow-xl' : 'bg-white dark:bg-slate-900 text-slate-500 hover:bg-slate-50'}`}>📦 المقالات</button>
         <button onClick={() => setTab('ads')} className={`px-10 py-5 rounded-2xl font-black text-lg transition-all ${tab === 'ads' ? 'bg-orange-600 text-white shadow-xl' : 'bg-white dark:bg-slate-900 text-slate-500 hover:bg-slate-50'}`}>💰 الإعلانات</button>
+        <button onClick={() => setTab('settings')} className={`px-10 py-5 rounded-2xl font-black text-lg transition-all ${tab === 'settings' ? 'bg-blue-600 text-white shadow-xl' : 'bg-white dark:bg-slate-900 text-slate-500 hover:bg-slate-50'}`}>⚙️ إعدادات</button>
         <button onClick={() => setTab('new-article')} className={`px-10 py-5 rounded-2xl font-black text-lg transition-all ${tab === 'new-article' ? 'bg-emerald-600 text-white shadow-xl' : 'bg-white dark:bg-slate-900 text-slate-500 hover:bg-slate-50'}`}>✍️ مقال جديد</button>
       </div>
 
@@ -94,6 +95,41 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
               />
             </div>
             <button onClick={handleSaveSettings} className="w-full py-6 bg-slate-900 text-white rounded-[30px] font-black text-xl hover:bg-emerald-600 transition-all shadow-xl">تحديث الإعدادات 💾</button>
+          </div>
+        </div>
+      )}
+
+      {tab === 'settings' && (
+        <div className="max-w-2xl bg-white dark:bg-slate-900 p-10 rounded-[50px] shadow-2xl space-y-8 border border-slate-100 dark:border-slate-800 mx-auto">
+          <h3 className="text-2xl font-black text-blue-600 border-b pb-4 mb-8 text-center">الإعدادات العامة</h3>
+          <div className="space-y-6">
+            <div>
+              <label className="block font-black mb-4 text-slate-500 mr-2">تغيير كلمة سر الإدارة</label>
+              <div className="relative">
+                <input 
+                  type={showPass ? "text" : "password"}
+                  className="w-full p-5 pl-14 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border-2 border-transparent focus:border-blue-500 transition-all" 
+                  value={localSettings.dashboardPassword} 
+                  onChange={e => setLocalSettings({...localSettings, dashboardPassword: e.target.value})} 
+                />
+                <button 
+                  type="button"
+                  onClick={() => setShowPass(!showPass)}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-xl text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
+                >
+                  {showPass ? "👁️" : "🙈"}
+                </button>
+              </div>
+            </div>
+            <div>
+              <label className="block font-black mb-4 text-slate-500 mr-2">اسم الموقع</label>
+              <input 
+                className="w-full p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl outline-none font-bold border-2 border-transparent focus:border-blue-500 transition-all" 
+                value={localSettings.siteName} 
+                onChange={e => setLocalSettings({...localSettings, siteName: e.target.value})} 
+              />
+            </div>
+            <button onClick={handleSaveSettings} className="w-full py-6 bg-blue-600 text-white rounded-[30px] font-black text-xl hover:bg-blue-700 transition-all shadow-xl mt-4">حفظ الإعدادات 💾</button>
           </div>
         </div>
       )}
