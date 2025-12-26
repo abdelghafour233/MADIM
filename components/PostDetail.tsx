@@ -40,7 +40,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true }
       </button>
 
       <div className="mb-16">
-        <span className="text-emerald-500 font-black text-xs uppercase tracking-[0.3em] mb-6 block text-center">{post.category}</span>
+        <span className="text-emerald-500 font-black text-sm uppercase tracking-[0.3em] mb-6 block text-center">{post.category}</span>
         <h1 className={`text-4xl md:text-7xl font-black mb-10 leading-tight text-center ${darkMode ? 'text-white' : 'text-slate-900'}`}>{post.title || post.name}</h1>
         <div className={`flex justify-center items-center gap-8 text-xs font-black uppercase tracking-widest ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
            <div className="flex items-center gap-2">👤 <span>{post.author}</span></div>
@@ -69,7 +69,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true }
             onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`)}
             className="flex flex-col items-center justify-center p-6 bg-[#1877F2] text-white rounded-[35px] hover:scale-105 transition-all shadow-lg group"
            >
-             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform">FB</span>
+             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform font-bold">f</span>
              <span className="text-[10px] font-black uppercase">فيسبوك</span>
            </button>
 
@@ -96,17 +96,17 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true }
             onClick={() => window.open(`https://pinterest.com/pin/create/button/?url=${shareUrl}&media=${post.image}&description=${encodeURIComponent(shareTitle)}`)}
             className="flex flex-col items-center justify-center p-6 bg-[#E60023] text-white rounded-[35px] hover:scale-105 transition-all shadow-lg group"
            >
-             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform">PI</span>
+             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform">P</span>
              <span className="text-[10px] font-black uppercase">بنتريست</span>
            </button>
 
-           {/* تيك توك (رابط الملف الشخصي أو نسخ الرابط للمشاركة) */}
+           {/* تيك توك */}
            <button 
             onClick={handleCopy}
             className="flex flex-col items-center justify-center p-6 bg-[#000000] text-white rounded-[35px] hover:scale-105 transition-all shadow-lg group relative overflow-hidden"
            >
              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-cyan-400/20 via-transparent to-magenta-400/20 opacity-50"></div>
-             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform relative z-10">TT</span>
+             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform relative z-10 font-bold">TikTok</span>
              <span className="text-[10px] font-black uppercase relative z-10">تيك توك</span>
            </button>
 
