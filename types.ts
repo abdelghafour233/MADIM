@@ -3,14 +3,11 @@ export enum Category {
   TECH = 'تقنية',
   NEWS = 'أخبار المغرب',
   REVIEWS = 'مراجعات',
-  TIPS = 'نصائح وحلول'
+  TIPS = 'نصائح وحلول',
+  AI = 'ذكاء اصطناعي'
 }
 
-/**
- * Article interface updated to support both blog posts and product items.
- * Fields like name, price, and isProduct are added for shop functionality.
- * title and excerpt are made optional to accommodate product-only entries.
- */
+// Fixed: Added optional properties used by products and different component versions (title vs name, rating, price, etc.)
 export interface Article {
   id: string;
   title?: string;
@@ -27,20 +24,16 @@ export interface Article {
   rating?: number;
 }
 
-/**
- * CartItem extends Article with quantity for shopping cart functionality.
- */
-export interface CartItem extends Article {
-  quantity: number;
-}
-
-/**
- * Settings interface for site-wide configuration and security.
- */
+// Fixed: Added Settings interface used in Dashboard and ArticleDetail
 export interface Settings {
   dashboardPassword?: string;
   siteName: string;
   adsenseCode: string;
+}
+
+// Fixed: Added CartItem interface used in Cart component
+export interface CartItem extends Article {
+  quantity: number;
 }
 
 export type View = 'home' | 'post' | 'admin';
