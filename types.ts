@@ -27,6 +27,7 @@ export interface Settings {
   dashboardPassword?: string;
   siteName: string;
   adsenseCode: string;
+  totalVisits?: number;
 }
 
 export interface CartItem extends Article {

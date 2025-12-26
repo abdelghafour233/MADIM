@@ -11,13 +11,15 @@ interface AdminProps {
   darkMode?: boolean;
 }
 
-type AdminTab = 'list' | 'editor' | 'ads' | 'security';
+type AdminTab = 'list' | 'editor' | 'ads' | 'security' | 'stats';
 
 const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpdateSettings, onLogout, darkMode = true }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>('list');
   const [editingPostId, setEditingPostId] = useState<string | null>(null);
   const [localSettings, setLocalSettings] = useState<Settings>(settings);
   const [showPass, setShowPass] = useState(false);
+
+  const totalViews = posts.reduce((acc, post) => acc + (post.views || 0), 0);
 
   const [form, setForm] = useState<Partial<Article>>({
     title: '', excerpt: '', content: '', image: '', category: Category.TECH, author: 'عبدو التقني'
@@ -76,6 +78,25 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
           <p className={`font-bold text-[10px] md:text-sm mt-1 ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>إدارة المحتوى لـ {settings.siteName}</p>
         </div>
         <button onClick={onLogout} className="w-full md:w-auto px-6 py-3 bg-red-600/10 text-red-500 border border-red-500/20 rounded-xl font-black text-xs md:text-sm hover:bg-red-600 hover:text-white transition-all">تسجيل الخروج</button>
+      </div>
+
+      {/* بطاقات الإحصائيات السريعة */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+         <div className={`p-6 rounded-3xl border ${darkMode ? 'bg-blue-600/10 border-blue-500/20' : 'bg-blue-50 border-blue-100'}`}>
+            <span className="block text-2xl mb-2">👥</span>
+            <span className={`block text-2xl font-black ${darkMode ? 'text-blue-400' : 'text-blue-600'}`}>{settings.totalVisits?.toLocaleString()}</span>
+            <span className="text-[10px] font-bold opacity-60 uppercase">إجمالي الزوار</span>
+         </div>
+         <div className={`p-6 rounded-3xl border ${darkMode ? 'bg-emerald-600/10 border-emerald-500/20' : 'bg-emerald-50 border-emerald-100'}`}>
+            <span className="block text-2xl mb-2">👁️</span>
+            <span className={`block text-2xl font-black ${darkMode ? 'text-emerald-400' : 'text-emerald-600'}`}>{totalViews.toLocaleString()}</span>
+            <span className="text-[10px] font-bold opacity-60 uppercase">مشاهدات المقالات</span>
+         </div>
+         <div className={`p-6 rounded-3xl border ${darkMode ? 'bg-purple-600/10 border-purple-500/20' : 'bg-purple-50 border-purple-100'}`}>
+            <span className="block text-2xl mb-2">📝</span>
+            <span className={`block text-2xl font-black ${darkMode ? 'text-purple-400' : 'text-purple-600'}`}>{posts.length}</span>
+            <span className="text-[10px] font-bold opacity-60 uppercase">إجمالي المقالات</span>
+         </div>
       </div>
 
       <div className="flex flex-wrap gap-2 md:gap-4 mb-8 md:mb-10">
