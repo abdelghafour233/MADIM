@@ -24,7 +24,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // إضافة Schema.org لـ SEO
   useEffect(() => {
     const script = document.createElement('script');
     script.type = 'application/ld+json';
@@ -42,7 +41,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
     };
     script.text = JSON.stringify(schemaData);
     document.head.appendChild(script);
-    return () => { document.head.removeChild(script); };
+    return () => { if (document.head.contains(script)) document.head.removeChild(script); };
   }, [post]);
 
   const shareUrl = window.location.href;
@@ -55,65 +54,65 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
   };
 
   return (
-    <div className="max-w-4xl mx-auto animate-fadeIn relative pb-20">
-      <div className="fixed top-0 left-0 h-1.5 bg-emerald-500 z-[100] transition-all duration-100" style={{ width: `${progress}%` }}></div>
+    <div className="max-w-4xl mx-auto animate-fadeIn relative pb-10 md:pb-20">
+      <div className="fixed top-0 left-0 h-1 md:h-1.5 bg-emerald-500 z-[100] transition-all duration-100" style={{ width: `${progress}%` }}></div>
       
-      <button onClick={onBack} className={`mt-8 mb-12 flex items-center gap-2 font-bold hover:text-emerald-500 transition-all group ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
-        <span className="group-hover:translate-x-1 transition-transform">→</span> العودة للرئيسية
+      <button onClick={onBack} className={`mt-4 md:mt-8 mb-8 md:mb-12 flex items-center gap-2 font-bold hover:text-emerald-500 transition-all group ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+        <span className="group-hover:translate-x-1 transition-transform text-xl md:text-2xl">→</span> العودة للرئيسية
       </button>
 
-      <div className="mb-16">
-        <span className="text-emerald-500 font-black text-sm uppercase tracking-[0.3em] mb-6 block text-center">{post.category}</span>
-        <h1 className={`text-4xl md:text-7xl font-black mb-10 leading-tight text-center ${darkMode ? 'text-white' : 'text-slate-900'}`}>{post.title || post.name}</h1>
-        <div className={`flex justify-center items-center gap-8 text-xs font-black uppercase tracking-widest ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
+      <div className="mb-8 md:mb-16 px-2">
+        <span className="text-emerald-500 font-black text-[10px] md:text-sm uppercase tracking-[0.2em] md:tracking-[0.3em] mb-4 md:mb-6 block text-center">{post.category}</span>
+        <h1 className={`text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-6 md:mb-10 leading-[1.3] md:leading-tight text-center ${darkMode ? 'text-white' : 'text-slate-900'}`}>{post.title || post.name}</h1>
+        <div className={`flex flex-wrap justify-center items-center gap-4 md:gap-8 text-[8px] md:text-xs font-black uppercase tracking-widest ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
            <div className="flex items-center gap-2">👤 <span>{post.author}</span></div>
            <div className="flex items-center gap-2">📅 <span>{post.date}</span></div>
            <div className="flex items-center gap-2">👁️ <span>{post.views} قراءة</span></div>
         </div>
       </div>
 
-      <div className={`rounded-[60px] overflow-hidden mb-12 shadow-2xl border-8 ${darkMode ? 'border-white/5' : 'border-white shadow-slate-200'}`}>
+      <div className={`rounded-[25px] md:rounded-[60px] overflow-hidden mb-8 md:mb-12 shadow-xl md:shadow-2xl border-4 md:border-8 ${darkMode ? 'border-white/5' : 'border-white shadow-slate-200'}`}>
         <img src={post.image} className="w-full h-auto" alt={post.title || post.name} loading="lazy" />
       </div>
 
       <AdUnit publisherId={settings.adsenseCode} slotId="top_ad" />
 
-      <div className={`max-w-none text-right leading-[2.2] font-medium px-4 text-2xl mb-12 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
+      <div className={`max-w-none text-right leading-[2] md:leading-[2.2] font-medium px-2 md:px-4 text-lg md:text-2xl mb-8 md:mb-12 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
         {post.content.split('\n').map((para, i) => (
-          <p key={i} className="mb-12 last:mb-0">{para}</p>
+          para.trim() && <p key={i} className="mb-8 md:mb-12 last:mb-0">{para}</p>
         ))}
       </div>
 
       <AdUnit publisherId={settings.adsenseCode} slotId="bottom_ad" />
 
-      <div className={`mt-20 p-10 md:p-16 rounded-[60px] text-center border-t-4 border-emerald-600 shadow-2xl transition-all ${darkMode ? 'glass bg-white/5' : 'bg-white border-slate-100 shadow-slate-200/50'}`}>
-        <h3 className={`text-3xl font-black mb-10 ${darkMode ? 'text-white' : 'text-slate-900'}`}>شارك المقال مع العالم 🚀</h3>
+      <div className={`mt-10 md:mt-20 p-6 md:p-16 rounded-[30px] md:rounded-[60px] text-center border-t-2 md:border-t-4 border-emerald-600 shadow-xl md:shadow-2xl transition-all ${darkMode ? 'glass bg-white/5' : 'bg-white border-slate-100 shadow-slate-200/50'}`}>
+        <h3 className={`text-xl md:text-3xl font-black mb-6 md:mb-10 ${darkMode ? 'text-white' : 'text-slate-900'}`}>شارك المقال 🚀</h3>
         
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-           {['facebook', 'twitter', 'whatsapp', 'pinterest', 'tiktok', 'copy'].map((platform) => {
-             const baseClass = "flex flex-col items-center justify-center p-6 rounded-[35px] hover:scale-105 transition-all shadow-lg group";
+        <div className="grid grid-cols-2 xs:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+           {['facebook', 'twitter', 'whatsapp', 'copy'].map((platform) => {
+             const baseClass = "flex flex-col items-center justify-center p-4 md:p-6 rounded-[20px] md:rounded-[35px] hover:scale-105 transition-all shadow-md group";
              if (platform === 'facebook') return (
                <button key={platform} onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`)} className={`${baseClass} bg-[#1877F2] text-white`}>
-                 <span className="text-3xl mb-2 font-bold">f</span>
-                 <span className="text-[10px] font-black uppercase">فيسبوك</span>
+                 <span className="text-xl md:text-3xl mb-1 md:mb-2 font-bold">f</span>
+                 <span className="text-[8px] md:text-[10px] font-black uppercase">فيسبوك</span>
                </button>
              );
              if (platform === 'twitter') return (
                <button key={platform} onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${shareUrl}`)} className={`${baseClass} bg-black text-white border border-white/10`}>
-                 <span className="text-3xl mb-2">𝕏</span>
-                 <span className="text-[10px] font-black uppercase">تويتر</span>
+                 <span className="text-xl md:text-3xl mb-1 md:mb-2">𝕏</span>
+                 <span className="text-[8px] md:text-[10px] font-black uppercase">تويتر</span>
                </button>
              );
              if (platform === 'whatsapp') return (
                <button key={platform} onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareTitle + ' ' + shareUrl)}`)} className={`${baseClass} bg-[#25D366] text-white`}>
-                 <span className="text-3xl mb-2">WA</span>
-                 <span className="text-[10px] font-black uppercase">واتساب</span>
+                 <span className="text-xl md:text-3xl mb-1 md:mb-2">WA</span>
+                 <span className="text-[8px] md:text-[10px] font-black uppercase">واتساب</span>
                </button>
              );
              if (platform === 'copy') return (
                <button key={platform} onClick={handleCopy} className={`${baseClass} ${darkMode ? 'bg-white/10 text-white' : 'bg-slate-100 text-slate-800'}`}>
-                 <span className="text-3xl mb-2">{copied ? '✅' : '🔗'}</span>
-                 <span className="text-[10px] font-black uppercase">{copied ? 'تم النسخ' : 'نسخ الرابط'}</span>
+                 <span className="text-xl md:text-3xl mb-1 md:mb-2">{copied ? '✅' : '🔗'}</span>
+                 <span className="text-[8px] md:text-[10px] font-black uppercase">{copied ? 'تم النسخ' : 'نسخ الرابط'}</span>
                </button>
              );
              return null;
