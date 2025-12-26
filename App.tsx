@@ -15,14 +15,14 @@ const INITIAL_SETTINGS: Settings = {
 
 const INITIAL_DATA: Article[] = [
   {
-    id: 'afcon-2025-opening',
+    id: 'afcon-2025-opening-v2',
     title: 'المغرب يبهر العالم: حفل افتتاح "الكان" يكتب تاريخاً جديداً للكرة الإفريقية',
     excerpt: 'بمزيج بين العراقة والتكنولوجيا، المملكة المغربية تفتتح كأس أمم أفريقيا بحفل أسطوري حبس أنفاس الملايين حول العالم.',
     content: 'بألوان العلم المغربي وصيحات آلاف المشجعين التي هزت أركان الملعب، انطلقت رسمياً نهائيات كأس أمم إفريقيا في أجواء احتفالية غير مسبوقة. لم يكن مجرد حفل افتتاح، بل كان سيمفونية بصرية مزجت بين التكنولوجيا الرقمية المتطورة والعراقة المغربية التي تضرب بجذورها في أعماق التاريخ الإفريقي.\n\nاستخدمت اللجنة المنظمة أسطولاً من الطائرات المسيرة (الدرونز) التي شكلت لوحات فنية في سماء الرباط، تجسد خريطة القارة السمراء والتحام الشعوب خلف كرة القدم. وتخلل الحفل عروض فلكلورية تمثل مختلف جهات المملكة، من عبيدات الرما وأحواش إلى فنون الكناوة، مما أعطى للحدث بعداً ثقافياً عميقاً.\n\nأكد رئيس الاتحاد الإفريقي لكرة القدم في كلمته أن "المغرب وضع معايير جديدة لتنظيم التظاهرات الرياضية"، مشيداً بالبنية التحتية العالمية التي أصبحت تتوفر عليها المملكة، من ملاعب بمواصفات "الفيفا" وشبكات نقل حديثة، مما يجعل هذا المونديال الإفريقي بروفة حقيقية لاستضافة كأس العالم 2030.\n\nالجماهير المغربية والإفريقية التي حجت بكثافة للملعب صنعت الحدث بـ"تيفوهات" عملاقة رفعت شعار الوحدة الإفريقية، مؤكدة أن كرة القدم هي جسر للمحبة والتآخي بين الشعوب. إن هذا الافتتاح الرائع ليس إلا بداية لنسخة استثنائية ستظل محفورة في ذاكرة عشاق الساحرة المستديرة لسنوات طويلة.',
-    image: 'https://images.unsplash.com/photo-1541534741688-6078c64b52d2?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '3 مارس 2025',
-    views: 45200,
+    views: 52400,
     author: 'هيئة التحرير',
     isTrending: true
   },
@@ -75,12 +75,18 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const savedPosts = localStorage.getItem('abdou_blog_v2');
+    
     if (savedPosts) {
-      const parsed = JSON.parse(savedPosts);
-      // التحقق من وجود المقال الجديد في التخزين المحلي، وإلا سنقوم بإضافته
-      const hasNewPost = parsed.some((p: Article) => p.id === 'afcon-2025-opening');
-      if (!hasNewPost) {
-        const updated = [INITIAL_DATA[0], ...parsed];
+      let parsed = JSON.parse(savedPosts);
+      
+      // منطق التحديث القسري: استبدال المقال القديم (الذي لا تظهر صورته) بالنسخة الجديدة المحدثة
+      const hasOldPost = parsed.some((p: Article) => p.id === 'afcon-2025-opening');
+      const hasNewPost = parsed.some((p: Article) => p.id === 'afcon-2025-opening-v2');
+
+      if (hasOldPost || !hasNewPost) {
+        // حذف النسخة القديمة المعطلة وإضافة النسخة الجديدة
+        const cleanList = parsed.filter((p: Article) => p.id !== 'afcon-2025-opening' && p.id !== 'afcon-2025-opening-v2');
+        const updated = [INITIAL_DATA[0], ...cleanList];
         setPosts(updated);
         localStorage.setItem('abdou_blog_v2', JSON.stringify(updated));
       } else {
