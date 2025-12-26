@@ -1,13 +1,11 @@
 
 export enum Category {
-  TECH = 'تقنية',
-  NEWS = 'أخبار المغرب',
-  REVIEWS = 'مراجعات',
-  TIPS = 'نصائح وحلول',
-  AI = 'ذكاء اصطناعي'
+  MOROCCO_NEWS = 'أخبار المغرب',
+  TECH = 'التقنية',
+  SELF_DEV = 'تطوير الذات',
+  REVIEWS = 'تقييم المنتجات'
 }
 
-// Fixed: Added optional properties used by products and different component versions (title vs name, rating, price, etc.)
 export interface Article {
   id: string;
   title?: string;
@@ -22,16 +20,15 @@ export interface Article {
   price?: number;
   isProduct?: boolean;
   rating?: number;
+  isTrending?: boolean;
 }
 
-// Fixed: Added Settings interface used in Dashboard and ArticleDetail
 export interface Settings {
   dashboardPassword?: string;
   siteName: string;
   adsenseCode: string;
 }
 
-// Fixed: Added CartItem interface used in Cart component
 export interface CartItem extends Article {
   quantity: number;
 }

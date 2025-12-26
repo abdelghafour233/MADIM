@@ -11,25 +11,41 @@ import WhatsAppButton from './components/WhatsAppButton.tsx';
 const INITIAL_DATA: Article[] = [
   {
     id: '1',
-    title: 'ثورة الـ 5G في المغرب: كيف ستغير حياتنا اليومية؟',
-    excerpt: 'تغطية شاملة لاستعدادات شركات الاتصالات المغربية لإطلاق الجيل الخامس والفرص الاقتصادية الواعدة.',
-    content: 'يعتبر المغرب اليوم من الدول الرائدة في التحول الرقمي بإفريقيا. مع اقتراب إطلاق شبكات الجيل الخامس، ننتظر قفزة نوعية في سرعات الإنترنت وتقنيات المدن الذكية...\n\nإن البنية التحتية المتطورة ستسمح بظهور جيل جديد من الشركات الناشئة المعتمدة على إنترنت الأشياء والبيانات الضخمة.',
-    image: 'https://images.unsplash.com/photo-1562408590-e3290b08433b?auto=format&fit=crop&q=80&w=1200',
-    category: Category.TECH,
-    date: '28 فبراير 2025',
-    views: 4200,
-    author: 'عبدو التقني'
+    title: 'المغرب يستعد لاستضافة كأس العالم 2030 ببنبة تحتية عالمية',
+    excerpt: 'تفاصيل الملاعب الجديدة ومشاريع النقل الكبرى التي ستحول المدن المغربية إلى وجهات عالمية.',
+    content: 'تشهد المملكة المغربية ورشة إصلاح كبرى استعداداً لاحتضان مونديال 2030 بالتعاون مع إسبانيا والبرتغال. تشمل المشاريع بناء "ملعب الحسن الثاني الكبير" ببنسليمان وسلسلة من القطارات فائقة السرعة التي ستربط طنجة بأكادير.\n\nتعتبر هذه المشاريع نقلة نوعية في الاقتصاد الوطني وتوفر آلاف فرص الشغل للشباب المغربي.',
+    image: 'https://images.unsplash.com/photo-1539186607619-df476afe3ff1?auto=format&fit=crop&q=80&w=1200',
+    category: Category.MOROCCO_NEWS,
+    date: '1 مارس 2025',
+    views: 8500,
+    author: 'هيئة التحرير',
+    isTrending: true
   },
   {
     id: '2',
-    title: 'أفضل 5 حواسيب للمبرمجين في السوق المغربي 2025',
-    excerpt: 'مراجعة دقيقة للأداء، البطارية، والسعر لتساعدك في اختيار رفيق دربك في عالم الكود.',
-    content: 'اختيار الحاسوب المناسب هو أول خطوة للنجاح في مسارك المهني كمبرمج. في هذه المقالة نستعرض أحدث أجهزة MacBook Pro ومعالجات M4 الجديدة، بالإضافة إلى بدائل قوية من Dell و Lenovo متوفرة حالياً في المغرب.',
-    image: 'https://images.unsplash.com/photo-1525547719571-a2d4ac8945e2?auto=format&fit=crop&q=80&w=1200',
+    title: 'مراجعة شاملة لـ MacBook Pro M4: وحش الأداء الجديد',
+    name: 'MacBook Pro M4 Pro',
+    excerpt: 'هل تستحق الشاشة الجديدة والمعالج القوي دفع ثمن إضافي؟ نضع الجهاز تحت المجهر.',
+    content: 'يأتي جهاز ماك بوك برو الجديد بمعالج M4 الذي يقدم قفزة هائلة في معالجة الرسوميات والذكاء الاصطناعي. الشاشة تدعم الآن تقنية Nano-texture لمنع الانعكاسات، مما يجعله الخيار الأول للمصممين والمبرمجين في المغرب.',
+    image: 'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?auto=format&fit=crop&q=80&w=1200',
     category: Category.REVIEWS,
-    date: '27 فبراير 2025',
+    date: '28 فبراير 2025',
     views: 12500,
-    author: 'عبدو التقني'
+    author: 'عبدو التقني',
+    rating: 5,
+    isProduct: true,
+    price: 24500
+  },
+  {
+    id: '3',
+    title: 'كيف تبني عقلية النجاح في عام 2025؟',
+    excerpt: '5 خطوات عملية لتغيير طريقة تفكيرك وتحقيق أهدافك الكبرى في الحياة المهنية والشخصية.',
+    content: 'تطوير الذات يبدأ من الداخل. في هذا المقال نستعرض تقنيات "العقلية المتنامية" (Growth Mindset) وكيفية التغلب على الخوف من الفشل. الانضباط هو السر وراء كل نجاح عظيم.',
+    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=1200',
+    category: Category.SELF_DEV,
+    date: '27 فبراير 2025',
+    views: 4300,
+    author: 'أمال السعدي'
   }
 ];
 
@@ -41,14 +57,13 @@ const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem('abdou_blog_v1');
+    const saved = localStorage.getItem('abdou_blog_v2');
     if (saved) {
       setPosts(JSON.parse(saved));
     } else {
       setPosts(INITIAL_DATA);
-      localStorage.setItem('abdou_blog_v1', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_blog_v2', JSON.stringify(INITIAL_DATA));
     }
-    
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') setDarkMode(false);
   }, []);
@@ -64,7 +79,7 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen transition-colors duration-500 ${darkMode ? 'bg-[#050505] text-white' : 'bg-slate-50 text-slate-900'}`}>
+    <div className={`min-h-screen transition-all duration-500 selection:bg-emerald-500 selection:text-white ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
       <Navbar 
         currentView={view}
         setView={setView}
@@ -76,24 +91,45 @@ const App: React.FC = () => {
         onOpenCart={() => {}}
       />
 
-      <main className="container mx-auto px-6 py-12 flex-grow min-h-[70vh]">
+      <main className="container mx-auto px-4 md:px-8 py-8 flex-grow">
         {view === 'home' && <Home posts={posts} onPostClick={(p) => navigateTo('post', p)} darkMode={darkMode} />}
         {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} darkMode={darkMode} />}
         {view === 'admin' && (
           !isAuth ? <Login onSuccess={() => setIsAuth(true)} /> : 
           <AdminDashboard 
             posts={posts} 
-            onUpdate={(newPosts) => { setPosts(newPosts); localStorage.setItem('abdou_blog_v1', JSON.stringify(newPosts)); }}
+            onUpdate={(newPosts) => { setPosts(newPosts); localStorage.setItem('abdou_blog_v2', JSON.stringify(newPosts)); }}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
         )}
       </main>
 
-      <footer className={`border-t py-16 mt-20 text-center transition-colors ${darkMode ? 'border-white/5' : 'border-slate-200 bg-white'}`}>
-        <div className="text-xl font-black mb-4"><span className="text-emerald-500 font-black">ABDO</span>WEB</div>
-        <p className={`${darkMode ? 'text-slate-500' : 'text-slate-600'} font-medium`}>مصدرك الأول لأخبار التقنية والمراجعات في المغرب</p>
-        <p className={`mt-8 text-[10px] font-black uppercase tracking-[0.3em] ${darkMode ? 'text-slate-700' : 'text-slate-400'}`}>جميع الحقوق محفوظة © 2025</p>
+      <footer className={`mt-20 py-20 border-t transition-all ${darkMode ? 'bg-black/40 border-white/5' : 'bg-white border-slate-200 shadow-inner'}`}>
+        <div className="container mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-right">
+          <div>
+            <div className="text-3xl font-black mb-6"><span className="text-emerald-500">ABDO</span>WEB</div>
+            <p className="opacity-60 leading-relaxed font-bold">منصتك المغربية الرائدة لاستكشاف عالم التقنية، تطوير الذات، وآخر الأخبار المحلية بلمسة إبداعية.</p>
+          </div>
+          <div>
+            <h4 className="text-xl font-black mb-6">الأقسام الرئيسية</h4>
+            <ul className="space-y-4 opacity-60 font-bold">
+              {Object.values(Category).map(c => <li key={c} className="hover:text-emerald-500 cursor-pointer transition-colors">{c}</li>)}
+            </ul>
+          </div>
+          <div>
+            <h4 className="text-xl font-black mb-6">تواصل معنا</h4>
+            <p className="opacity-60 font-bold mb-4">الدعم الفني والتعاون الإعلاني متوفر 24/7</p>
+            <div className="flex justify-center md:justify-end gap-4">
+              <span className="w-12 h-12 rounded-2xl bg-emerald-600/10 text-emerald-500 flex items-center justify-center cursor-pointer hover:bg-emerald-600 hover:text-white transition-all">FB</span>
+              <span className="w-12 h-12 rounded-2xl bg-emerald-600/10 text-emerald-500 flex items-center justify-center cursor-pointer hover:bg-emerald-600 hover:text-white transition-all">X</span>
+              <span className="w-12 h-12 rounded-2xl bg-emerald-600/10 text-emerald-500 flex items-center justify-center cursor-pointer hover:bg-emerald-600 hover:text-white transition-all">IG</span>
+            </div>
+          </div>
+        </div>
+        <div className="text-center mt-20 pt-8 border-t border-white/5 text-[10px] font-black uppercase tracking-[0.5em] opacity-30">
+          جميع الحقوق محفوظة © 2025 لـ عبدو ويب
+        </div>
       </footer>
 
       <WhatsAppButton />

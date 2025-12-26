@@ -4,24 +4,42 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>عبدو ويب | Abdou Web</title>
+    <title>عبدو ويب | ABDO WEB</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      :root {
+        --emerald-glow: 0 0 40px rgba(16, 185, 129, 0.15);
+      }
       body { 
-        font-family: 'Tajawal', sans-serif; 
-        background-color: #050505; 
-        color: #ffffff; 
+        font-family: 'Cairo', 'Tajawal', sans-serif; 
         margin: 0; 
         padding: 0;
         overflow-x: hidden;
       }
-      .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-      #root { min-height: 100vh; }
-      .animate-fadeIn { animation: fadeIn 0.5s ease-out forwards; }
-      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+      .glass { 
+        background: rgba(255, 255, 255, 0.03); 
+        backdrop-filter: blur(20px); 
+        border: 1px solid rgba(255, 255, 255, 0.08); 
+      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      
+      .animate-fadeIn { animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+      .gradient-text {
+        background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      
+      ::selection {
+        background: #10b981;
+        color: white;
+      }
     </style>
     <script type="importmap">
 {
