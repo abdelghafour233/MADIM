@@ -1,41 +1,46 @@
 
 export enum Category {
-  TECH = 'تقنية وتكنولوجيا',
-  MOROCCO = 'أخبار المغرب',
-  LIFESTYLE = 'أسلوب حياة',
-  PRODUCTIVITY = 'تطوير الذات',
-  REVIEWS = 'مراجعات وتقييمات',
-  STORE = 'المتجر'
+  TECH = 'تقنية',
+  NEWS = 'أخبار المغرب',
+  REVIEWS = 'مراجعات',
+  TIPS = 'نصائح وحلول'
 }
 
+/**
+ * Article interface updated to support both blog posts and product items.
+ * Fields like name, price, and isProduct are added for shop functionality.
+ * title and excerpt are made optional to accommodate product-only entries.
+ */
 export interface Article {
   id: string;
-  name: string;
+  title?: string;
+  name?: string;
+  excerpt?: string;
   content: string;
   image: string;
   category: Category;
-  rating: number;
-  price?: number; // للمنتجات
-  views?: number;
-  author?: string;
-  date?: string;
+  date: string;
+  views: number;
+  author: string;
+  price?: number;
   isProduct?: boolean;
+  rating?: number;
 }
 
+/**
+ * CartItem extends Article with quantity for shopping cart functionality.
+ */
 export interface CartItem extends Article {
   quantity: number;
 }
 
+/**
+ * Settings interface for site-wide configuration and security.
+ */
 export interface Settings {
-  fbPixel: string;
-  googleAnalytics: string;
-  tiktokPixel: string;
-  adsenseCode: string;
-  adsTxt: string;
-  domain: string;
   dashboardPassword?: string;
   siteName: string;
-  siteDescription: string;
+  adsenseCode: string;
 }
 
-export type View = 'home' | 'article' | 'product' | 'category' | 'dashboard' | 'about' | 'privacy' | 'contact' | 'checkout';
+export type View = 'home' | 'post' | 'admin';
