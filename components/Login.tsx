@@ -3,16 +3,16 @@ import React, { useState } from 'react';
 
 interface LoginProps {
   onSuccess: () => void;
+  correctPassword: string;
 }
 
-const Login: React.FC<LoginProps> = ({ onSuccess }) => {
+const Login: React.FC<LoginProps> = ({ onSuccess, correctPassword }) => {
   const [pass, setPass] = useState('');
   const [showPass, setShowPass] = useState(false);
   const [error, setError] = useState(false);
 
   const handleLogin = () => {
-    // التحقق من كلمة السر (القيمة الافتراضية هي 1234 ولكن لا تظهر في الواجهة)
-    if (pass === '1234') {
+    if (pass === correctPassword) {
       onSuccess();
     } else {
       setError(true);

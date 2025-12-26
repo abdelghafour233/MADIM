@@ -10,7 +10,8 @@ import WhatsAppButton from './components/WhatsAppButton.tsx';
 
 const INITIAL_SETTINGS: Settings = {
   siteName: 'عبدو ويب',
-  adsenseCode: 'ca-pub-5578524966832192'
+  adsenseCode: 'ca-pub-5578524966832192',
+  dashboardPassword: '1234'
 };
 
 const INITIAL_DATA: Article[] = [
@@ -95,27 +96,20 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const savedPosts = localStorage.getItem('abdou_blog_v2');
-    
     if (savedPosts) {
-      let parsed = JSON.parse(savedPosts);
-      
-      // التحديث القسري لضمان ظهور مقال الرياضة الجديد
-      const hasSportsPost = parsed.some((p: Article) => p.id === 'sports-preview-egypt-morocco-2025');
-
-      if (!hasSportsPost) {
-        const updated = [INITIAL_DATA[0], ...parsed];
-        setPosts(updated);
-        localStorage.setItem('abdou_blog_v2', JSON.stringify(updated));
-      } else {
-        setPosts(parsed);
-      }
+      setPosts(JSON.parse(savedPosts));
     } else {
       setPosts(INITIAL_DATA);
       localStorage.setItem('abdou_blog_v2', JSON.stringify(INITIAL_DATA));
     }
 
     const savedSettings = localStorage.getItem('abdou_settings');
-    if (savedSettings) setSettings(JSON.parse(savedSettings));
+    if (savedSettings) {
+      setSettings(JSON.parse(savedSettings));
+    } else {
+      setSettings(INITIAL_SETTINGS);
+      localStorage.setItem('abdou_settings', JSON.stringify(INITIAL_SETTINGS));
+    }
 
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') setDarkMode(false);
@@ -154,7 +148,7 @@ const App: React.FC = () => {
         {view === 'home' && <Home posts={posts} onPostClick={(p) => navigateTo('post', p)} darkMode={darkMode} />}
         {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
         {view === 'admin' && (
-          !isAuth ? <Login onSuccess={() => setIsAuth(true)} /> : 
+          !isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : 
           <AdminDashboard 
             posts={posts} 
             settings={settings}
