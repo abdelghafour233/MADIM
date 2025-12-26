@@ -24,6 +24,27 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // إضافة Schema.org لـ SEO
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    const schemaData = {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": post.title || post.name,
+      "image": [post.image],
+      "datePublished": post.date,
+      "author": [{
+          "@type": "Person",
+          "name": post.author,
+          "url": window.location.origin
+        }]
+    };
+    script.text = JSON.stringify(schemaData);
+    document.head.appendChild(script);
+    return () => { document.head.removeChild(script); };
+  }, [post]);
+
   const shareUrl = window.location.href;
   const shareTitle = post.title || post.name || '';
 
@@ -52,10 +73,9 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
       </div>
 
       <div className={`rounded-[60px] overflow-hidden mb-12 shadow-2xl border-8 ${darkMode ? 'border-white/5' : 'border-white shadow-slate-200'}`}>
-        <img src={post.image} className="w-full h-auto" alt="" />
+        <img src={post.image} className="w-full h-auto" alt={post.title || post.name} loading="lazy" />
       </div>
 
-      {/* إعلان علوي */}
       <AdUnit publisherId={settings.adsenseCode} slotId="top_ad" />
 
       <div className={`max-w-none text-right leading-[2.2] font-medium px-4 text-2xl mb-12 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -64,44 +84,40 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         ))}
       </div>
 
-      {/* إعلان سفلي */}
       <AdUnit publisherId={settings.adsenseCode} slotId="bottom_ad" />
 
-      {/* قسم المشاركة */}
       <div className={`mt-20 p-10 md:p-16 rounded-[60px] text-center border-t-4 border-emerald-600 shadow-2xl transition-all ${darkMode ? 'glass bg-white/5' : 'bg-white border-slate-100 shadow-slate-200/50'}`}>
         <h3 className={`text-3xl font-black mb-10 ${darkMode ? 'text-white' : 'text-slate-900'}`}>شارك المقال مع العالم 🚀</h3>
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-           <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`)} className="flex flex-col items-center justify-center p-6 bg-[#1877F2] text-white rounded-[35px] hover:scale-105 transition-all shadow-lg group">
-             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform font-bold">f</span>
-             <span className="text-[10px] font-black uppercase">فيسبوك</span>
-           </button>
-
-           <button onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${shareUrl}`)} className="flex flex-col items-center justify-center p-6 bg-black text-white rounded-[35px] hover:scale-105 transition-all shadow-lg group border border-white/10">
-             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform">𝕏</span>
-             <span className="text-[10px] font-black uppercase">تويتر</span>
-           </button>
-
-           <button onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareTitle + ' ' + shareUrl)}`)} className="flex flex-col items-center justify-center p-6 bg-[#25D366] text-white rounded-[35px] hover:scale-105 transition-all shadow-lg group">
-             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform">WA</span>
-             <span className="text-[10px] font-black uppercase">واتساب</span>
-           </button>
-
-           <button onClick={() => window.open(`https://pinterest.com/pin/create/button/?url=${shareUrl}&media=${post.image}&description=${encodeURIComponent(shareTitle)}`)} className="flex flex-col items-center justify-center p-6 bg-[#E60023] text-white rounded-[35px] hover:scale-105 transition-all shadow-lg group">
-             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform">P</span>
-             <span className="text-[10px] font-black uppercase">بنتريست</span>
-           </button>
-
-           <button onClick={handleCopy} className="flex flex-col items-center justify-center p-6 bg-[#000000] text-white rounded-[35px] hover:scale-105 transition-all shadow-lg group relative overflow-hidden">
-             <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-cyan-400/20 via-transparent to-magenta-400/20 opacity-50"></div>
-             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform relative z-10 font-bold">TikTok</span>
-             <span className="text-[10px] font-black uppercase relative z-10">تيك توك</span>
-           </button>
-
-           <button onClick={handleCopy} className={`flex flex-col items-center justify-center p-6 rounded-[35px] hover:scale-105 transition-all shadow-lg group ${darkMode ? 'bg-white/10 text-white' : 'bg-slate-100 text-slate-800'}`}>
-             <span className="text-3xl mb-2 group-hover:rotate-12 transition-transform">{copied ? '✅' : '🔗'}</span>
-             <span className="text-[10px] font-black uppercase">{copied ? 'تم النسخ' : 'نسخ الرابط'}</span>
-           </button>
+           {['facebook', 'twitter', 'whatsapp', 'pinterest', 'tiktok', 'copy'].map((platform) => {
+             const baseClass = "flex flex-col items-center justify-center p-6 rounded-[35px] hover:scale-105 transition-all shadow-lg group";
+             if (platform === 'facebook') return (
+               <button key={platform} onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`)} className={`${baseClass} bg-[#1877F2] text-white`}>
+                 <span className="text-3xl mb-2 font-bold">f</span>
+                 <span className="text-[10px] font-black uppercase">فيسبوك</span>
+               </button>
+             );
+             if (platform === 'twitter') return (
+               <button key={platform} onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${shareUrl}`)} className={`${baseClass} bg-black text-white border border-white/10`}>
+                 <span className="text-3xl mb-2">𝕏</span>
+                 <span className="text-[10px] font-black uppercase">تويتر</span>
+               </button>
+             );
+             if (platform === 'whatsapp') return (
+               <button key={platform} onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareTitle + ' ' + shareUrl)}`)} className={`${baseClass} bg-[#25D366] text-white`}>
+                 <span className="text-3xl mb-2">WA</span>
+                 <span className="text-[10px] font-black uppercase">واتساب</span>
+               </button>
+             );
+             if (platform === 'copy') return (
+               <button key={platform} onClick={handleCopy} className={`${baseClass} ${darkMode ? 'bg-white/10 text-white' : 'bg-slate-100 text-slate-800'}`}>
+                 <span className="text-3xl mb-2">{copied ? '✅' : '🔗'}</span>
+                 <span className="text-[10px] font-black uppercase">{copied ? 'تم النسخ' : 'نسخ الرابط'}</span>
+               </button>
+             );
+             return null;
+           })}
         </div>
       </div>
     </div>

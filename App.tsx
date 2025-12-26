@@ -10,7 +10,7 @@ import WhatsAppButton from './components/WhatsAppButton.tsx';
 
 const INITIAL_SETTINGS: Settings = {
   siteName: 'عبدو ويب',
-  adsenseCode: 'ca-pub-5578524966832192' // كود افتراضي
+  adsenseCode: 'ca-pub-5578524966832192'
 };
 
 const INITIAL_DATA: Article[] = [
@@ -40,17 +40,6 @@ const INITIAL_DATA: Article[] = [
     rating: 5,
     isProduct: true,
     price: 24500
-  },
-  {
-    id: '3',
-    title: 'كيف تبني عقلية النجاح في عام 2025؟',
-    excerpt: '5 خطوات عملية لتغيير طريقة تفكيرك وتحقيق أهدافك الكبرى في الحياة المهنية والشخصية.',
-    content: 'تطوير الذات يبدأ من الداخل. في هذا المقال نستعرض تقنيات "العقلية المتنامية" (Growth Mindset) وكيفية التغلب على الخوف من الفشل. الانضباط هو السر وراء كل نجاح عظيم.',
-    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=1200',
-    category: Category.SELF_DEV,
-    date: '27 فبراير 2025',
-    views: 4300,
-    author: 'أمال السعدي'
   }
 ];
 
@@ -61,6 +50,17 @@ const App: React.FC = () => {
   const [selectedPost, setSelectedPost] = useState<Article | null>(null);
   const [isAuth, setIsAuth] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
+
+  // تحديث عنوان الصفحة ديناميكياً لـ SEO
+  useEffect(() => {
+    if (view === 'home') {
+      document.title = `${settings.siteName} | أخبار المغرب والتقنية`;
+    } else if (view === 'post' && selectedPost) {
+      document.title = `${selectedPost.title || selectedPost.name} | ${settings.siteName}`;
+    } else if (view === 'admin') {
+      document.title = `لوحة التحكم | ${settings.siteName}`;
+    }
+  }, [view, selectedPost, settings.siteName]);
 
   useEffect(() => {
     const savedPosts = localStorage.getItem('abdou_blog_v2');
@@ -77,10 +77,6 @@ const App: React.FC = () => {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') setDarkMode(false);
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
-  }, [darkMode]);
 
   const updatePosts = (newPosts: Article[]) => {
     setPosts(newPosts);
@@ -99,11 +95,11 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen transition-all duration-500 selection:bg-emerald-500 selection:text-white ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
+    <div className={`min-h-screen transition-all duration-300 ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
       <Navbar 
         currentView={view}
         setView={setView}
-        siteName={settings.siteName + " | عبدو ويب"}
+        siteName={settings.siteName}
         onSearch={() => {}}
         darkMode={darkMode}
         toggleDarkMode={() => setDarkMode(!darkMode)}
@@ -127,7 +123,7 @@ const App: React.FC = () => {
         )}
       </main>
 
-      <footer className={`mt-20 py-20 border-t transition-all ${darkMode ? 'bg-black/40 border-white/5' : 'bg-white border-slate-200 shadow-inner'}`}>
+      <footer className={`mt-20 py-16 border-t transition-all ${darkMode ? 'bg-black/40 border-white/5' : 'bg-white border-slate-200 shadow-inner'}`}>
         <div className="container mx-auto px-8 grid grid-cols-1 md:grid-cols-3 gap-12 text-center md:text-right">
           <div>
             <div className="text-3xl font-black mb-6"><span className="text-emerald-500">ABDO</span>WEB</div>
@@ -142,18 +138,12 @@ const App: React.FC = () => {
           <div>
             <h4 className="text-xl font-black mb-6">تواصل معنا</h4>
             <p className="opacity-60 font-bold mb-4">الدعم الفني والتعاون الإعلاني متوفر 24/7</p>
-            <div className="flex justify-center md:justify-end gap-4">
-              <span className="w-12 h-12 rounded-2xl bg-emerald-600/10 text-emerald-500 flex items-center justify-center cursor-pointer hover:bg-emerald-600 hover:text-white transition-all">FB</span>
-              <span className="w-12 h-12 rounded-2xl bg-emerald-600/10 text-emerald-500 flex items-center justify-center cursor-pointer hover:bg-emerald-600 hover:text-white transition-all">X</span>
-              <span className="w-12 h-12 rounded-2xl bg-emerald-600/10 text-emerald-500 flex items-center justify-center cursor-pointer hover:bg-emerald-600 hover:text-white transition-all">IG</span>
-            </div>
           </div>
         </div>
         <div className="text-center mt-20 pt-8 border-t border-white/5 text-[10px] font-black uppercase tracking-[0.5em] opacity-30">
           جميع الحقوق محفوظة © 2025 لـ {settings.siteName}
         </div>
       </footer>
-
       <WhatsAppButton />
     </div>
   );
