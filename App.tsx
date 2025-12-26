@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Article, Category } from './types.ts';
+import Navbar from './components/Navbar.tsx';
 import Home from './components/Home.tsx';
 import PostDetail from './components/PostDetail.tsx';
 import AdminDashboard from './components/AdminDashboard.tsx';
@@ -37,6 +38,7 @@ const App: React.FC = () => {
   const [posts, setPosts] = useState<Article[]>([]);
   const [selectedPost, setSelectedPost] = useState<Article | null>(null);
   const [isAuth, setIsAuth] = useState(false);
+  const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
     const saved = localStorage.getItem('abdou_blog_v1');
@@ -46,7 +48,14 @@ const App: React.FC = () => {
       setPosts(INITIAL_DATA);
       localStorage.setItem('abdou_blog_v1', JSON.stringify(INITIAL_DATA));
     }
+    
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light') setDarkMode(false);
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
+  }, [darkMode]);
 
   const navigateTo = (v: View, p?: Article) => {
     if (p) setSelectedPost(p);
@@ -55,36 +64,36 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-emerald-500/30">
-      <nav className="sticky top-0 z-50 glass h-20 flex items-center">
-        <div className="container mx-auto px-6 flex justify-between items-center">
-          <div className="text-3xl font-black cursor-pointer tracking-tighter" onClick={() => navigateTo('home')}>
-            <span className="text-emerald-500 font-black">ABDO</span>WEB
-          </div>
-          <div className="flex items-center gap-6">
-            <button onClick={() => navigateTo('admin')} className="text-xs font-bold text-slate-500 hover:text-white transition-colors">لوحة التحكم</button>
-            <button onClick={() => navigateTo('home')} className="px-8 py-2 bg-emerald-600 rounded-2xl font-black text-sm hover:bg-emerald-500 transition-all shadow-lg shadow-emerald-500/10">الرئيسية</button>
-          </div>
-        </div>
-      </nav>
+    <div className={`min-h-screen transition-colors duration-500 ${darkMode ? 'bg-[#050505] text-white' : 'bg-slate-50 text-slate-900'}`}>
+      <Navbar 
+        currentView={view}
+        setView={setView}
+        siteName="ABDO WEB | عبدو ويب"
+        onSearch={() => {}}
+        darkMode={darkMode}
+        toggleDarkMode={() => setDarkMode(!darkMode)}
+        cartCount={0}
+        onOpenCart={() => {}}
+      />
 
-      <main className="container mx-auto px-6 py-12 flex-grow">
-        {view === 'home' && <Home posts={posts} onPostClick={(p) => navigateTo('post', p)} />}
-        {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} />}
+      <main className="container mx-auto px-6 py-12 flex-grow min-h-[70vh]">
+        {view === 'home' && <Home posts={posts} onPostClick={(p) => navigateTo('post', p)} darkMode={darkMode} />}
+        {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} darkMode={darkMode} />}
         {view === 'admin' && (
           !isAuth ? <Login onSuccess={() => setIsAuth(true)} /> : 
           <AdminDashboard 
             posts={posts} 
             onUpdate={(newPosts) => { setPosts(newPosts); localStorage.setItem('abdou_blog_v1', JSON.stringify(newPosts)); }}
             onLogout={() => setIsAuth(false)}
+            darkMode={darkMode}
           />
         )}
       </main>
 
-      <footer className="border-t border-white/5 py-16 mt-20 text-center">
-        <div className="text-xl font-black mb-4"><span className="text-emerald-500">ABDO</span>WEB</div>
-        <p className="text-slate-500 font-medium">مصدرك الأول لأخبار التقنية والمراجعات في المغرب</p>
-        <p className="mt-8 text-[10px] text-slate-700 font-black uppercase tracking-[0.3em]">جميع الحقوق محفوظة © 2025</p>
+      <footer className={`border-t py-16 mt-20 text-center transition-colors ${darkMode ? 'border-white/5' : 'border-slate-200 bg-white'}`}>
+        <div className="text-xl font-black mb-4"><span className="text-emerald-500 font-black">ABDO</span>WEB</div>
+        <p className={`${darkMode ? 'text-slate-500' : 'text-slate-600'} font-medium`}>مصدرك الأول لأخبار التقنية والمراجعات في المغرب</p>
+        <p className={`mt-8 text-[10px] font-black uppercase tracking-[0.3em] ${darkMode ? 'text-slate-700' : 'text-slate-400'}`}>جميع الحقوق محفوظة © 2025</p>
       </footer>
 
       <WhatsAppButton />
