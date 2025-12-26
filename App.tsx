@@ -1,12 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
-import { View, Article, Category } from './types.ts';
+import { View, Article, Category, Settings } from './types.ts';
 import Navbar from './components/Navbar.tsx';
 import Home from './components/Home.tsx';
 import PostDetail from './components/PostDetail.tsx';
 import AdminDashboard from './components/AdminDashboard.tsx';
 import Login from './components/Login.tsx';
 import WhatsAppButton from './components/WhatsAppButton.tsx';
+
+const INITIAL_SETTINGS: Settings = {
+  siteName: 'عبدو ويب',
+  adsenseCode: 'ca-pub-5578524966832192' // كود افتراضي
+};
 
 const INITIAL_DATA: Article[] = [
   {
@@ -52,18 +57,23 @@ const INITIAL_DATA: Article[] = [
 const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
   const [posts, setPosts] = useState<Article[]>([]);
+  const [settings, setSettings] = useState<Settings>(INITIAL_SETTINGS);
   const [selectedPost, setSelectedPost] = useState<Article | null>(null);
   const [isAuth, setIsAuth] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
 
   useEffect(() => {
-    const saved = localStorage.getItem('abdou_blog_v2');
-    if (saved) {
-      setPosts(JSON.parse(saved));
+    const savedPosts = localStorage.getItem('abdou_blog_v2');
+    if (savedPosts) {
+      setPosts(JSON.parse(savedPosts));
     } else {
       setPosts(INITIAL_DATA);
       localStorage.setItem('abdou_blog_v2', JSON.stringify(INITIAL_DATA));
     }
+
+    const savedSettings = localStorage.getItem('abdou_settings');
+    if (savedSettings) setSettings(JSON.parse(savedSettings));
+
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'light') setDarkMode(false);
   }, []);
@@ -71,6 +81,16 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('theme', darkMode ? 'dark' : 'light');
   }, [darkMode]);
+
+  const updatePosts = (newPosts: Article[]) => {
+    setPosts(newPosts);
+    localStorage.setItem('abdou_blog_v2', JSON.stringify(newPosts));
+  };
+
+  const updateSettings = (newSettings: Settings) => {
+    setSettings(newSettings);
+    localStorage.setItem('abdou_settings', JSON.stringify(newSettings));
+  };
 
   const navigateTo = (v: View, p?: Article) => {
     if (p) setSelectedPost(p);
@@ -83,7 +103,7 @@ const App: React.FC = () => {
       <Navbar 
         currentView={view}
         setView={setView}
-        siteName="ABDO WEB | عبدو ويب"
+        siteName={settings.siteName + " | عبدو ويب"}
         onSearch={() => {}}
         darkMode={darkMode}
         toggleDarkMode={() => setDarkMode(!darkMode)}
@@ -93,12 +113,14 @@ const App: React.FC = () => {
 
       <main className="container mx-auto px-4 md:px-8 py-8 flex-grow">
         {view === 'home' && <Home posts={posts} onPostClick={(p) => navigateTo('post', p)} darkMode={darkMode} />}
-        {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} darkMode={darkMode} />}
+        {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
         {view === 'admin' && (
           !isAuth ? <Login onSuccess={() => setIsAuth(true)} /> : 
           <AdminDashboard 
             posts={posts} 
-            onUpdate={(newPosts) => { setPosts(newPosts); localStorage.setItem('abdou_blog_v2', JSON.stringify(newPosts)); }}
+            settings={settings}
+            onUpdate={updatePosts}
+            onUpdateSettings={updateSettings}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
@@ -128,7 +150,7 @@ const App: React.FC = () => {
           </div>
         </div>
         <div className="text-center mt-20 pt-8 border-t border-white/5 text-[10px] font-black uppercase tracking-[0.5em] opacity-30">
-          جميع الحقوق محفوظة © 2025 لـ عبدو ويب
+          جميع الحقوق محفوظة © 2025 لـ {settings.siteName}
         </div>
       </footer>
 
