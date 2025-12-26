@@ -53,6 +53,17 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
     setTimeout(() => setCopied(false), 2000);
   };
 
+  // وظيفة للتحقق مما إذا كان النص رابطاً
+  const isUrl = (text: string) => {
+    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    return !!pattern.test(text.trim());
+  };
+
   return (
     <div className="max-w-4xl mx-auto animate-fadeIn relative pb-10 md:pb-20">
       <div className="fixed top-0 left-0 h-1 md:h-1.5 bg-emerald-500 z-[100] transition-all duration-100" style={{ width: `${progress}%` }}></div>
@@ -78,9 +89,32 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
       <AdUnit publisherId={settings.adsenseCode} slotId="top_ad" />
 
       <div className={`max-w-none text-right leading-[2] md:leading-[2.2] font-medium px-2 md:px-4 text-lg md:text-2xl mb-8 md:mb-12 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-        {post.content.split('\n').map((para, i) => (
-          para.trim() && <p key={i} className="mb-8 md:mb-12 last:mb-0">{para}</p>
-        ))}
+        {post.content.split('\n').map((para, i) => {
+          const trimmedPara = para.trim();
+          if (!trimmedPara) return null;
+
+          // إذا كان الباراجراف عبارة عن رابط فقط، قم بتحويله لزر جذاب
+          if (isUrl(trimmedPara)) {
+            return (
+              <div key={i} className="my-10 md:my-16">
+                <a 
+                  href={trimmedPara} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="group relative flex items-center justify-center gap-4 py-6 md:py-8 px-10 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-[25px] md:rounded-[35px] font-black text-xl md:text-3xl shadow-2xl shadow-emerald-500/30 hover:scale-[1.02] active:scale-95 transition-all overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+                  <span className="relative z-10">استفد من العرض الآن</span>
+                  <span className="relative z-10 text-3xl md:text-4xl animate-bounce">🎁</span>
+                  <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
+                </a>
+                <p className="text-center mt-4 text-[10px] md:text-xs font-bold opacity-40 uppercase tracking-widest">اضغط أعلاه للتوجه للموقع الرسمي</p>
+              </div>
+            );
+          }
+
+          return <p key={i} className="mb-8 md:mb-12 last:mb-0">{para}</p>;
+        })}
       </div>
 
       <AdUnit publisherId={settings.adsenseCode} slotId="bottom_ad" />

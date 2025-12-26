@@ -65,9 +65,20 @@ const INITIAL_DATA: Article[] = [
   },
   {
     id: 'temu-shopping-guide-morocco',
-    title: 'دليلك الشامل للتسوق من تيمو (Temu) in المغرب: أسعار خيالية وشحن مجاني حتى باب منزلك',
+    title: 'دليلك الشامل للتسوق من تيمو (Temu) في المغرب: أسعار خيالية وشحن مجاني حتى باب منزلك',
     excerpt: 'لماذا أصبح تيمو التطبيق الأول للتسوق في المغرب؟ نكشف لكم أسرار الأسعار الرخيصة وكيفية الحصول على الشحن المجاني وحزم القسائم.',
-    content: `يعتبر تطبيق تيمو (Temu) حالياً ظاهرة عالمية في عالم التجارة الإلكترونية... هو وجهتك المثالية التي تجمع بين التنوع والتوفير. يمكنكم التسجيل عبر الرابط التالي للحصول على خصومات: https://temu.to/k/u6zpr84k5n5`,
+    content: `يعتبر تطبيق تيمو (Temu) حالياً ظاهرة عالمية في عالم التجارة الإلكترونية، حيث استطاع جذب ملايين المستخدمين في المغرب بفضل عروضه التي لا تقاوم وتنوعه الهائل الذي يشمل كل شيء من الإلكترونيات إلى الملابس والأدوات المنزلية.
+
+كيف تحصل على أفضل العروض؟
+السر يكمن في استخدام روابط الإحالة المباشرة التي تمنحك وصولاً حصرياً لـ "حزم قسائم المستخدم الجديد". هذه القسائم توفر لك مبالغ مالية مهمة تخصم مباشرة من مجموع مشترياتك الأولى.
+
+هدية خاصة لمتابعي "عبدو ويب":
+اضغط على الزر أسفله للحصول فوراً على حزمة قسائم بقيمة 1000 درهم مغربي وشحن مجاني لطلبك الأول:
+
+https://temu.to/k/u6zpr84k5n5
+
+لماذا يفضل المغاربة تيمو؟
+بالإضافة إلى الأثمان المنافسة، يوفر التطبيق حماية للمشتري وضماناً لاسترداد الأموال في حال لم يكن المنتج مطابقاً للتوقعات. كما أن سرعة الشحن نحو المغرب تحسنت بشكل كبير في الشهور الأخيرة.`,
     image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=1200',
     category: Category.REVIEWS,
     date: '4 مارس 2025',
@@ -101,25 +112,22 @@ const App: React.FC = () => {
     if (savedPosts) {
       const parsed = JSON.parse(savedPosts);
       const currentRainfallId = 'morocco-rainfall-economy-2025';
+      const temuId = 'temu-shopping-guide-morocco';
       
-      // تحديث قسري لرابط الصورة إذا كان قديماً
+      // تحديث قسري للمحتوى إذا كان الرابط قديماً لضمان التنسيق الجديد
       const updatedPosts = parsed.map((p: Article) => {
         if (p.id === currentRainfallId) {
-          return { ...p, image: INITIAL_DATA[0].image }; // استخدام رابط الصورة المصحح
+          return { ...p, image: INITIAL_DATA[0].image };
+        }
+        if (p.id === temuId) {
+          const freshTemu = INITIAL_DATA.find(d => d.id === temuId);
+          return freshTemu ? { ...p, content: freshTemu.content } : p;
         }
         return p;
       });
 
-      // التحقق مما إذا كان المقال موجوداً أصلاً، وإلا نقوم بإضافته
-      const hasPost = updatedPosts.some((p: Article) => p.id === currentRainfallId);
-      if (!hasPost) {
-        const finalPosts = [INITIAL_DATA[0], ...updatedPosts];
-        setPosts(finalPosts);
-        localStorage.setItem('abdou_blog_v2', JSON.stringify(finalPosts));
-      } else {
-        setPosts(updatedPosts);
-        localStorage.setItem('abdou_blog_v2', JSON.stringify(updatedPosts));
-      }
+      setPosts(updatedPosts);
+      localStorage.setItem('abdou_blog_v2', JSON.stringify(updatedPosts));
     } else {
       setPosts(INITIAL_DATA);
       localStorage.setItem('abdou_blog_v2', JSON.stringify(INITIAL_DATA));
