@@ -32,7 +32,7 @@ const INITIAL_DATA: Article[] = [
 
 تفاؤل حذر واستشراف للمستقبل
 رغم هذه الإيجابيات، يشدد الخبراء على ضرورة مواصلة سياسة ترشيد استهلاك المياه والاستمرار في بناء محطات تحلية مياه البحر، لضمان استقرار اقتصادي طويل الأمد لا يرتبط كلياً بالتقلبات المناخية. إن أمطار 2025 هي رسالة طمأنة للسوق المغربية، وبداية لتعافي اقتصادي مرتقب يلمسه المواطن في معيشه اليومي.`,
-    image: 'https://images.unsplash.com/photo-1534274988757-a28bf1f539cf?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '7 مارس 2025',
     views: 125400,
@@ -98,17 +98,27 @@ const App: React.FC = () => {
   useEffect(() => {
     const savedPosts = localStorage.getItem('abdou_blog_v2');
     
-    // تحديث لضمان ظهور المقال الجديد حتى لو وجد تخزين محلي
-    const currentRainfallId = 'morocco-rainfall-economy-2025';
     if (savedPosts) {
       const parsed = JSON.parse(savedPosts);
-      const hasPost = parsed.some((p: Article) => p.id === currentRainfallId);
+      const currentRainfallId = 'morocco-rainfall-economy-2025';
+      
+      // تحديث قسري لرابط الصورة إذا كان قديماً
+      const updatedPosts = parsed.map((p: Article) => {
+        if (p.id === currentRainfallId) {
+          return { ...p, image: INITIAL_DATA[0].image }; // استخدام رابط الصورة المصحح
+        }
+        return p;
+      });
+
+      // التحقق مما إذا كان المقال موجوداً أصلاً، وإلا نقوم بإضافته
+      const hasPost = updatedPosts.some((p: Article) => p.id === currentRainfallId);
       if (!hasPost) {
-        const updated = [INITIAL_DATA[0], ...parsed];
-        setPosts(updated);
-        localStorage.setItem('abdou_blog_v2', JSON.stringify(updated));
+        const finalPosts = [INITIAL_DATA[0], ...updatedPosts];
+        setPosts(finalPosts);
+        localStorage.setItem('abdou_blog_v2', JSON.stringify(finalPosts));
       } else {
-        setPosts(parsed);
+        setPosts(updatedPosts);
+        localStorage.setItem('abdou_blog_v2', JSON.stringify(updatedPosts));
       }
     } else {
       setPosts(INITIAL_DATA);
