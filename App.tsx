@@ -15,6 +15,18 @@ const INITIAL_SETTINGS: Settings = {
 
 const INITIAL_DATA: Article[] = [
   {
+    id: 'afcon-2025-opening',
+    title: 'المغرب يبهر العالم: حفل افتتاح "الكان" يكتب تاريخاً جديداً للكرة الإفريقية',
+    excerpt: 'بمزيج بين العراقة والتكنولوجيا، المملكة المغربية تفتتح كأس أمم أفريقيا بحفل أسطوري حبس أنفاس الملايين حول العالم.',
+    content: 'بألوان العلم المغربي وصيحات آلاف المشجعين التي هزت أركان الملعب، انطلقت رسمياً نهائيات كأس أمم إفريقيا في أجواء احتفالية غير مسبوقة. لم يكن مجرد حفل افتتاح، بل كان سيمفونية بصرية مزجت بين التكنولوجيا الرقمية المتطورة والعراقة المغربية التي تضرب بجذورها في أعماق التاريخ الإفريقي.\n\nاستخدمت اللجنة المنظمة أسطولاً من الطائرات المسيرة (الدرونز) التي شكلت لوحات فنية في سماء الرباط، تجسد خريطة القارة السمراء والتحام الشعوب خلف كرة القدم. وتخلل الحفل عروض فلكلورية تمثل مختلف جهات المملكة، من عبيدات الرما وأحواش إلى فنون الكناوة، مما أعطى للحدث بعداً ثقافياً عميقاً.\n\nأكد رئيس الاتحاد الإفريقي لكرة القدم في كلمته أن "المغرب وضع معايير جديدة لتنظيم التظاهرات الرياضية"، مشيداً بالبنية التحتية العالمية التي أصبحت تتوفر عليها المملكة، من ملاعب بمواصفات "الفيفا" وشبكات نقل حديثة، مما يجعل هذا المونديال الإفريقي بروفة حقيقية لاستضافة كأس العالم 2030.\n\nالجماهير المغربية والإفريقية التي حجت بكثافة للملعب صنعت الحدث بـ"تيفوهات" عملاقة رفعت شعار الوحدة الإفريقية، مؤكدة أن كرة القدم هي جسر للمحبة والتآخي بين الشعوب. إن هذا الافتتاح الرائع ليس إلا بداية لنسخة استثنائية ستظل محفورة في ذاكرة عشاق الساحرة المستديرة لسنوات طويلة.',
+    image: 'https://images.unsplash.com/photo-1541534741688-6078c64b52d2?auto=format&fit=crop&q=80&w=1200',
+    category: Category.MOROCCO_NEWS,
+    date: '3 مارس 2025',
+    views: 45200,
+    author: 'هيئة التحرير',
+    isTrending: true
+  },
+  {
     id: '1',
     title: 'المغرب يستعد لاستضافة كأس العالم 2030 ببنبة تحتية عالمية',
     excerpt: 'تفاصيل الملاعب الجديدة ومشاريع النقل الكبرى التي ستحول المدن المغربية إلى وجهات عالمية.',
@@ -24,7 +36,7 @@ const INITIAL_DATA: Article[] = [
     date: '1 مارس 2025',
     views: 8500,
     author: 'هيئة التحرير',
-    isTrending: true
+    isTrending: false
   },
   {
     id: '2',
@@ -51,7 +63,6 @@ const App: React.FC = () => {
   const [isAuth, setIsAuth] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
 
-  // تحديث عنوان الصفحة ديناميكياً لـ SEO
   useEffect(() => {
     if (view === 'home') {
       document.title = `${settings.siteName} | أخبار المغرب والتقنية`;
@@ -65,7 +76,16 @@ const App: React.FC = () => {
   useEffect(() => {
     const savedPosts = localStorage.getItem('abdou_blog_v2');
     if (savedPosts) {
-      setPosts(JSON.parse(savedPosts));
+      const parsed = JSON.parse(savedPosts);
+      // التحقق من وجود المقال الجديد في التخزين المحلي، وإلا سنقوم بإضافته
+      const hasNewPost = parsed.some((p: Article) => p.id === 'afcon-2025-opening');
+      if (!hasNewPost) {
+        const updated = [INITIAL_DATA[0], ...parsed];
+        setPosts(updated);
+        localStorage.setItem('abdou_blog_v2', JSON.stringify(updated));
+      } else {
+        setPosts(parsed);
+      }
     } else {
       setPosts(INITIAL_DATA);
       localStorage.setItem('abdou_blog_v2', JSON.stringify(INITIAL_DATA));
