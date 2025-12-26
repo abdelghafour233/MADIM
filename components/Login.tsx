@@ -11,7 +11,7 @@ const Login: React.FC<LoginProps> = ({ onSuccess }) => {
   const [error, setError] = useState(false);
 
   const handleLogin = () => {
-    // كلمة السر هي 1234
+    // التحقق من كلمة السر (القيمة الافتراضية هي 1234 ولكن لا تظهر في الواجهة)
     if (pass === '1234') {
       onSuccess();
     } else {
@@ -22,17 +22,17 @@ const Login: React.FC<LoginProps> = ({ onSuccess }) => {
 
   return (
     <div className="max-w-md mx-auto py-20 text-center animate-fadeIn">
-      <div className="glass p-12 rounded-[40px] shadow-2xl relative overflow-hidden">
+      <div className="glass p-12 rounded-[40px] shadow-2xl relative overflow-hidden border border-white/5 bg-white/5 backdrop-blur-xl">
         <div className="text-5xl mb-8">🔒</div>
         <h2 className="text-3xl font-black mb-4">منطقة الإدارة</h2>
         <p className="text-slate-500 font-bold mb-10 text-sm tracking-wide">
-          كلمة السر الافتراضية هي <span className="text-emerald-500">1234</span>
+          يرجى إدخال رمز الوصول للمتابعة إلى لوحة التحكم
         </p>
         
         <div className="relative mb-8">
           <input 
             type={showPass ? "text" : "password"}
-            className={`w-full p-6 bg-black/40 rounded-2xl outline-none font-black text-2xl text-center border-2 transition-all ${error ? 'border-red-500 animate-shake' : 'border-transparent focus:border-emerald-500'}`}
+            className={`w-full p-6 bg-black/40 rounded-2xl outline-none font-black text-2xl text-center border-2 transition-all ${error ? 'border-red-500 animate-shake' : 'border-transparent focus:border-emerald-500 text-white'}`}
             placeholder="••••"
             value={pass}
             onChange={(e) => setPass(e.target.value)}
@@ -50,13 +50,13 @@ const Login: React.FC<LoginProps> = ({ onSuccess }) => {
             ) : (
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268-2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
               </svg>
             )}
           </button>
         </div>
         
-        <button onClick={handleLogin} className="w-full py-5 bg-emerald-600 rounded-2xl font-black text-xl hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-500/20 active:scale-95">
+        <button onClick={handleLogin} className="w-full py-5 bg-emerald-600 text-white rounded-2xl font-black text-xl hover:bg-emerald-500 transition-all shadow-xl shadow-emerald-500/20 active:scale-95">
           دخول للنظام 🚀
         </button>
       </div>
