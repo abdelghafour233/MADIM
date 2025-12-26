@@ -30,24 +30,12 @@ const INITIAL_DATA: Article[] = [
     id: 'temu-shopping-guide-morocco',
     title: 'دليلك الشامل للتسوق من تيمو (Temu) in المغرب: أسعار خيالية وشحن مجاني حتى باب منزلك',
     excerpt: 'لماذا أصبح تيمو التطبيق الأول للتسوق في المغرب؟ نكشف لكم أسرار الأسعار الرخيصة وكيفية الحصول على الشحن المجاني وحزم القسائم.',
-    content: `يعتبر تطبيق تيمو (Temu) حالياً ظاهرة عالمية في عالم التجارة الإلكترونية...`,
+    content: `يعتبر تطبيق تيمو (Temu) حالياً ظاهرة عالمية في عالم التجارة الإلكترونية... هو وجهتك المثالية التي تجمع بين التنوع والتوفير. يمكنكم التسجيل عبر الرابط التالي للحصول على خصومات: https://temu.to/k/u6zpr84k5n5`,
     image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=1200',
     category: Category.REVIEWS,
     date: '4 مارس 2025',
     views: 78200,
     author: 'عبدو التقني',
-    isTrending: false
-  },
-  {
-    id: 'morocco-world-cup-2030-prep',
-    title: 'المغرب يستعد لاستضافة كأس العالم 2030 ببنية تحتية عالمية',
-    excerpt: 'تفاصيل الملاعب الجديدة ومشاريع النقل الكبرى التي ستحول المدن المغربية إلى وجهات عالمية.',
-    content: 'تشهد المملكة المغربية ورشة إصلاح كبرى استعداداً لاحتضان مونديال 2030 بالتعاون مع إسبانيا والبرتغال. تشمل المشاريع بناء "ملعب الحسن الثاني الكبير" ببنسليمان وسلسلة من القطارات فائقة السرعة التي ستربط طنجة بأكادير.\n\nتعتبر هذه المشاريع نقلة نوعية في الاقتصاد الوطني وتوفر آلاف فرص الشغل للشباب المغربي.',
-    image: 'https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&q=80&w=1200',
-    category: Category.MOROCCO_NEWS,
-    date: '1 مارس 2025',
-    views: 15600,
-    author: 'هيئة التحرير',
     isTrending: false
   },
   {
@@ -88,18 +76,20 @@ const App: React.FC = () => {
     if (savedPosts) {
       let parsed = JSON.parse(savedPosts);
       
-      // تحديث قسري لضمان ظهور صورة كأس العالم الجديدة وصورة زيت الزيتون
-      const hasOlivePost = parsed.some((p: Article) => p.id === 'morocco-olive-oil-abundance-2025');
-      const hasWorldCupPost = parsed.some((p: Article) => p.id === 'morocco-world-cup-2030-prep');
+      // منطق الحذف القسري للمقال الذي طلب المستخدم إزالته
+      const needsCleanup = parsed.some((p: Article) => 
+        p.id === 'morocco-world-cup-2030-prep' || p.id === '1'
+      );
 
-      if (!hasOlivePost || !hasWorldCupPost) {
-        // نحدث القائمة لضمان وجود المقالات الجديدة بالصور الصحيحة
-        const filtered = parsed.filter((p: Article) => p.id !== '1' && p.id !== 'morocco-world-cup-2030-prep');
-        const updated = [INITIAL_DATA[0], INITIAL_DATA[2], ...filtered];
-        // إزالة التكرار بناءً على الـ ID
-        const uniquePosts = Array.from(new Map(updated.map(item => [item.id, item])).values());
-        setPosts(uniquePosts);
-        localStorage.setItem('abdou_blog_v2', JSON.stringify(uniquePosts));
+      if (needsCleanup) {
+        // حذف المقالات المستهدفة وتحديث القائمة
+        const updated = parsed.filter((p: Article) => 
+          p.id !== 'morocco-world-cup-2030-prep' && p.id !== '1'
+        );
+        // نضمن أن المقالات الأساسية الأخرى موجودة
+        const finalPosts = [...INITIAL_DATA];
+        setPosts(finalPosts);
+        localStorage.setItem('abdou_blog_v2', JSON.stringify(finalPosts));
       } else {
         setPosts(parsed);
       }
