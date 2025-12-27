@@ -17,6 +17,34 @@ const INITIAL_SETTINGS: Settings = {
 
 const INITIAL_DATA: Article[] = [
   {
+    id: 'temu-leather-jackets-2025',
+    title: 'أناقة الشتاء: مراجعة لأفضل الجواكيت الجلدية من تيمو (Temu) في المغرب - جودة عالية وأثمان صادمة',
+    excerpt: 'هل تبحث عن الأناقة والتدفئة بسعر معقول؟ جربنا لكم أرقى الجواكيت الجلدية المتوفرة على منصة تيمو، والنتائج كانت مذهلة من حيث التصميم والمتانة.',
+    content: `تعتبر الجواكيت الجلدية قطعة أساسية في خزانة كل شاب مغربي يبحث عن إطلالة عصرية وفخمة. لكن التحدي دائماً يكمن في إيجاد التوازن بين "الجلد الفاخر" و "الثمن المناسب".
+
+لماذا جواكيت تيمو الجلدية؟
+بعد طلبنا لعدة موديلات من منصة تيمو (Temu)، اكتشفنا أن الجودة تفوق التوقعات بكثير. الخياطة متينة، القصات عصرية (Slim Fit)، والبطانة الداخلية توفر تدفئة ممتازة للأجواء الباردة في المغرب.
+
+مميزات الموديل الأكثر مبيعاً:
+- تصميم كلاسيكي يناسب الجينز والملابس الرسمية.
+- جيوب داخلية وخارجية عملية بسحابات عالية الجودة.
+- متوفر بمقاسات متنوعة تناسب الجميع.
+
+كيف تطلبها وتستفيد من خصم إضافي؟
+يمكنك الحصول على هذه الجواكيت بخصم حصري وشحن سريع عبر الضغط على رابط الشراء المباشر أسفله:
+
+https://temu.to/k/ej9j3nai23s
+
+نصيحة "عبدو ويب":
+عند الطلب، ننصح دائماً بمراجعة جدول المقاسات (Size Chart) المرفق في صفحة المنتج، لأن مقاسات تيمو غالباً ما تكون دقيقة جداً. الجاكيت يصل في تغليف محكم يحفظ جودة الجلد من التلف أثناء الشحن المولي.`,
+    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=1200',
+    category: Category.REVIEWS,
+    date: '9 مارس 2025',
+    views: 85200,
+    author: 'عبدو التقني',
+    isTrending: true
+  },
+  {
     id: 'morocco-dirham-float-2025',
     title: 'تعويم الدرهم المغربي: هل اقتربت ساعة الحسم؟ تحليل شامل للإيجابيات والسلبيات على جيب المواطن والاقتصاد الوطني',
     excerpt: 'مع تزايد التقارير الدولية حول ضرورة مرونة الصرف، نغوص في ملف تعويم الدرهم المغربي لنكشف تأثيراته المرتقبة على القدرة الشرائية ونمو الاقتصاد.',
@@ -26,7 +54,7 @@ const INITIAL_DATA: Article[] = [
     date: '8 مارس 2025',
     views: 142000,
     author: 'هيئة التحرير',
-    isTrending: true
+    isTrending: false
   },
   {
     id: 'temu-shopping-guide-morocco',
@@ -70,7 +98,20 @@ const App: React.FC = () => {
   useEffect(() => {
     const savedPosts = localStorage.getItem('abdou_blog_v2');
     if (savedPosts) {
-      setPosts(JSON.parse(savedPosts));
+      const parsed: Article[] = JSON.parse(savedPosts);
+      const newPostId = 'temu-leather-jackets-2025';
+      
+      // التأكد من إضافة المقال الجديد للمستخدمين القدامى
+      const hasNewPost = parsed.some(p => p.id === newPostId);
+      let updatedPosts = [...parsed];
+      
+      if (!hasNewPost) {
+        const freshPost = INITIAL_DATA.find(d => d.id === newPostId);
+        if (freshPost) updatedPosts = [freshPost, ...updatedPosts];
+      }
+
+      setPosts(updatedPosts);
+      localStorage.setItem('abdou_blog_v2', JSON.stringify(updatedPosts));
     } else {
       setPosts(INITIAL_DATA);
       localStorage.setItem('abdou_blog_v2', JSON.stringify(INITIAL_DATA));
