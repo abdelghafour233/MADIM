@@ -17,6 +17,37 @@ const INITIAL_SETTINGS: Settings = {
 
 const INITIAL_DATA: Article[] = [
   {
+    id: 'books-wealth-financial-awareness-2025',
+    title: 'قوة القراءة: كيف تساهم كتب الثراء في بناء وعيك المالي وتغيير واقعك الاقتصادي؟',
+    excerpt: 'هل القراءة تجلب المال فعلاً؟ نكشف لكم كيف نجحت كتب الثراء العالمية في تحويل آلاف الأشخاص من الفقر إلى الاستقلال المالي عبر تغيير "عقلية الندرة" إلى "عقلية الوفرة".',
+    content: `لطالما كان الفرق بين الغني والفقير يبدأ من "العقل". فبينما يدرس النظام التعليمي التقليدي كيفية الحصول على وظيفة، تأتي كتب الثراء والوعي المالي لتعلمنا ما لم تذكره المدارس: كيف يعمل المال؟ وكيف نجعله يعمل لصالحنا؟
+
+مساهمة كتب الثراء في تنمية الوعي المالي
+1. تغيير المفاهيم المغلوطة:
+كتب مثل "الأب الغني والأب الفقير" لروبرت كيوساكي حطمت مفهوم أن "البيت أصل" وعلمت الناس الفرق الجوهري بين الأصول (التي تضع المال في جيبك) والخصوم (التي تسحب المال من جيبك). هذا الإدراك هو حجر الزاوية في الوعي المالي.
+
+2. زرع الانضباط والادخار:
+في كتاب "أغنى رجل في بابل"، يتعلم القارئ قاعدة "ادفع لنفسك أولاً". هذه الكتب لا تقدم فقط نظريات، بل تقدم خططاً عملية لتقسيم الدخل والادخار والاستثمار حتى بمبالغ بسيطة، مما ينمي حس المسؤولية المالية.
+
+3. بناء عقلية المستثمر:
+كتب الثراء تنقل القارئ من عقلية "الاستهلاك" إلى عقلية "الاستثمار". في كتاب "فكر وازدد ثراءً" لنابليون هيل، يتم التركيز على قوة الرغبة المشتعلة والتخطيط المنظم، وكيف أن الأفكار هي المادة الخام لبناء الثروات.
+
+أشهر الكتب التي ننصح بها لكل مغربي:
+- الأب الغني والأب الفقير: لفهم لغة المال.
+- أغنى رجل في بابل: لتعلم قواعد التعامل مع الدخل.
+- عقلية المليونير: لفهم كيف يفكر الأثرياء في الإنفاق والاستثمار.
+- سيكولوجية المال: لفهم علاقتنا العاطفية مع القرارات المالية.
+
+الخلاصة
+الاستثمار في عقلك هو الاستثمار الوحيد الذي لا يمكن لأحد سرقته منك، وهو الذي يدر أعلى العوائد. إن قراءة كتاب واحد في الشهر عن المال قد تكون هي الخطوة التي تفصلك عن حياة الاستقلال المالي التي تطمح إليها. ابدأ اليوم، فالوعي هو أولى خطوات الغنى.`,
+    image: 'https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?auto=format&fit=crop&q=80&w=1200',
+    category: Category.SELF_DEV,
+    date: '10 مارس 2025',
+    views: 92300,
+    author: 'عبدو التقني',
+    isTrending: true
+  },
+  {
     id: 'temu-leather-jackets-2025',
     title: 'أناقة الشتاء: مراجعة لأفضل الجواكيت الجلدية من تيمو (Temu) في المغرب - جودة عالية وأثمان صادمة',
     excerpt: 'هل تبحث عن الأناقة والتدفئة بسعر معقول؟ جربنا لكم أرقى الجواكيت الجلدية المتوفرة على منصة تيمو، والنتائج كانت مذهلة من حيث التصميم والمتانة.',
@@ -42,7 +73,7 @@ https://temu.to/k/ej9j3nai23s
     date: '9 مارس 2025',
     views: 85200,
     author: 'عبدو التقني',
-    isTrending: true
+    isTrending: false
   },
   {
     id: 'morocco-dirham-float-2025',
@@ -55,19 +86,6 @@ https://temu.to/k/ej9j3nai23s
     views: 142000,
     author: 'هيئة التحرير',
     isTrending: false
-  },
-  {
-    id: 'temu-shopping-guide-morocco',
-    title: 'دليلك الشامل للتسوق من تيمو (Temu) في المغرب: أسعار خيالية وشحن مجاني حتى باب منزلك',
-    excerpt: 'لماذا أصبح تيمو التطبيق الأول للتسوق في المغرب؟ نكشف لكم أسرار الأسعار الرخيصة وكيفية الحصول على الشحن المجاني وحزم القسائم.',
-    content: `يعتبر تطبيق تيمو (Temu) حالياً ظاهرة عالمية...
-https://temu.to/k/u6zpr84k5n5`,
-    image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&q=80&w=1200',
-    category: Category.REVIEWS,
-    date: '4 مارس 2025',
-    views: 78200,
-    author: 'عبدو التقني',
-    isTrending: false
   }
 ];
 
@@ -79,7 +97,6 @@ const App: React.FC = () => {
   const [isAuth, setIsAuth] = useState(false);
   const [darkMode, setDarkMode] = useState(true);
 
-  // تتبع الزوار
   useEffect(() => {
     const isReturningVisitor = sessionStorage.getItem('visited_session');
     const savedSettings = localStorage.getItem('abdou_settings');
@@ -99,19 +116,27 @@ const App: React.FC = () => {
     const savedPosts = localStorage.getItem('abdou_blog_v2');
     if (savedPosts) {
       const parsed: Article[] = JSON.parse(savedPosts);
-      const newPostId = 'temu-leather-jackets-2025';
+      const newPostIds = ['books-wealth-financial-awareness-2025'];
       
-      // التأكد من إضافة المقال الجديد للمستخدمين القدامى
-      const hasNewPost = parsed.some(p => p.id === newPostId);
       let updatedPosts = [...parsed];
-      
-      if (!hasNewPost) {
-        const freshPost = INITIAL_DATA.find(d => d.id === newPostId);
-        if (freshPost) updatedPosts = [freshPost, ...updatedPosts];
-      }
+      let needsUpdate = false;
 
-      setPosts(updatedPosts);
-      localStorage.setItem('abdou_blog_v2', JSON.stringify(updatedPosts));
+      newPostIds.forEach(id => {
+        if (!updatedPosts.some(p => p.id === id)) {
+          const freshPost = INITIAL_DATA.find(d => d.id === id);
+          if (freshPost) {
+            updatedPosts = [freshPost, ...updatedPosts];
+            needsUpdate = true;
+          }
+        }
+      });
+
+      if (needsUpdate) {
+        setPosts(updatedPosts);
+        localStorage.setItem('abdou_blog_v2', JSON.stringify(updatedPosts));
+      } else {
+        setPosts(parsed);
+      }
     } else {
       setPosts(INITIAL_DATA);
       localStorage.setItem('abdou_blog_v2', JSON.stringify(INITIAL_DATA));
@@ -149,7 +174,11 @@ const App: React.FC = () => {
         siteName={settings.siteName}
         onSearch={() => {}}
         darkMode={darkMode}
-        toggleDarkMode={() => setDarkMode(!darkMode)}
+        toggleDarkMode={() => {
+          const newMode = !darkMode;
+          setDarkMode(newMode);
+          localStorage.setItem('theme', newMode ? 'dark' : 'light');
+        }}
         cartCount={0}
         onOpenCart={() => {}}
       />
