@@ -23,13 +23,18 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true }) => {
   const techPosts = posts.filter(p => p.category === Category.TECH);
   const selfDevPosts = posts.filter(p => p.category === Category.SELF_DEV);
 
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=60&w=800';
+  };
+
   return (
     <div className="space-y-16 md:space-y-24 animate-fadeIn">
-      {/* Hero Section - الخبر الساخن */}
+      {/* Hero Section */}
       <section className="relative group cursor-pointer" onClick={() => onPostClick(trendingPost)}>
         <div className="relative h-[450px] sm:h-[600px] md:h-[700px] rounded-[30px] md:rounded-[50px] overflow-hidden shadow-2xl">
           <img 
             src={trendingPost.image} 
+            onError={handleImgError}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
             alt={trendingPost.title}
           />
@@ -71,7 +76,12 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true }) => {
             {regularPosts.slice(0, 4).map(post => (
               <div key={post.id} className="group cursor-pointer" onClick={() => onPostClick(post)}>
                 <div className="relative h-52 sm:h-64 rounded-[30px] overflow-hidden mb-5 shadow-lg">
-                  <img src={post.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={post.title} />
+                  <img 
+                    src={post.image} 
+                    onError={handleImgError}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                    alt={post.title} 
+                  />
                   <div className="absolute top-4 left-4 bg-emerald-600 px-3 py-1 rounded-lg text-[9px] font-black text-white uppercase tracking-tighter shadow-xl">
                     {post.category}
                   </div>
@@ -83,13 +93,18 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true }) => {
           </div>
         </div>
 
-        {/* Sidebar - الأكثر قراءة */}
+        {/* Sidebar */}
         <div className={`p-8 rounded-[40px] h-fit sticky top-24 ${darkMode ? 'bg-white/5 border border-white/5' : 'bg-white shadow-xl border border-slate-50'}`}>
           <h2 className="text-xl font-black mb-8 text-emerald-500 flex items-center gap-2">تطوير الذات 💡</h2>
           <div className="space-y-8">
             {selfDevPosts.map(p => (
               <div key={p.id} onClick={() => onPostClick(p)} className="group cursor-pointer flex gap-4 items-center">
-                <img src={p.image} className="w-16 h-16 rounded-xl object-cover shadow-md flex-shrink-0" alt="" />
+                <img 
+                  src={p.image} 
+                  onError={handleImgError}
+                  className="w-16 h-16 rounded-xl object-cover shadow-md flex-shrink-0" 
+                  alt="" 
+                />
                 <div className="overflow-hidden">
                   <h4 className="font-black text-sm group-hover:text-emerald-500 transition-colors line-clamp-2 leading-tight">{p.title}</h4>
                   <span className="text-[10px] opacity-40 font-bold uppercase mt-1 block">{p.date}</span>

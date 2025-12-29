@@ -25,7 +25,7 @@ const INITIAL_DATA: Article[] = [
     title: 'أعقاب الحرب العالمية الثالثة: سيناريوهات تقنية وجيوسياسية لمستقبل البشرية',
     excerpt: 'تحليل مستقبلي لما قد يؤول إليه العالم تقنياً وبيئياً في حال نشوب صراع عالمي وتأثير ذلك على استقرار القارة الأفريقية.',
     content: `تعد فرضية الحرب العالمية الثالثة من أكثر المواضيع إثارة للقلق والتحليل. في هذا المقال، نستعرض كيف يمكن للتكنولوجيا أن تلعب دوراً مزدوجاً كأداة للدمار ووسيلة لإعادة الإعمار. أعقاب هذه الحرب لن تكون مجرد دمار مادي، بل ستشهد تحولاً جذرياً في سلاسل الإمداد، والاعتماد الكلي على الطاقة المتجددة، وظهور أنظمة ذكاء اصطناعي لإدارة الموارد. المغرب بموقعه الاستراتيجي قد يلعب دوراً محورياً كجسر للسلام أو كمركز لإعادة الربط القاري.`,
-    image: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1464802686167-b939a6910659?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH,
     date: '30 مارس 2025',
     views: 15400,
@@ -48,7 +48,7 @@ const INITIAL_DATA: Article[] = [
     title: 'الدار البيضاء 2025: كيف تتحول العاصمة الاقتصادية إلى مدينة ذكية؟',
     excerpt: 'استعراض للمشاريع الكبرى التي تغير وجه كازابلانكا، من النقل الذكي إلى المساحات الخضراء الرقمية.',
     content: `تشهد مدينة الدار البيضاء تحولات هيكلية كبرى تهدف إلى جعلها مدينة ذكية بامتياز، من خلال رقمنة الخدمات العمومية وتطوير شبكة نقل حديثة وصديقة للبيئة. مشاريع الترامواي والحافلات عالية الجودة تساهم في تقليل الازدحام وتحسين جودة الحياة للسكان.`,
-    image: 'https://images.unsplash.com/photo-1577147443647-81867e3ed315?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '27 مارس 2025',
     views: 45600,
@@ -59,7 +59,7 @@ const INITIAL_DATA: Article[] = [
     title: 'محطة نور ورزازات: كيف يقود المغرب العالم في إنتاج الطاقة الشمسية؟',
     excerpt: 'رحلة إلى أكبر مجمع للطاقة الشمسية في العالم وكيف يساهم في تأمين السيادة الطاقية للمملكة.',
     content: `يعد مشروع "نور" في ورزازات نموذجاً عالمياً للنجاح في مجال الطاقات المتجددة، حيث يضع المغرب في صدارة الدول المصدرة للطاقة النظيفة. يهدف المغرب لتغطية أكثر من 52% من احتياجاته الكهربائية من مصادر نظيفة بحلول 2030.`,
-    image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH,
     date: '26 مارس 2025',
     views: 31200,
@@ -70,7 +70,7 @@ const INITIAL_DATA: Article[] = [
     title: 'مراكش 2025: دليل المسافر لاكتشاف المدينة الحمراء بين الأصالة والمعاصرة',
     excerpt: 'نصائح حصرية لزيارة مراكش، أفضل الرياضات، المطاعم الخفية، والتجارب الثقافية التي لا تنسى.',
     content: `تظل مراكش جوهرة السياحة المغربية، حيث تمزج بين التاريخ العريق والخدمات السياحية العصرية، مما يجعلها وجهة عالمية لا غنى عنها. ننصح السياح بزيارة المتاحف الفنية المعاصرة بجانب ساحة جامع الفنا التاريخية.`,
-    image: 'https://images.unsplash.com/photo-1597212618440-806262de4fe1?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1548013146-72479768bbaa?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '25 مارس 2025',
     views: 18900,
@@ -92,7 +92,7 @@ const INITIAL_DATA: Article[] = [
     title: 'دليل التغطية الصحية AMO في المغرب: كيف تستفيد من التعويضات؟',
     excerpt: 'كل ما تحتاج معرفته عن نظام التأمين الإجباري عن المرض وكيفية تسجيل أفراد أسرتك.',
     content: `يعد تعميم التغطية الصحية بالمغرب مشروعاً مجتمعياً ضخماً. في هذا المقال نوضح الخطوات العملية للاستفادة من خدمات الضمان الاجتماعي وتتبع ملفات التعويض عن المرض عبر البوابة الإلكترونية.`,
-    image: 'https://images.unsplash.com/photo-1505751172107-5972297c3377?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '23 مارس 2025',
     views: 56700,
@@ -103,7 +103,7 @@ const INITIAL_DATA: Article[] = [
     title: 'أفضل طرق الربح من الإنترنت في المغرب 2025: دليل شامل للمبتدئين',
     excerpt: 'اكتشف كيف يمكنك تحقيق دخل إضافي بالدرهم من خلال العمل الحر والتجارة الإلكترونية.',
     content: `أصبح العمل عبر الإنترنت خياراً واقعياً للشباب المغربي، من خلال التجارة الإلكترونية بنظام COD، البرمجة، أو صناعة المحتوى. المفتاح هو الاستمرارية وتعلم مهارات مطلوبة عالمياً.`,
-    image: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1518186239751-2477cf795151?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH,
     date: '22 مارس 2025',
     views: 84300,
@@ -125,7 +125,7 @@ const INITIAL_DATA: Article[] = [
     title: 'تعويم الدرهم المغربي في 2025: هل تنجح المملكة في تحقيق التوازن المالي؟',
     excerpt: 'دراسة اقتصادية حول مسار مرونة سعر صرف الدرهم وتأثيراته على القدرة الشرائية.',
     content: `يواصل المغرب نهجه التدريجي في تعويم العملة الوطنية، وهو إجراء يهدف إلى تعزيز تنافسية الاقتصاد الوطني وجذب الاستثمارات الأجنبية، مع مراقبة صارمة لمعدلات التضخم.`,
-    image: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1611974717537-b76503c2678f?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '20 مارس 2025',
     views: 42300,
@@ -136,7 +136,7 @@ const INITIAL_DATA: Article[] = [
     title: 'أكثر 10 وظائف مطلوبة في المغرب لعام 2025: أين يوجه الشباب طموحاتهم؟',
     excerpt: 'تحليل لسوق الشغل المغربي والمهن التي تضمن دخلاً مرتفعاً في قطاعات التكنولوجيا والخدمات.',
     content: `تتصدر المهن التقنية كالأمن السيبراني وتطوير البرمجيات قائمة التخصصات الأكثر طلباً، بالإضافة إلى المهندسين في مجالات الطيران وصناعة السيارات التي يشهد فيها المغرب نهضة كبرى.`,
-    image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH,
     date: '19 مارس 2025',
     views: 38900,
@@ -147,7 +147,7 @@ const INITIAL_DATA: Article[] = [
     title: 'شبكة 5G في المغرب: متى ستصبح متاحة للجميع وما هي المدن الأولى؟',
     excerpt: 'توقعات انتشار الجيل الخامس بالمغرب وتأثيره على سرعة الإنترنت والتحول الرقمي.',
     content: `تستعد شركات الاتصالات المغربية لإطلاق خدمات الجيل الخامس بالتزامن مع استعدادات المملكة لاستضافة تظاهرات كبرى، مما سيوفر سرعات إنترنت هائلة تدعم إنترنت الأشياء والذكاء الاصطناعي.`,
-    image: 'https://images.unsplash.com/photo-1562408590-e32931084e23?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH,
     date: '18 مارس 2025',
     views: 29400,
@@ -169,7 +169,7 @@ const INITIAL_DATA: Article[] = [
     title: 'الصناعة التقليدية المغربية في الأسواق العالمية: كيف تبيع منتجاتك على Etsy؟',
     excerpt: 'دليل الحرفيين المغاربة للوصول إلى الزبناء الدوليين وبيع الزرابي والجلد باحترافية.',
     content: `الصناعة التقليدية المغربية مطلوبة بشدة في الخارج. يوضح هذا المقال كيفية فتح متجر إلكتروني دولي وشحن المنتجات التقليدية إلى أوروبا وأمريكا بكل سهولة.`,
-    image: 'https://images.unsplash.com/photo-1590650153855-d9e808231d41?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1563296150-2470c3886300?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '16 مارس 2025',
     views: 12300,
@@ -191,7 +191,7 @@ const INITIAL_DATA: Article[] = [
     title: 'مواجهة الحسم: أسود الأطلس وطريق المجد نحو كأس أفريقيا 2025',
     excerpt: 'تحليل فني لاستعدادات المنتخب المغربي والتحديات التي تواجه كتيبة وليد الركراكي.',
     content: `بعد الإنجاز المونديالي التاريخي، يطمح المنتخب المغربي للفوز باللقب القاري على أرضه وأمام جماهيره، معتمداً على تشكيلة تضم نجوماً يمارسون في أكبر الدوريات الأوروبية.`,
-    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1518091043644-c1d445eb951d?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '14 مارس 2025',
     views: 125400,
@@ -213,7 +213,7 @@ const INITIAL_DATA: Article[] = [
     title: 'النظام الغذائي المتوسطي: سر الصحة والنشاط في الثقافة المغربية',
     excerpt: 'لماذا يعتبر المطبخ المغربي أحد أصح الأنظمة الغذائية في العالم؟ تحليل للمكونات والفوائد.',
     content: `يعتمد المطبخ المغربي على زيت الزيتون، القطاني، والخضروات الطازجة. هذا المزيج يوفر مضادات أكسدة طبيعية تحمي من أمراض القلب وتطيل العمر الصحي للإنسان.`,
-    image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&q=80&w=1200',
     category: Category.SELF_DEV,
     date: '12 مارس 2025',
     views: 19800,
@@ -246,7 +246,7 @@ const INITIAL_DATA: Article[] = [
     title: 'قطب الدار البيضاء المالي: كيف أصبح المغرب بوابة الاستثمار في أفريقيا؟',
     excerpt: 'تحليل لمكانة CFC كأول مركز مالي في القارة الأفريقية وتأثيره على الاقتصاد الوطني.',
     content: `بفضل موقعه الاستراتيجي وقوانينه المحفزة، نجح قطب الدار البيضاء المالي في جذب مئات الشركات العالمية التي تدير استثماراتها في القارة السمراء من قلب المغرب.`,
-    image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '09 مارس 2025',
     views: 34100,
@@ -257,7 +257,7 @@ const INITIAL_DATA: Article[] = [
     title: 'دليل النجاح في التجارة الإلكترونية بالمغرب: كيف تبدأ من الصفر بنظام COD؟',
     excerpt: 'خطوات عملية لإنشاء مشروعك الخاص في الدفع عند الاستلام بالسوق المغربية.',
     content: `نظام الدفع عند الاستلام هو الأكثر ثقة لدى المغاربة. يشرح هذا الدليل كيفية اختيار المنتجات، التعاقد مع شركات الشحن، وتسويق متجرك عبر فيسبوك وتيك توك.`,
-    image: 'https://images.unsplash.com/photo-1556742044-3c52d6e88c62?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH,
     date: '08 مارس 2025',
     views: 29800,
@@ -321,32 +321,33 @@ const App: React.FC = () => {
   const [cookieConsent, setCookieConsent] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // تغيير رقم الإصدار هنا يجبر الحاسوب والهاتف على تحديث البيانات فوراً
-  const DATA_VERSION = "v5.0_final_adsense"; 
+  // الإصدار v7.0 يفرض تحديثاً جذرياً لمسح كافة الروابط القديمة من المتصفح
+  const DATA_VERSION = "v7.0_total_refresh"; 
 
   useEffect(() => {
-    const savedSettings = localStorage.getItem('abdou_settings_v5');
+    // استخدام مفاتيح تخزين جديدة (v7) لتجاوز أي تعليق في الـ Cache
+    const savedSettings = localStorage.getItem('abdou_settings_v7');
     if (savedSettings) setSettings(JSON.parse(savedSettings));
 
-    const savedCart = localStorage.getItem('abdou_cart_v5');
+    const savedCart = localStorage.getItem('abdou_cart_v7');
     if (savedCart) setCart(JSON.parse(savedCart));
 
-    const consent = localStorage.getItem('abdou_cookie_consent');
+    const consent = localStorage.getItem('abdou_cookie_consent_v7');
     if (consent) setCookieConsent(true);
 
-    const savedPostsRaw = localStorage.getItem('abdou_blog_v5');
-    const savedVersion = localStorage.getItem('abdou_data_version_v5');
+    const savedPostsRaw = localStorage.getItem('abdou_blog_v7');
+    const savedVersion = localStorage.getItem('abdou_data_version_v7');
     
-    let currentPosts: Article[] = savedPostsRaw ? JSON.parse(savedPostsRaw) : [];
-
-    // خوارزمية التحديث القسري لضمان وصول التحديثات للهواتف والحواسيب
     if (savedVersion !== DATA_VERSION) {
-      // مسح البيانات القديمة لضمان هيكلة الـ 26 مقالاً الجديدة بشكل سليم
+      // تحديث قسري: مسح كل شيء وتحميل الـ 26 مقالاً بروابطها الجديدة
       setPosts(INITIAL_DATA);
-      localStorage.setItem('abdou_blog_v5', JSON.stringify(INITIAL_DATA));
-      localStorage.setItem('abdou_data_version_v5', DATA_VERSION);
+      localStorage.setItem('abdou_blog_v7', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_data_version_v7', DATA_VERSION);
+      // تنظيف النسخ القديمة لضمان الأداء
+      localStorage.removeItem('abdou_blog_v6');
+      localStorage.removeItem('abdou_data_version_v6');
     } else {
-      setPosts(currentPosts.length > 0 ? currentPosts : INITIAL_DATA);
+      setPosts(savedPostsRaw ? JSON.parse(savedPostsRaw) : INITIAL_DATA);
     }
   }, []);
 
@@ -355,7 +356,7 @@ const App: React.FC = () => {
       item.id === p.id ? { ...item, views: (item.views || 0) + 1 } : item
     );
     setPosts(updatedPosts);
-    localStorage.setItem('abdou_blog_v5', JSON.stringify(updatedPosts));
+    localStorage.setItem('abdou_blog_v7', JSON.stringify(updatedPosts));
     setSelectedItem({ ...p, views: (p.views || 0) + 1 });
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo(0, 0);
@@ -405,8 +406,8 @@ const App: React.FC = () => {
           <AdminDashboard 
             posts={posts} 
             settings={settings}
-            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v5', JSON.stringify(newPosts));}}
-            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v5', JSON.stringify(s));}}
+            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v7', JSON.stringify(newPosts));}}
+            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v7', JSON.stringify(s));}}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
@@ -444,7 +445,7 @@ const App: React.FC = () => {
         <div className="fixed bottom-0 left-0 right-0 z-[300] bg-emerald-600 text-white p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fadeIn">
           <p className="text-sm font-bold">نستخدم ملفات تعريف الارتباط لضمان حصولك على أفضل تجربة على موقعنا.</p>
           <button 
-            onClick={() => {setCookieConsent(true); localStorage.setItem('abdou_cookie_consent', 'true');}}
+            onClick={() => {setCookieConsent(true); localStorage.setItem('abdou_cookie_consent_v7', 'true');}}
             className="px-8 py-2 bg-white text-emerald-600 rounded-xl font-black text-sm"
           >أوافق</button>
         </div>
