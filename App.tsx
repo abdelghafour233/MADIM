@@ -25,13 +25,24 @@ const INITIAL_DATA: Article[] = [
     title: 'أزمة أسعار زيت الزيتون بالمغرب: الأسباب والحلول وتوقعات الموسم القادم',
     excerpt: 'تحليل معمق للارتفاع غير المسبوق في أسعار زيت الزيتون بالمغرب وتأثير الجفاف على الإنتاج الوطني لعام 2025.',
     content: `تعتبر مادة زيت الزيتون ركيزة أساسية في المائدة المغربية، إلا أن الموسمين الأخيرين شهدا طفرة غير مسبوقة في الأسعار أثارت قلق المستهلكين. يعود السبب الرئيسي لهذا الارتفاع إلى توالي سنوات الجفاف وتأثر حقينات السدود، مما أدى إلى تراجع الإنتاج في مناطق رئيسية مثل قلعة السراغنة ووزان. تتدخل الحكومة حالياً عبر تقييد التصدير لضمان تزويد السوق الوطنية بأسعار معقولة، وسط توقعات ببدء استقرار الأسعار مع تحسن التساقطات المطرية الأخيرة. ننصح المستهلكين بالتحقق من جودة الزيت وتجنب الاقتناء من مصادر غير موثوقة لضمان السلامة الصحية.`,
-    // تم تحديث الرابط هنا لضمان الظهور
     image: 'https://images.unsplash.com/photo-1471193945509-9ad0617afabf?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '22 مارس 2025',
     views: 85200,
     author: 'عبدو المحلل',
     isTrending: true
+  },
+  {
+    id: 'make-money-online-morocco-2025',
+    title: 'أفضل طرق الربح من الإنترنت في المغرب 2025: دليل شامل للمبتدئين',
+    excerpt: 'اكتشف كيف يمكنك تحقيق دخل إضافي بالدرهم من خلال العمل الحر، التجارة الإلكترونية، وصناعة المحتوى.',
+    content: `الربح من الإنترنت في المغرب لم يعد مجرد حلم، بل أصبح واقعاً يعيشه آلاف الشباب. في هذا الدليل، نستعرض أكثر الطرق فعالية: أولاً، العمل الحر (Freelancing) في مجالات البرمجة والتصميم عبر منصات عالمية. ثانياً، التجارة الإلكترونية المحلية بنظام الدفع عند الاستلام (COD). ثالثاً، صناعة المحتوى على يوتيوب وتيك توك. السر يكمن في التخصص والصبر والتعلم المستمر.`,
+    image: 'https://images.unsplash.com/photo-1591115765373-5a9214194c97?auto=format&fit=crop&q=80&w=1200',
+    category: Category.TECH,
+    date: '23 مارس 2025',
+    views: 92400,
+    author: 'عبدو التقني',
+    isTrending: false
   },
   {
     id: 'morocco-dirham-float-2025-deep-analysis',
@@ -43,6 +54,30 @@ const INITIAL_DATA: Article[] = [
     date: '21 مارس 2025',
     views: 42300,
     author: 'عبدو الاقتصادي',
+    isTrending: false
+  },
+  {
+    id: 'student-success-tips-morocco',
+    title: '10 نصائح ذهبية لطلاب البكالوريا في المغرب: كيف تنظم وقتك وتتفوق؟',
+    excerpt: 'دليل شامل لطلاب الثانية باك حول كيفية التعامل مع ضغط الامتحانات والحصول على ميزة تنافسية.',
+    content: `امتحانات البكالوريا هي محطة فارقة في مسار كل طالب مغربي. للنجاح بامتياز، يجب أولاً وضع جدول زمني واقعي يوازن بين المواد العلمية والأدبية. ثانياً، التركيز على حل النماذج السابقة للامتحانات الوطنية. ثالثاً، العناية بالصحة النفسية والنوم الكافي. تذكر أن التحضير الجيد يبدأ من الآن وليس في اللحظات الأخيرة.`,
+    image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=1200',
+    category: Category.SELF_DEV,
+    date: '24 مارس 2025',
+    views: 31200,
+    author: 'عبدو الموجه',
+    isTrending: false
+  },
+  {
+    id: 'best-laptops-for-students-2025',
+    title: 'أفضل 5 حواسيب محمولة للطلبة في المغرب لعام 2025: الجودة مقابل السعر',
+    excerpt: 'مراجعة لأفضل أجهزة اللابتوب المناسبة للدراسة والبرمجة مع مراعاة الميزانية المتوسطة.',
+    content: `اختيار حاسوب للدراسة يتطلب توازناً بين الأداء والمتانة. نرشح لكم في هذا المقال أجهزة مثل MacBook Air M2 للباحثين عن الاستقرار، وHP Pavilion للطلبة التقنيين، وLenovo IdeaPad كخيار اقتصادي ممتاز. تأكد دائماً من وجود معالج حديث وذاكرة رام لا تقل عن 8 جيجابايت لضمان سلاسة العمل.`,
+    image: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&q=80&w=1200',
+    category: Category.REVIEWS,
+    date: '20 مارس 2025',
+    views: 45600,
+    author: 'عبدو التقني',
     isTrending: false
   },
   {
@@ -58,6 +93,30 @@ const INITIAL_DATA: Article[] = [
     isTrending: false
   },
   {
+    id: 'startup-funding-morocco-2025',
+    title: 'كيف تحصل على تمويل لمشروعك الناشئ في المغرب؟ دليلك للمقاولين الشباب',
+    excerpt: 'استعراض لأهم برامج الدعم الحكومي والتمويل الخاص المتاحة للشركات الناشئة المغربية.',
+    content: `برامج مثل "فرصة" و"انطلاقة" فتحت آفاقاً جديدة للمقاولين الشباب في المغرب. للحصول على تمويل، يجب أن تمتلك نموذج عمل واضحاً ودراسة جدوى دقيقة. كما أن المشاركة في مسابقات الابتكار تفتح لك أبواب المستثمرين الملائكة (Angel Investors).`,
+    image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?auto=format&fit=crop&q=80&w=1200',
+    category: Category.TECH,
+    date: '19 مارس 2025',
+    views: 22100,
+    author: 'عبدو التقني',
+    isTrending: false
+  },
+  {
+    id: 'mediterranean-diet-morocco',
+    title: 'النظام الغذائي المتوسطي: سر الصحة والنشاط في الثقافة المغربية',
+    excerpt: 'لماذا يعتبر المطبخ المغربي أحد أصح الأنظمة الغذائية في العالم؟ تحليل للمكونات والفوائد.',
+    content: `الكسكس، الطاجن، زيت الزيتون، والقطاني هي أعمدة التغذية المغربية. هذا النظام الغني بالألياف والدهون الصحية يقلل من مخاطر أمراض القلب ويزيد من متوسط العمر. العودة للأكل الطبيعي "ديال الدار" هي أفضل استثمار في صحتك.`,
+    image: 'https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&q=80&w=1200',
+    category: Category.SELF_DEV,
+    date: '18 مارس 2025',
+    views: 19800,
+    author: 'عبدو الموجه',
+    isTrending: false
+  },
+  {
     id: 'ai-tools-for-students-2025',
     title: 'أفضل 5 أدوات ذكاء اصطناعي للطلبة في المغرب: كيف تدرس بذكاء؟',
     excerpt: 'دليل شامل لأدوات تقنية ستساعدك في البحث العلمي وكتابة الأطروحات وتلخيص الدروس باحترافية.',
@@ -67,6 +126,30 @@ const INITIAL_DATA: Article[] = [
     date: '19 مارس 2025',
     views: 33100,
     author: 'عبدو التقني',
+    isTrending: false
+  },
+  {
+    id: 'electric-cars-morocco-2025',
+    title: 'السيارات الكهربائية في المغرب: هل البنية التحتية جاهزة لهذا التحول؟',
+    excerpt: 'مراجعة لواقع محطات الشحن وأسعار السيارات الكهربائية في السوق المغربية لعام 2025.',
+    content: `يشهد المغرب طفرة في استيراد السيارات الكهربائية، لكن التحدي يظل في توفر محطات الشحن السريع على الطرق السيار. الحكومة تعمل على تحفيز هذا القطاع عبر إعفاءات ضريبية، مما يجعلها خياراً جذاباً للمستقبل البيئي والاقتصادي للمملكة.`,
+    image: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&q=80&w=1200',
+    category: Category.REVIEWS,
+    date: '17 مارس 2025',
+    views: 27300,
+    author: 'عبدو التقني',
+    isTrending: false
+  },
+  {
+    id: 'casablanca-finance-city-update',
+    title: 'قطب الدار البيضاء المالي: كيف أصبح المغرب بوابة الاستثمار في أفريقيا؟',
+    excerpt: 'تحليل لمكانة Casablanca Finance City كأول مركز مالي في القارة الأفريقية وتأثيره على الاقتصاد الوطني.',
+    content: `نجح المغرب في جلب مئات الشركات العالمية بفضل الامتيازات التي يقدمها القطب المالي للدار البيضاء. هذا المركز لا يوفر فقط وظائف عالية القيمة، بل يعزز من إشعاع المملكة كمنصة لا غنى عنها للاستثمارات العابرة للحدود.`,
+    image: 'https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=1200',
+    category: Category.MOROCCO_NEWS,
+    date: '16 مارس 2025',
+    views: 34100,
+    author: 'عبدو الاقتصادي',
     isTrending: false
   },
   {
@@ -164,6 +247,18 @@ const INITIAL_DATA: Article[] = [
     views: 28400,
     author: 'عبدو المحلل',
     isTrending: false
+  },
+  {
+    id: 'fast-learning-hacks-2025',
+    title: 'تعلم أي مهارة في 20 ساعة فقط: تقنيات التعلم السريع للمغاربة',
+    excerpt: 'كيف تكتسب مهارة جديدة بسرعة فائقة وتنافس في سوق الشغل المتغير باستمرار.',
+    content: `السر ليس في الموهبة بل في تفكيك المهارة إلى أجزاء صغيرة. ركز على 20% من المهارة التي تعطيك 80% من النتائج. تدرب بذكاء، صحح أخطاءك فوراً، وابتعد عن المشتتات خلال جلسات التعلم المكثفة.`,
+    image: 'https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&q=80&w=1200',
+    category: Category.SELF_DEV,
+    date: '10 مارس 2025',
+    views: 25100,
+    author: 'عبدو الموجه',
+    isTrending: false
   }
 ];
 
@@ -177,6 +272,7 @@ const App: React.FC = () => {
   const [darkMode, setDarkMode] = useState(true);
   const [showCart, setShowCart] = useState(false);
   const [cookieConsent, setCookieConsent] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const savedSettings = localStorage.getItem('abdou_settings_v3');
@@ -200,7 +296,6 @@ const App: React.FC = () => {
         mergedPosts = [initialPost, ...mergedPosts];
         changed = true;
       } else {
-        // تحديث إجباري وشامل لضمان ظهور الصور وتصحيح المحتوى
         if (
           mergedPosts[existingIndex].image !== initialPost.image || 
           mergedPosts[existingIndex].title !== initialPost.title ||
@@ -231,13 +326,18 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   };
 
+  const filteredPosts = posts.filter(p => 
+    (p.title || p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (p.excerpt || '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className={`min-h-screen flex flex-col transition-all duration-300 ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
       <Navbar 
         currentView={view as any}
         setView={setView as any}
         siteName={settings.siteName}
-        onSearch={() => {}}
+        onSearch={setSearchQuery}
         darkMode={darkMode}
         toggleDarkMode={() => setDarkMode(!darkMode)}
         cartCount={cart.reduce((acc, i) => acc + i.quantity, 0)}
@@ -256,7 +356,7 @@ const App: React.FC = () => {
       )}
 
       <main className="container mx-auto px-4 md:px-8 py-8 flex-grow">
-        {view === 'home' && <Home posts={posts} onPostClick={handleItemClick} darkMode={darkMode} />}
+        {view === 'home' && <Home posts={filteredPosts} onPostClick={handleItemClick} darkMode={darkMode} />}
         {view === 'post' && selectedItem && <PostDetail post={selectedItem} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
         {view === 'product' && selectedItem && <ProductDetail product={selectedItem} onAddToCart={(p) => setCart([...cart, {...p, quantity: 1}])} onBack={() => setView('home')} darkMode={darkMode} />}
         {view === 'checkout' && <Checkout total={cart.reduce((s, i) => s + (i.price || 0) * i.quantity, 0)} onPlaceOrder={() => { alert('تم الطلب!'); setCart([]); setView('home'); }} />}
@@ -296,8 +396,8 @@ const App: React.FC = () => {
             </ul>
           </div>
           <div>
-            <h4 className="font-black mb-4">أدسنس</h4>
-            <p className="text-xs opacity-50 mb-4">جميع المقالات حصرية ومكتوبة باحترافية لتلائم شروط جوجل أدسنس.</p>
+            <h4 className="font-black mb-4">أدسنس 2025</h4>
+            <p className="text-xs opacity-50 mb-4">الموقع يضم حالياً 20 مقالاً حصرياً مكتوباً باحترافية لتلائم شروط القبول.</p>
             <div className="flex gap-4">
                <span className="opacity-40 text-[10px] font-black uppercase">© 2025 Abdou Web - جميع الحقوق محفوظة</span>
             </div>
