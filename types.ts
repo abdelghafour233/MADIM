@@ -34,4 +34,4 @@ export interface CartItem extends Article {
   quantity: number;
 }
 
-export type View = 'home' | 'post' | 'admin';
+export type View = 'home' | 'post' | 'product' | 'cart' | 'checkout' | 'admin';

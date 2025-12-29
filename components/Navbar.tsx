@@ -13,7 +13,7 @@ interface NavbarProps {
   onOpenCart: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ setView, siteName, onSearch, darkMode, toggleDarkMode }) => {
+const Navbar: React.FC<NavbarProps> = ({ setView, siteName, onSearch, darkMode, toggleDarkMode, cartCount, onOpenCart }) => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
@@ -25,20 +25,17 @@ const Navbar: React.FC<NavbarProps> = ({ setView, siteName, onSearch, darkMode, 
         </div>
 
         <div className="flex items-center gap-2 md:gap-5">
-          <div className={`relative transition-all duration-500 overflow-hidden ${isSearchOpen ? 'w-40 sm:w-48 md:w-64' : 'w-10'}`}>
-            <input 
-              type="text" 
-              placeholder="ابحث..."
-              className={`w-full py-2 pr-10 pl-4 rounded-xl bg-slate-100 dark:bg-white/5 outline-none font-bold text-xs border-2 border-transparent focus:border-emerald-500/50 transition-all ${isSearchOpen ? 'opacity-100' : 'opacity-0'}`}
-              onChange={(e) => onSearch(e.target.value)}
-            />
-            <button 
-              onClick={() => setIsSearchOpen(!isSearchOpen)} 
-              className="absolute right-0 top-0 w-10 h-10 flex items-center justify-center text-lg md:text-xl hover:bg-emerald-500/10 rounded-xl transition-colors"
-            >
-              {isSearchOpen ? '✕' : '🔍'}
-            </button>
-          </div>
+          <button 
+            onClick={onOpenCart}
+            className="relative w-10 h-10 flex items-center justify-center rounded-xl bg-emerald-600/10 text-emerald-500 hover:bg-emerald-600 hover:text-white transition-all"
+          >
+            <span className="text-xl">🛒</span>
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black animate-bounce">
+                {cartCount}
+              </span>
+            )}
+          </button>
 
           <button onClick={toggleDarkMode} className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 dark:bg-white/5 text-lg md:text-xl hover:scale-110 active:scale-95 transition-all">
             {darkMode ? '☀️' : '🌙'}
