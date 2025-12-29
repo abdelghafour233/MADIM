@@ -39,7 +39,7 @@ const INITIAL_DATA: Article[] = [
 
 رابط الشراء المباشر:
 https://temu.to/k/ega2jxg103h`,
-    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1605733513597-a8f8d410fe3c?auto=format&fit=crop&q=80&w=1200',
     category: Category.REVIEWS,
     date: '12 مارس 2025',
     views: 45200,
@@ -98,14 +98,20 @@ const App: React.FC = () => {
     if (savedPosts) {
       const parsed: Article[] = JSON.parse(savedPosts);
       // Logic to sync new hardcoded posts into local storage if they don't exist
-      const newPostIds = INITIAL_DATA.map(d => d.id);
       let updated = [...parsed];
       let needsUpdate = false;
 
       INITIAL_DATA.forEach(initialPost => {
-        if (!updated.some(p => p.id === initialPost.id)) {
+        const existingIndex = updated.findIndex(p => p.id === initialPost.id);
+        if (existingIndex === -1) {
           updated = [initialPost, ...updated];
           needsUpdate = true;
+        } else {
+          // Update existing post with new image if needed
+          if (updated[existingIndex].image !== initialPost.image) {
+            updated[existingIndex] = { ...updated[existingIndex], image: initialPost.image };
+            needsUpdate = true;
+          }
         }
       });
 
