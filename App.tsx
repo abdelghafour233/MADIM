@@ -321,6 +321,9 @@ const App: React.FC = () => {
   const [cookieConsent, setCookieConsent] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // نستخدم مفتاح إصدار (Version) لضمان تحديث البيانات القسري عند تغيير INITIAL_DATA
+  const DATA_VERSION = "v3.2_full_26"; 
+
   useEffect(() => {
     const savedSettings = localStorage.getItem('abdou_settings_v3');
     if (savedSettings) setSettings(JSON.parse(savedSettings));
@@ -332,28 +335,41 @@ const App: React.FC = () => {
     if (consent) setCookieConsent(true);
 
     const savedPostsRaw = localStorage.getItem('abdou_blog_v3');
+    const savedVersion = localStorage.getItem('abdou_data_version');
+    
     let currentPosts: Article[] = savedPostsRaw ? JSON.parse(savedPostsRaw) : [];
 
-    // Force update logic for initial data (including images and the full 26-post count)
+    // خوارزمية المزامنة القسرية: إذا تغير الإصدار أو كانت البيانات ناقصة
     let mergedPosts = [...currentPosts];
     let changed = false;
 
-    INITIAL_DATA.forEach(initialPost => {
-      const existingIndex = mergedPosts.findIndex(p => p.id === initialPost.id);
-      if (existingIndex === -1) {
-        mergedPosts = [initialPost, ...mergedPosts];
-        changed = true;
-      } else {
-        // Force update broken images or updated titles/content for AdSense review
-        if (
-          mergedPosts[existingIndex].image !== initialPost.image || 
-          mergedPosts[existingIndex].title !== initialPost.title
-        ) {
-          mergedPosts[existingIndex] = { ...mergedPosts[existingIndex], ...initialPost };
+    if (savedVersion !== DATA_VERSION) {
+      // إذا كان هناك تحديث في الإصدار، نحدث كل المقالات بالبيانات الأولية الجديدة (لإصلاح الصور والمحتوى)
+      INITIAL_DATA.forEach(initialPost => {
+        const existingIndex = mergedPosts.findIndex(p => p.id === initialPost.id);
+        if (existingIndex === -1) {
+          mergedPosts = [initialPost, ...mergedPosts];
+          changed = true;
+        } else {
+          // تحديث المقال الموجود ببياناته الجديدة مع الحفاظ على عدد المشاهدات القديمة
+          mergedPosts[existingIndex] = { 
+            ...initialPost, 
+            views: mergedPosts[existingIndex].views || initialPost.views 
+          };
           changed = true;
         }
-      }
-    });
+      });
+      localStorage.setItem('abdou_data_version', DATA_VERSION);
+    } else {
+      // في حالة عدم تغيير الإصدار، نكتفي بالتأكد من وجود كل المقالات
+      INITIAL_DATA.forEach(initialPost => {
+        const exists = mergedPosts.some(p => p.id === initialPost.id);
+        if (!exists) {
+          mergedPosts = [initialPost, ...mergedPosts];
+          changed = true;
+        }
+      });
+    }
 
     const sortedPosts = [...mergedPosts].sort((a, b) => (b.isTrending ? 1 : 0) - (a.isTrending ? 1 : 0));
     setPosts(sortedPosts);
