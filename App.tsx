@@ -41,7 +41,7 @@ const INITIAL_DATA: Article[] = [
 - تحسن توقعات نسبة النمو التي يسطرها بنك المغرب والمندوبية السامية للتخطيط، حيث يساهم الموسم الفلاحي الجيد في رفع الناتج الداخلي الخام بنقاط ملموسة.
 
 ختاماً، تبقى هذه التساقطات بارقة أمل كبيرة، لكنها تذكرنا أيضاً بأهمية مواصلة سياسة "تشييد السدود" وتحلية مياه البحر التي نهجها المغرب، لضمان سيادة غذائية ومائية مستدامة بعيداً عن تقلبات المناخ.`,
-    image: 'https://images.unsplash.com/photo-1534274988757-a28bf1f539cf?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '17 مارس 2025',
     views: 42300,
@@ -52,7 +52,7 @@ const INITIAL_DATA: Article[] = [
     id: 'can-opening-morocco-2025-historical',
     title: 'افتتاح تاريخي لكأس أمم أفريقيا بالمغرب: ليلة أبهرت القارة السمراء والعالم',
     excerpt: 'المغرب يبهر العالم بحفل افتتاح أسطوري يمزج بين التراث المغربي العريق والحداثة التقنية، مؤكداً جاهزيته الاستثنائية لاحتضان العرس الأفريقي.',
-    content: `عاش المغرب ليلة تاريخية بامتياز مع انطلاق نهائيات كأس أمم أفريقيا، حيث تحول الملعب الكبير بالرباط إلى لوحة فنية عالمية أبهرت الملايين حول العالم...`,
+    content: `عاش المغرب ليلة تاريخية بامتياز مع انطلاق نهائيات كأس أمم أفريقيا، حيث تحول الملعب الكبير بالرباط إلى لوحة فنية عالمية أبهرت الملايين حول العالم. حفل الافتتاح لم يكن مجرد بداية لبطولة كروية، بل كان تجسيداً للهوية المغربية المتجذرة في التاريخ والمنفتحة على المستقبل.`,
     image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '15 مارس 2025',
@@ -81,19 +81,26 @@ const App: React.FC = () => {
     const savedPostsRaw = localStorage.getItem('abdou_blog_v3');
     let currentPosts: Article[] = savedPostsRaw ? JSON.parse(savedPostsRaw) : [];
 
+    // دمج المقالات مع تحديث البيانات للمقالات الأصلية (مثل تحديث الصورة)
     let mergedPosts = [...currentPosts];
-    let addedAny = false;
+    let changed = false;
 
     INITIAL_DATA.forEach(initialPost => {
-      const exists = mergedPosts.some(p => p.id === initialPost.id);
-      if (!exists) {
+      const existingIndex = mergedPosts.findIndex(p => p.id === initialPost.id);
+      if (existingIndex === -1) {
         mergedPosts = [initialPost, ...mergedPosts];
-        addedAny = true;
+        changed = true;
+      } else {
+        // إذا كان المقال موجوداً ولكن رابط الصورة اختلف في الكود، نقوم بتحديثه
+        if (mergedPosts[existingIndex].image !== initialPost.image) {
+          mergedPosts[existingIndex] = { ...mergedPosts[existingIndex], image: initialPost.image };
+          changed = true;
+        }
       }
     });
 
     setPosts(mergedPosts);
-    if (addedAny || !savedPostsRaw) {
+    if (changed || !savedPostsRaw) {
       localStorage.setItem('abdou_blog_v3', JSON.stringify(mergedPosts));
     }
   }, []);
