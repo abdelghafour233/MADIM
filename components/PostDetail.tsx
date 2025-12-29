@@ -13,6 +13,7 @@ interface PostDetailProps {
 const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, settings }) => {
   const [progress, setProgress] = useState(0);
   const [copied, setCopied] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,14 +54,13 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
     setTimeout(() => setCopied(false), 2000);
   };
 
-  // وظيفة للتحقق مما إذا كان النص رابطاً
   const isUrl = (text: string) => {
-    const pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    const pattern = new RegExp('^(https?:\\/\\/)?'+ 
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ 
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ 
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ 
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ 
+      '(\\#[-a-z\\d_]*)?$','i'); 
     return !!pattern.test(text.trim());
   };
 
@@ -82,8 +82,21 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         </div>
       </div>
 
-      <div className={`rounded-[25px] md:rounded-[60px] overflow-hidden mb-8 md:mb-12 shadow-xl md:shadow-2xl border-4 md:border-8 ${darkMode ? 'border-white/5' : 'border-white shadow-slate-200'}`}>
-        <img src={post.image} className="w-full h-auto" alt={post.title || post.name} loading="lazy" />
+      <div className={`rounded-[25px] md:rounded-[60px] overflow-hidden mb-8 md:mb-12 shadow-xl md:shadow-2xl border-4 md:border-8 relative min-h-[300px] flex items-center justify-center ${darkMode ? 'border-white/5 bg-slate-900' : 'border-white shadow-slate-200 bg-slate-50'}`}>
+        {!imgError ? (
+          <img 
+            src={post.image} 
+            className="w-full h-auto block" 
+            alt={post.title || post.name} 
+            loading="lazy" 
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center p-20 text-center">
+            <span className="text-6xl mb-4">🖼️</span>
+            <p className="font-black opacity-40">نعتذر، الصورة غير متوفرة حالياً</p>
+          </div>
+        )}
       </div>
 
       <AdUnit publisherId={settings.adsenseCode} slotId="top_ad" />
@@ -93,7 +106,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
           const trimmedPara = para.trim();
           if (!trimmedPara) return null;
 
-          // إذا كان الباراجراف عبارة عن رابط فقط، قم بتحويله لزر جذاب
           if (isUrl(trimmedPara)) {
             return (
               <div key={i} className="my-10 md:my-16">
