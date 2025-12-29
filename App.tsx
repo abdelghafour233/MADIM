@@ -18,40 +18,8 @@ const INITIAL_SETTINGS: Settings = {
   totalVisits: 0
 };
 
-const INITIAL_DATA: Article[] = [
-  {
-    id: 'ultra-watch-series-9-clone',
-    name: 'ساعة Ultra Smart Watch - الجيل الجديد 2025',
-    title: 'ساعة Ultra Smart Watch - الجيل الجديد 2025',
-    excerpt: 'أفضل بديل للساعات الذكية الفاخرة في المغرب. مقاومة للماء، قياس ضربات القلب، وشاشة AMOLED مذهلة بسعر لا يقاوم.',
-    content: `اكتشف القوة والأناقة مع ساعة Ultra Smart Watch الجديدة.
-- شاشة 2.12 بوصة بدقة عالية جداً.
-- بطارية تدوم حتى 7 أيام من الاستخدام المتواصل.
-- تدعم المكالمات مباشرة من الساعة (Bluetooth Call).
-- نظام GPS متطور للرياضيين.
-توصيل مجاني في المغرب والدفع عند الاستلام.`,
-    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=1200',
-    category: Category.REVIEWS,
-    date: '12 مارس 2025',
-    views: 12400,
-    author: 'فريق المراجعات',
-    price: 399,
-    isProduct: true,
-    rating: 5
-  },
-  {
-    id: 'winter-vitamin-d-mental-health-2025',
-    title: 'شمس الشتاء الغائبة: كيف يؤثر نقص فيتامين "د" على نفسيتك؟ دليل شامل لتجاوز كآبة الموسم',
-    excerpt: 'لماذا نشعر بالحزن والخمول المفاجئ مع حلول الشتاء؟ نكشف لكم العلاقة العلمية بين نقص فيتامين الشمس واضطرابات المزاج، وكيف تحمي نفسك من الاكتئاب الموسمي.',
-    content: `مع تراجع ساعات النهار وغياب الشمس خلف الغيوم في فصل الشتاء، يبدأ الكثيرون في الشعور بنوع من "الخمول النفسي"...`,
-    image: 'https://images.unsplash.com/photo-1483921020237-2ff51e8e4b22?auto=format&fit=crop&q=80&w=1200',
-    category: Category.SELF_DEV,
-    date: '11 مارس 2025',
-    views: 112000,
-    author: 'عبدو التقني',
-    isTrending: false
-  }
-];
+// تم إفراغ البيانات بالكامل بناءً على طلب المستخدم
+const INITIAL_DATA: Article[] = [];
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
@@ -64,38 +32,27 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
 
   useEffect(() => {
+    // تحميل الإعدادات
+    const savedSettings = localStorage.getItem('abdou_settings');
+    if (savedSettings) setSettings(JSON.parse(savedSettings));
+
+    // تحميل السلة
     const savedCart = localStorage.getItem('abdou_cart');
     if (savedCart) setCart(JSON.parse(savedCart));
 
-    const savedPosts = localStorage.getItem('abdou_blog_v2');
-    if (savedPosts) {
-      const parsed: Article[] = JSON.parse(savedPosts);
-      // Remove deleted items (specifically the temu boots) from existing storage to ensure UI updates
-      let updated = parsed.filter(p => p.id !== 'temu-winter-boots-review-2025');
-      let needsUpdate = parsed.length !== updated.length;
-
-      INITIAL_DATA.forEach(initialPost => {
-        const existingIndex = updated.findIndex(p => p.id === initialPost.id);
-        if (existingIndex === -1) {
-          updated = [initialPost, ...updated];
-          needsUpdate = true;
-        } else {
-          if (updated[existingIndex].image !== initialPost.image) {
-            updated[existingIndex] = { ...updated[existingIndex], image: initialPost.image };
-            needsUpdate = true;
-          }
-        }
-      });
-
-      if (needsUpdate) {
-        setPosts(updated);
-        localStorage.setItem('abdou_blog_v2', JSON.stringify(updated));
-      } else {
-        setPosts(parsed);
-      }
-    } else {
+    // تحميل المقالات - إذا طلب المستخدم حذف الكل، سنقوم بتصفير التخزين المحلي أيضاً في هذه النسخة
+    const isFirstRun = !localStorage.getItem('abdou_reset_v3');
+    if (isFirstRun) {
       setPosts(INITIAL_DATA);
       localStorage.setItem('abdou_blog_v2', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_reset_v3', 'true');
+    } else {
+      const savedPosts = localStorage.getItem('abdou_blog_v2');
+      if (savedPosts) {
+        setPosts(JSON.parse(savedPosts));
+      } else {
+        setPosts(INITIAL_DATA);
+      }
     }
   }, []);
 
