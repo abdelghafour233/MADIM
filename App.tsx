@@ -20,33 +20,6 @@ const INITIAL_SETTINGS: Settings = {
 
 const INITIAL_DATA: Article[] = [
   {
-    id: 'temu-winter-boots-review-2025',
-    title: 'أناقة ودفء: مراجعة الحذاء الشتوي الأكثر مبيعاً على تيمو (Temu) للموسم الحالي',
-    excerpt: 'هل تبحث عن حذاء يجمع بين المتانة والشكل العصري؟ جربنا لكم هذا الحذاء الشتوي من تيمو الذي أثار ضجة كبيرة، وإليكم الخلاصة الصادمة حول جودته.',
-    content: `مع انخفاض درجات الحرارة في المغرب، يصبح البحث عن حذاء يجمع بين التدفئة المركزية والأناقة أمراً صعباً، خاصة إذا كنت تبحث عن سعر معقول. اليوم نشارككم تجربتنا لهذا الحذاء الشتوي المتميز من منصة تيمو.
-
-مميزات الحذاء التي أبهرتنا:
-1. البطانة الداخلية: يأتي الحذاء ببطانة فرو اصطناعي عالية الجودة توفر دفئاً فورياً حتى في الأيام الأكثر برودة.
-2. التصميم الخارجي: يتميز بجلد مقاوم للرطوبة وسهل التنظيف، مما يجعله مثاليأ للأجواء الماطرة في المدن المغربية.
-3. النعل المرن: نعل مطاطي مضاد للانزلاق يوفر راحة كبيرة أثناء المشي لمسافات طويلة.
-4. خفة الوزن: على عكس الأحذية الشتوية الضخمة، هذا الحذاء خفيف جداً ولا يسبب إرهاقاً للقدم.
-
-لماذا ننصح به؟
-بعد مقارنة السعر مع الجودة المتوفرة في الأسواق المحلية، وجدنا أن هذا المنتج يقدم قيمة استثنائية. التصميم يتناسب تماماً مع الجينز أو سراويل الكارجو، مما يمنحك مظهراً "كاجوال" فخماً.
-
-نصيحة عند الطلب:
-تأكد من اختيار قياسك المعتاد، فالقوالب مطابقة للمقاييس العالمية. الشحن عبر تيمو إلى المغرب حالياً سريع جداً مقارنة بالسابق.
-
-رابط الشراء المباشر:
-https://temu.to/k/ega2jxg103h`,
-    image: 'https://images.unsplash.com/photo-1605733513597-a8f8d410fe3c?auto=format&fit=crop&q=80&w=1200',
-    category: Category.REVIEWS,
-    date: '12 مارس 2025',
-    views: 45200,
-    author: 'عبدو التقني',
-    isTrending: true
-  },
-  {
     id: 'ultra-watch-series-9-clone',
     name: 'ساعة Ultra Smart Watch - الجيل الجديد 2025',
     title: 'ساعة Ultra Smart Watch - الجيل الجديد 2025',
@@ -97,9 +70,9 @@ const App: React.FC = () => {
     const savedPosts = localStorage.getItem('abdou_blog_v2');
     if (savedPosts) {
       const parsed: Article[] = JSON.parse(savedPosts);
-      // Logic to sync new hardcoded posts into local storage if they don't exist
-      let updated = [...parsed];
-      let needsUpdate = false;
+      // Remove deleted items (specifically the temu boots) from existing storage to ensure UI updates
+      let updated = parsed.filter(p => p.id !== 'temu-winter-boots-review-2025');
+      let needsUpdate = parsed.length !== updated.length;
 
       INITIAL_DATA.forEach(initialPost => {
         const existingIndex = updated.findIndex(p => p.id === initialPost.id);
@@ -107,7 +80,6 @@ const App: React.FC = () => {
           updated = [initialPost, ...updated];
           needsUpdate = true;
         } else {
-          // Update existing post with new image if needed
           if (updated[existingIndex].image !== initialPost.image) {
             updated[existingIndex] = { ...updated[existingIndex], image: initialPost.image };
             needsUpdate = true;
