@@ -18,6 +18,7 @@ const INITIAL_SETTINGS: Settings = {
   totalVisits: 0
 };
 
+// هذه المقالات ستبقى دائماً في الموقع ولن تحذف أبداً
 const INITIAL_DATA: Article[] = [
   {
     id: 'can-opening-morocco-2025-historical',
@@ -43,6 +44,17 @@ const INITIAL_DATA: Article[] = [
     views: 85200,
     author: 'عبدو التقني',
     isTrending: true
+  },
+  {
+    id: 'tech-revolution-morocco-2025',
+    title: 'الثورة الرقمية في المغرب: كيف سيتغير المشهد في 2025؟',
+    excerpt: 'استكشاف شامل للتحولات التقنية الكبرى التي تشهدها المملكة المغربية في مجالات الذكاء الاصطناعي والخدمات السحابية.',
+    content: 'يعيش المغرب اليوم على إيقاع تحول رقمي غير مسبوق. من الإدارات العمومية إلى الشركات الناشئة، الجميع يسابق الزمن لتبني أحدث التقنيات...\n\nإن الرؤية الاستراتيجية للمملكة تهدف إلى جعل المغرب قطباً رقمياً إقليمياً بامتياز، وهذا يتطلب بنية تحتية قوية واستثماراً في العنصر البشري.',
+    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200',
+    category: Category.TECH,
+    date: '25 فبراير 2025',
+    views: 1250,
+    author: 'عبدو'
   }
 ];
 
@@ -57,27 +69,34 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
 
   useEffect(() => {
-    const savedSettings = localStorage.getItem('abdou_settings');
+    // 1. تحميل الإعدادات
+    const savedSettings = localStorage.getItem('abdou_settings_v3');
     if (savedSettings) setSettings(JSON.parse(savedSettings));
 
-    const savedCart = localStorage.getItem('abdou_cart');
+    // 2. تحميل السلة
+    const savedCart = localStorage.getItem('abdou_cart_v3');
     if (savedCart) setCart(JSON.parse(savedCart));
 
-    // تحديث البيانات لعرض المقال الجديد فوراً
-    const savedPosts = localStorage.getItem('abdou_blog_v2');
-    if (savedPosts) {
-      const parsed: Article[] = JSON.parse(savedPosts);
-      const exists = parsed.some(p => p.id === INITIAL_DATA[0].id);
+    // 3. مزامنة المقالات بشكل مستقر
+    const savedPostsRaw = localStorage.getItem('abdou_blog_v3');
+    let currentPosts: Article[] = savedPostsRaw ? JSON.parse(savedPostsRaw) : [];
+
+    // دمج المقالات: نأخذ المقالات المحفوظة ونضيف إليها أي مقال جديد من INITIAL_DATA إذا لم يكن موجوداً
+    let mergedPosts = [...currentPosts];
+    let addedAny = false;
+
+    INITIAL_DATA.forEach(initialPost => {
+      const exists = mergedPosts.some(p => p.id === initialPost.id);
       if (!exists) {
-        const updated = [INITIAL_DATA[0], ...parsed];
-        setPosts(updated);
-        localStorage.setItem('abdou_blog_v2', JSON.stringify(updated));
-      } else {
-        setPosts(parsed);
+        mergedPosts = [initialPost, ...mergedPosts];
+        addedAny = true;
       }
-    } else {
-      setPosts(INITIAL_DATA);
-      localStorage.setItem('abdou_blog_v2', JSON.stringify(INITIAL_DATA));
+    });
+
+    setPosts(mergedPosts);
+    // نقوم بالتحديث فقط إذا أضفنا مقالات جديدة من الكود
+    if (addedAny || !savedPostsRaw) {
+      localStorage.setItem('abdou_blog_v3', JSON.stringify(mergedPosts));
     }
   }, []);
 
@@ -90,21 +109,21 @@ const App: React.FC = () => {
       newCart = [...cart, { ...product, quantity: 1 }];
     }
     setCart(newCart);
-    localStorage.setItem('abdou_cart', JSON.stringify(newCart));
+    localStorage.setItem('abdou_cart_v3', JSON.stringify(newCart));
     setShowCart(true);
   };
 
   const removeFromCart = (id: string) => {
     const newCart = cart.filter(i => i.id !== id);
     setCart(newCart);
-    localStorage.setItem('abdou_cart', JSON.stringify(newCart));
+    localStorage.setItem('abdou_cart_v3', JSON.stringify(newCart));
   };
 
   const updateQuantity = (id: string, q: number) => {
     if (q < 1) return removeFromCart(id);
     const newCart = cart.map(i => i.id === id ? { ...i, quantity: q } : i);
     setCart(newCart);
-    localStorage.setItem('abdou_cart', JSON.stringify(newCart));
+    localStorage.setItem('abdou_cart_v3', JSON.stringify(newCart));
   };
 
   const handleItemClick = (p: Article) => {
@@ -112,7 +131,7 @@ const App: React.FC = () => {
       item.id === p.id ? { ...item, views: (item.views || 0) + 1 } : item
     );
     setPosts(updatedPosts);
-    localStorage.setItem('abdou_blog_v2', JSON.stringify(updatedPosts));
+    localStorage.setItem('abdou_blog_v3', JSON.stringify(updatedPosts));
     
     setSelectedItem({ ...p, views: (p.views || 0) + 1 });
     if (p.isProduct) {
@@ -121,6 +140,16 @@ const App: React.FC = () => {
       setView('post');
     }
     window.scrollTo(0, 0);
+  };
+
+  const handleUpdatePosts = (newPosts: Article[]) => {
+    setPosts(newPosts);
+    localStorage.setItem('abdou_blog_v3', JSON.stringify(newPosts));
+  };
+
+  const handleUpdateSettings = (newSettings: Settings) => {
+    setSettings(newSettings);
+    localStorage.setItem('abdou_settings_v3', JSON.stringify(newSettings));
   };
 
   return (
@@ -157,8 +186,8 @@ const App: React.FC = () => {
           <AdminDashboard 
             posts={posts} 
             settings={settings}
-            onUpdate={(p) => { setPosts(p); localStorage.setItem('abdou_blog_v2', JSON.stringify(p)); }}
-            onUpdateSettings={(s) => { setSettings(s); localStorage.setItem('abdou_settings', JSON.stringify(s)); }}
+            onUpdate={handleUpdatePosts}
+            onUpdateSettings={handleUpdateSettings}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
