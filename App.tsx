@@ -268,7 +268,7 @@ const INITIAL_DATA: Article[] = [
     title: 'الصحة النفسية في عصر الشاشات: كيف تحافظ على هدوئك الرقمي؟',
     excerpt: 'نصائح عملية للتخلص من إدمان الهاتف والتعامل مع ضغوط منصات التواصل الاجتماعي.',
     content: `الاستخدام المفرط للهواتف يؤدي للقلق وضعف التركيز. في هذا المقال، نقدم تقنيات بسيطة مثل "الصيام الرقمي" لتجديد الطاقة العقلية والحفاظ على التوازن النفسي.`,
-    image: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1520333789090-1afc82db536a?auto=format&fit=crop&q=80&w=1200',
     category: Category.SELF_DEV,
     date: '07 مارس 2025',
     views: 18400,
@@ -321,60 +321,32 @@ const App: React.FC = () => {
   const [cookieConsent, setCookieConsent] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // نستخدم مفتاح إصدار (Version) لضمان تحديث البيانات القسري عند تغيير INITIAL_DATA
-  const DATA_VERSION = "v3.2_full_26"; 
+  // تغيير رقم الإصدار هنا يجبر الحاسوب والهاتف على تحديث البيانات فوراً
+  const DATA_VERSION = "v5.0_final_adsense"; 
 
   useEffect(() => {
-    const savedSettings = localStorage.getItem('abdou_settings_v3');
+    const savedSettings = localStorage.getItem('abdou_settings_v5');
     if (savedSettings) setSettings(JSON.parse(savedSettings));
 
-    const savedCart = localStorage.getItem('abdou_cart_v3');
+    const savedCart = localStorage.getItem('abdou_cart_v5');
     if (savedCart) setCart(JSON.parse(savedCart));
 
     const consent = localStorage.getItem('abdou_cookie_consent');
     if (consent) setCookieConsent(true);
 
-    const savedPostsRaw = localStorage.getItem('abdou_blog_v3');
-    const savedVersion = localStorage.getItem('abdou_data_version');
+    const savedPostsRaw = localStorage.getItem('abdou_blog_v5');
+    const savedVersion = localStorage.getItem('abdou_data_version_v5');
     
     let currentPosts: Article[] = savedPostsRaw ? JSON.parse(savedPostsRaw) : [];
 
-    // خوارزمية المزامنة القسرية: إذا تغير الإصدار أو كانت البيانات ناقصة
-    let mergedPosts = [...currentPosts];
-    let changed = false;
-
+    // خوارزمية التحديث القسري لضمان وصول التحديثات للهواتف والحواسيب
     if (savedVersion !== DATA_VERSION) {
-      // إذا كان هناك تحديث في الإصدار، نحدث كل المقالات بالبيانات الأولية الجديدة (لإصلاح الصور والمحتوى)
-      INITIAL_DATA.forEach(initialPost => {
-        const existingIndex = mergedPosts.findIndex(p => p.id === initialPost.id);
-        if (existingIndex === -1) {
-          mergedPosts = [initialPost, ...mergedPosts];
-          changed = true;
-        } else {
-          // تحديث المقال الموجود ببياناته الجديدة مع الحفاظ على عدد المشاهدات القديمة
-          mergedPosts[existingIndex] = { 
-            ...initialPost, 
-            views: mergedPosts[existingIndex].views || initialPost.views 
-          };
-          changed = true;
-        }
-      });
-      localStorage.setItem('abdou_data_version', DATA_VERSION);
+      // مسح البيانات القديمة لضمان هيكلة الـ 26 مقالاً الجديدة بشكل سليم
+      setPosts(INITIAL_DATA);
+      localStorage.setItem('abdou_blog_v5', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_data_version_v5', DATA_VERSION);
     } else {
-      // في حالة عدم تغيير الإصدار، نكتفي بالتأكد من وجود كل المقالات
-      INITIAL_DATA.forEach(initialPost => {
-        const exists = mergedPosts.some(p => p.id === initialPost.id);
-        if (!exists) {
-          mergedPosts = [initialPost, ...mergedPosts];
-          changed = true;
-        }
-      });
-    }
-
-    const sortedPosts = [...mergedPosts].sort((a, b) => (b.isTrending ? 1 : 0) - (a.isTrending ? 1 : 0));
-    setPosts(sortedPosts);
-    if (changed || !savedPostsRaw) {
-      localStorage.setItem('abdou_blog_v3', JSON.stringify(sortedPosts));
+      setPosts(currentPosts.length > 0 ? currentPosts : INITIAL_DATA);
     }
   }, []);
 
@@ -383,7 +355,7 @@ const App: React.FC = () => {
       item.id === p.id ? { ...item, views: (item.views || 0) + 1 } : item
     );
     setPosts(updatedPosts);
-    localStorage.setItem('abdou_blog_v3', JSON.stringify(updatedPosts));
+    localStorage.setItem('abdou_blog_v5', JSON.stringify(updatedPosts));
     setSelectedItem({ ...p, views: (p.views || 0) + 1 });
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo(0, 0);
@@ -433,8 +405,8 @@ const App: React.FC = () => {
           <AdminDashboard 
             posts={posts} 
             settings={settings}
-            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v3', JSON.stringify(newPosts));}}
-            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v3', JSON.stringify(s));}}
+            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v5', JSON.stringify(newPosts));}}
+            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v5', JSON.stringify(s));}}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
