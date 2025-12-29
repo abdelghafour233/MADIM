@@ -18,8 +18,33 @@ const INITIAL_SETTINGS: Settings = {
   totalVisits: 0
 };
 
-// تم إفراغ البيانات بالكامل بناءً على طلب المستخدم
-const INITIAL_DATA: Article[] = [];
+const INITIAL_DATA: Article[] = [
+  {
+    id: 'can-opening-morocco-2025-historical',
+    title: 'افتتاح تاريخي لكأس أمم أفريقيا بالمغرب: ليلة أبهرت القارة السمراء والعالم',
+    excerpt: 'المغرب يبهر العالم بحفل افتتاح أسطوري يمزج بين التراث المغربي العريق والحداثة التقنية، مؤكداً جاهزيته الاستثنائية لاحتضان العرس الأفريقي.',
+    content: `عاش المغرب ليلة تاريخية بامتياز مع انطلاق نهائيات كأس أمم أفريقيا، حيث تحول الملعب الكبير بالرباط إلى لوحة فنية عالمية أبهرت الملايين حول العالم. حفل الافتتاح لم يكن مجرد بداية لبطولة كروية، بل كان تجسيداً للهوية المغربية المتجذرة في التاريخ والمنفتحة على المستقبل.
+
+تفاصيل الحفل الأسطوري:
+1. اللوحات التراثية: تضمن الحفل عروضاً فنية استعرضت تنوع الثقافات المغربية من طنجة إلى الكويرة، مع استخدام تقنيات "الهولوغرام" لرسم معالم تاريخية مغربية في سماء الملعب.
+2. الموسيقى والأنغام: شهد الحفل مشاركة نجوم عالميين ومغاربة قدموا أغنية البطولة التي مزجت بين الإيقاعات الأفريقية الحماسية والروح المغربية المضيافة.
+3. التكنولوجيا الرقمية: تم استخدام أكثر من 500 طائرة "درون" رسمت خريطة القارة الأفريقية وشعار البطولة في عرض بصري غير مسبوق في تاريخ القارة.
+
+الجاهزية المغربية:
+أكد المسؤولون والوفود الحاضرة أن المغرب رفع سقف التنظيم إلى مستويات عالمية، تليق بحلم استضافة كأس العالم 2030. الملاعب، البنية التحتية، والجوانب اللوجستية كانت في أوج عطائها، مما جعل "الكان" في المغرب نسخة استثنائية بكل المقاييس.
+
+أصداء عالمية:
+تصدر حفل الافتتاح ترند منصات التواصل الاجتماعي عالمياً، حيث أشادت الصحافة الدولية بقدرة المغرب على تنظيم أحداث كبرى بهذا الحجم، واصفة الحفل بأنه "أفضل افتتاح في تاريخ بطولات أفريقيا".
+
+نتمنى لأسود الأطلس ولجميع المنتخبات العربية والأفريقية رحلة كروية مليئة بالإبداع والروح الرياضية العالية.`,
+    image: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1200',
+    category: Category.MOROCCO_NEWS,
+    date: '15 مارس 2025',
+    views: 85200,
+    author: 'عبدو التقني',
+    isTrending: true
+  }
+];
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
@@ -32,27 +57,27 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
 
   useEffect(() => {
-    // تحميل الإعدادات
     const savedSettings = localStorage.getItem('abdou_settings');
     if (savedSettings) setSettings(JSON.parse(savedSettings));
 
-    // تحميل السلة
     const savedCart = localStorage.getItem('abdou_cart');
     if (savedCart) setCart(JSON.parse(savedCart));
 
-    // تحميل المقالات - إذا طلب المستخدم حذف الكل، سنقوم بتصفير التخزين المحلي أيضاً في هذه النسخة
-    const isFirstRun = !localStorage.getItem('abdou_reset_v3');
-    if (isFirstRun) {
+    // تحديث البيانات لعرض المقال الجديد فوراً
+    const savedPosts = localStorage.getItem('abdou_blog_v2');
+    if (savedPosts) {
+      const parsed: Article[] = JSON.parse(savedPosts);
+      const exists = parsed.some(p => p.id === INITIAL_DATA[0].id);
+      if (!exists) {
+        const updated = [INITIAL_DATA[0], ...parsed];
+        setPosts(updated);
+        localStorage.setItem('abdou_blog_v2', JSON.stringify(updated));
+      } else {
+        setPosts(parsed);
+      }
+    } else {
       setPosts(INITIAL_DATA);
       localStorage.setItem('abdou_blog_v2', JSON.stringify(INITIAL_DATA));
-      localStorage.setItem('abdou_reset_v3', 'true');
-    } else {
-      const savedPosts = localStorage.getItem('abdou_blog_v2');
-      if (savedPosts) {
-        setPosts(JSON.parse(savedPosts));
-      } else {
-        setPosts(INITIAL_DATA);
-      }
     }
   }, []);
 
