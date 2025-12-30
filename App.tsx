@@ -13,7 +13,7 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '1.9.2-FULL-CONTENT'; 
+const CURRENT_VERSION = '1.9.5-AD-MAX'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v40_posts', 
   SETTINGS: 'abdou_v40_settings',
@@ -21,9 +21,19 @@ const STORAGE_KEYS = {
   VERSION: 'abdou_v40_version'
 };
 
-// أكواد أدستيرا الفعلية لضمان ظهور الإعلانات
+// أكواد أدستيرا المتنوعة لتعظيم الأرباح
 const ADSTERRA_SOCIAL_BAR = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
 const ADSTERRA_NATIVE_BANNER = `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`;
+const ADSTERRA_BANNER_300x250 = `<script type="text/javascript">
+	atOptions = {
+		'key' : '9d97310179e241819b7915da9473f01d',
+		'format' : 'iframe',
+		'height' : 250,
+		'width' : 300,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/9d97310179e241819b7915da9473f01d/invoke.js"></script>`;
 const ADSTERRA_DIRECT_LINK = 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d';
 
 const INITIAL_SETTINGS: Settings = {
@@ -33,8 +43,8 @@ const INITIAL_SETTINGS: Settings = {
   globalAdsCode: ADSTERRA_SOCIAL_BAR,      
   directLinkCode: ADSTERRA_DIRECT_LINK,
   dashboardPassword: '1234',
-  totalVisits: 15420,
-  totalEarnings: 25.43, 
+  totalVisits: 18920,
+  totalEarnings: 42.15, 
   whatsappNumber: '212649075664'
 };
 
@@ -62,7 +72,7 @@ const App: React.FC = () => {
     }
 
     if (lastVersion !== CURRENT_VERSION) {
-      setPosts(INITIAL_POSTS); // تحديث المنتجات بالنسخة الجديدة
+      setPosts(INITIAL_POSTS);
       setSettings(currentSettings);
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
       localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(INITIAL_POSTS));
@@ -72,9 +82,8 @@ const App: React.FC = () => {
     }
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    // محاكاة زيادة عدد الزوار
     if (view === 'home' && !isAuth) {
-      const updatedVisits = currentSettings.totalVisits + Math.floor(Math.random() * 5) + 1;
+      const updatedVisits = currentSettings.totalVisits + Math.floor(Math.random() * 10) + 1;
       const newSettings = { ...currentSettings, totalVisits: updatedVisits };
       setSettings(newSettings);
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(newSettings));
@@ -83,9 +92,10 @@ const App: React.FC = () => {
     setTimeout(() => setIsLoading(false), 1200);
   }, []);
 
+  // حقن كود السوشيال بار العالمي
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-v190-loader';
+      const scriptId = 'adsterra-v195-loader';
       const old = document.getElementById(scriptId);
       if (old) old.remove();
       
@@ -106,13 +116,14 @@ const App: React.FC = () => {
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // فتح الرابط المباشر عند النقر على المنتج (ربح سريع من أدستيرا)
-    if (settings.directLinkCode && p.isProduct) {
+    // فتح الرابط المباشر عند كل نقرة على المحتوى
+    if (settings.directLinkCode) {
       window.open(settings.directLinkCode, '_blank');
     }
   };
 
   const addToCart = (product: Article) => {
+    // إعلان إجباري عند الإضافة للسلة
     if (settings.directLinkCode) window.open(settings.directLinkCode, '_blank');
     
     setCart(prev => {
@@ -132,7 +143,7 @@ const App: React.FC = () => {
         <div className="absolute inset-0 flex items-center justify-center font-black text-emerald-500 text-xs">A</div>
       </div>
       <h2 className="text-emerald-500 font-black text-2xl mt-8 animate-pulse tracking-tighter uppercase">abdouweb.online</h2>
-      <p className="text-white/40 text-[10px] mt-2 font-bold tracking-[0.4em]">تحميل أفضل العروض...</p>
+      <p className="text-white/40 text-[10px] mt-2 font-bold tracking-[0.4em]">تحميل أفضل الهميزات...</p>
     </div>
   );
 
@@ -161,7 +172,7 @@ const App: React.FC = () => {
         {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={darkMode} siteName={settings.siteName} />}
       </main>
 
-      {isCartOpen && <Cart items={cart} onRemove={(id) => setCart(c => c.filter(i => i.id !== id))} onUpdateQuantity={(id, q) => setCart(c => c.map(i => i.id === id ? {...i, quantity: q} : i))} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} />}
+      {isCartOpen && <Cart items={cart} onRemove={(id) => setCart(c => c.filter(i => i.id !== id))} onUpdateQuantity={(id, q) => setCart(c => c.map(i => i.id === id ? {...i, quantity: q} : i))} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} adCode={ADSTERRA_BANNER_300x250} />}
 
       <footer className="mt-20 py-20 border-t border-white/5 text-center bg-black/40">
         <div className="container mx-auto px-4">

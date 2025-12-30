@@ -9,10 +9,21 @@ interface CartProps {
   onCheckout: () => void;
   onClose: () => void;
   darkMode: boolean;
+  adCode?: string; // إمكانية تمرير كود إعلاني للسلة
 }
 
-const Cart: React.FC<CartProps> = ({ items, onRemove, onUpdateQuantity, onCheckout, onClose, darkMode }) => {
+const Cart: React.FC<CartProps> = ({ items, onRemove, onUpdateQuantity, onCheckout, onClose, darkMode, adCode }) => {
   const total = items.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
+
+  // حقن الإعلان في السلة
+  const renderAd = () => {
+    if (!adCode) return null;
+    return (
+      <div className="my-6 p-4 bg-emerald-500/5 border border-dashed border-emerald-500/20 rounded-2xl overflow-hidden flex justify-center">
+         <div dangerouslySetInnerHTML={{ __html: adCode }} />
+      </div>
+    );
+  };
 
   return (
     <div className="fixed inset-0 z-[200] overflow-hidden" aria-labelledby="slide-over-title" role="dialog" aria-modal="true">
@@ -29,35 +40,33 @@ const Cart: React.FC<CartProps> = ({ items, onRemove, onUpdateQuantity, onChecko
                 </div>
               </div>
 
+              {renderAd()}
+
               {items.length === 0 ? (
                 <div className="text-center py-20">
                   <span className="text-7xl block mb-6">🛍️</span>
                   <p className="text-slate-500 font-bold text-lg">سلتك فارغة حالياً..</p>
-                  <button onClick={onClose} className="mt-6 text-emerald-600 font-black">ابدأ التسوق الآن ←</button>
                 </div>
               ) : (
-                <ul role="list" className="space-y-8">
+                <ul role="list" className="space-y-6">
                   {items.map((item) => (
                     <li key={item.id} className="flex py-4 bg-slate-50 dark:bg-slate-800/50 rounded-3xl px-4 border border-slate-100 dark:border-slate-800 transition-all hover:border-emerald-500/30">
-                      <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
+                      <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
                         <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
                       </div>
 
                       <div className="mr-4 flex flex-1 flex-col">
-                        <div>
-                          <div className="flex justify-between text-base font-black">
-                            <h3 className={`line-clamp-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{item.name}</h3>
-                            <p className="mr-4 text-emerald-600">{item.price} د.م.</p>
-                          </div>
-                          <p className="mt-1 text-sm text-slate-400">{item.category}</p>
+                        <div className="flex justify-between text-base font-black">
+                          <h3 className={`line-clamp-1 ${darkMode ? 'text-white' : 'text-slate-900'}`}>{item.name}</h3>
+                          <p className="mr-4 text-emerald-600 font-black">{item.price} د.م.</p>
                         </div>
-                        <div className="flex flex-1 items-end justify-between text-sm mt-4">
-                          <div className="flex items-center gap-3 bg-white dark:bg-slate-900 rounded-xl p-1 border border-slate-100 dark:border-slate-800">
-                            <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)} className="w-8 h-8 flex items-center justify-center font-black hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">-</button>
-                            <span className="font-black px-2">{item.quantity}</span>
-                            <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)} className="w-8 h-8 flex items-center justify-center font-black hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">+</button>
-                          </div>
-                          <button onClick={() => onRemove(item.id)} className="font-black text-red-500 hover:text-red-600 px-3 py-1 bg-red-50 dark:bg-red-900/20 rounded-lg">حذف</button>
+                        <div className="flex flex-1 items-end justify-between text-sm mt-2">
+                           <div className="flex items-center gap-2">
+                             <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)} className="w-6 h-6 bg-white dark:bg-slate-700 rounded-md">-</button>
+                             <span className="font-bold">{item.quantity}</span>
+                             <button onClick={() => onUpdateQuantity(item.id, item.quantity + 1)} className="w-6 h-6 bg-white dark:bg-slate-700 rounded-md">+</button>
+                           </div>
+                           <button onClick={() => onRemove(item.id)} className="text-red-500 font-bold">حذف</button>
                         </div>
                       </div>
                     </li>
@@ -69,15 +78,14 @@ const Cart: React.FC<CartProps> = ({ items, onRemove, onUpdateQuantity, onChecko
             {items.length > 0 && (
               <div className="border-t border-slate-100 dark:border-slate-800 py-8 px-6 space-y-6">
                 <div className="flex justify-between text-2xl font-black">
-                  <span className={darkMode ? 'text-slate-300' : 'text-slate-600'}>المجموع الإجمالي</span>
+                  <span className={darkMode ? 'text-slate-300' : 'text-slate-600'}>المجموع</span>
                   <span className="text-emerald-600">{total.toLocaleString()} د.م.</span>
                 </div>
-                <p className="text-xs text-slate-400 font-bold text-center">يتم احتساب مصاريف الشحن عند تأكيد الطلب حسب مدينتك.</p>
                 <button 
                   onClick={onCheckout}
-                  className="w-full flex items-center justify-center rounded-2xl border border-transparent bg-emerald-600 px-6 py-5 text-xl font-black text-white shadow-xl hover:bg-emerald-700 transition-all active:scale-95"
+                  className="w-full bg-emerald-600 px-6 py-5 text-xl font-black text-white rounded-2xl shadow-xl hover:bg-emerald-700 transition-all"
                 >
-                  إتمام الطلب الآن (الدفع عند الاستلام)
+                  إتمام الطلب الآن
                 </button>
               </div>
             )}
