@@ -21,6 +21,24 @@ const INITIAL_SETTINGS: Settings = {
 
 const INITIAL_DATA: Article[] = [
   {
+    id: 'dirham-float-2025-deep-dive',
+    title: 'تعويم الدرهم المغربي 2025: الحقائق، المخاوف، وتأثيره الحقيقي على جيب المواطن',
+    excerpt: 'هل اقترب المغرب من المرحلة النهائية لتعويم الدرهم؟ تحليل شامل لقرارات بنك المغرب وتأثيرها على الأسعار والقدرة الشرائية.',
+    content: `يعد ملف "تعويم الدرهم" من أكثر المواضيع الاقتصادية إثارة للجدل في الصالونات المغربية. مع حلول عام 2025، يكثر التساؤل: هل نحن بصدد مرحلة جديدة من مرونة سعر الصرف؟ 
+
+في هذا المقال، نغوص في كواليس القرار الاقتصادي. إن نظام الصرف المرن الذي يتبناه المغرب تدريجياً يهدف في الأساس إلى تقوية مناعة الاقتصاد الوطني ضد الصدمات الخارجية. لكن، ما يهم المواطن البسيط هو: هل سترتفع الأسعار؟ 
+
+الحقيقة أن بنك المغرب ينهج سياسة "التدرج الحذر". فمنذ عام 2018، تم توسيع نطاق تحرك الدرهم ليصل حالياً إلى 5% صعوداً وهبوطاً. هذا التدرج يحمينا من الانهيارات المفاجئة التي شهدتها عملات في دول أخرى. ومع ذلك، يظل التأثير على المواد المستوردة (مثل المحروقات والإلكترونيات) مرتبطاً بقوة الدرهم أمام الدولار والأورو.
+
+نصيحة الخبراء في "عبدو ويب": التحول نحو المرونة هو دليل على نضج الاقتصاد، لكنه يتطلب من المستهلك المغربي وعياً مالياً أكبر والتركيز على المنتجات المحلية لتقليل الاعتماد على العملة الصعبة.`,
+    image: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=1200',
+    category: Category.MOROCCO_NEWS,
+    date: '03 أبريل 2025',
+    views: 3100,
+    author: 'عبدو الاقتصادي',
+    isTrending: true
+  },
+  {
     id: 'crypto-morocco-2025',
     title: 'العملات الرقمية في المغرب: هل يقترب "بنك المغرب" من تقنين الكريبتو؟',
     excerpt: 'تحليل شامل لمستقبل البيتكوين والعملات المشفرة بالمغرب في ظل التوجهات الجديدة لعام 2025.',
@@ -29,8 +47,7 @@ const INITIAL_DATA: Article[] = [
     category: Category.TECH,
     date: '02 أبريل 2025',
     views: 4500,
-    author: 'عبدو المحلل',
-    isTrending: true
+    author: 'عبدو المحلل'
   },
   {
     id: 'world-cup-2030-prep',
@@ -77,83 +94,6 @@ https://temu.to/k/epmeiw8zeno`,
     date: '01 أبريل 2025',
     views: 2250,
     author: 'عبدو المراجع'
-  },
-  {
-    id: 'ww3-future-2025',
-    title: 'أعقاب الحرب العالمية الثالثة: سيناريوهات تقنية وجيوسياسية لمستقبل البشرية',
-    excerpt: 'تحليل مستقبلي لما قد يؤول إليه العالم تقنياً وبيئياً في حال نشوب صراع عالمي وتأثير ذلك على استقرار القارة الأفريقية.',
-    content: `تعد فرضية الحرب العالمية الثالثة من أكثر المواضيع إثارة للقلق والتحليل. في هذا المقال، نستعرض كيف يمكن للتكنولوجيا أن تلعب دوراً مزدوجاً كأداة للدمار ووسيلة لإعادة الإعمار. أعقاب هذه الحرب لن تكون مجرد دمار مادي، بل ستشهد تحولاً جذرياً في سلاسل الإمداد، والاعتماد الكلي على الطاقة المتجددة، وظهور أنظمة ذكاء اصطناعي لإدارة الموارد. المغرب بموقعه الاستراتيجي قد يلعب دوراً محورياً كجسر للسلام أو كمركز لإعادة الربط القاري.`,
-    image: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?auto=format&fit=crop&q=80&w=1200',
-    category: Category.TECH,
-    date: '30 مارس 2025',
-    views: 15400,
-    author: 'عبدو المحلل'
-  },
-  {
-    id: 'olive-oil-prices-2025',
-    title: 'أزمة أسعار زيت الزيتون بالمغرب: الأسباب والحلول وتوقعات الموسم القادم',
-    excerpt: 'تحليل للارتفاع غير المسبوق في أسعار زيت الزيتون وتأثير الجفاف على الإنتاج الوطني لعام 2025.',
-    content: `تشهد أسعار زيت الزيتون في المغرب ارتفاعاً قياسياً نتيجة توالي سنوات الجفاف. في هذا المقال نناقش التدابير الحكومية المتخذة لحماية القدرة الشرائية وتوقعات المهنيين للموسم الفلاحي القادم. تتدخل الدولة عبر تقييد التصدير لضمان تزويد السوق الوطنية بأسعار معقولة، وسط توقعات ببدء استقرار الأسعار مع تحسن التساقطات المطرية الأخيرة.`,
-    image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=1200',
-    category: Category.MOROCCO_NEWS,
-    date: '28 مارس 2025',
-    views: 92100,
-    author: 'عبدو المحلل'
-  },
-  {
-    id: 'casablanca-vision-2025',
-    title: 'الدار البيضاء 2025: كيف تتحول العاصمة الاقتصادية إلى مدينة ذكية؟',
-    excerpt: 'استعراض للمشاريع الكبرى التي تغير وجه كازابلانكا، من النقل الذكي إلى المساحات الخضراء الرقمية.',
-    content: `تشهد مدينة الدار البيضاء تحولات هيكلية كبرى تهدف إلى جعلها مدينة ذكية بامتياز، من خلال رقمنة الخدمات العمومية وتطوير شبكة نقل حديثة وصديقة للبيئة. مشاريع الترامواي والحافلات عالية الجودة تساهم في تقليل الازدحام وتحسين جودة الحياة للسكان.`,
-    image: 'https://images.unsplash.com/photo-1541410965313-d53b3c16ef17?auto=format&fit=crop&q=80&w=1200',
-    category: Category.MOROCCO_NEWS,
-    date: '27 مارس 2025',
-    views: 45600,
-    author: 'عبدو المحلل'
-  },
-  {
-    id: 'solar-energy-noor',
-    title: 'محطة نور ورزازات: كيف يقود المغرب العالم في إنتاج الطاقة الشمسية؟',
-    excerpt: 'رحلة إلى أكبر مجمع للطاقة الشمسية في العالم وكيف يساهم في تأمين السيادة الطاقية للمملكة.',
-    content: `يعد مشروع "نور" في ورزازات نموذجاً عالمياً للنجاح في مجال الطاقات المتجددة، حيث يضع المغرب في صدارة الدول المصدرة للطاقة النظيفة. يهدف المغرب لتغطية أكثر من 52% من احتياجاته الكهربائية من مصادر نظيفة بحلول 2030.`,
-    image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&q=80&w=1200',
-    category: Category.TECH,
-    date: '26 مارس 2025',
-    views: 31200,
-    author: 'عبدو التقني'
-  },
-  {
-    id: 'marrakech-tourism-tips',
-    title: 'مراكش 2025: دليل المسافر لاكتشاف المدينة الحمراء بين الأصالة والمعاصرة',
-    excerpt: 'نصائح حصرية لزيارة مراكش، أفضل الرياضات، المطاعم الخفية، والتجارب الثقافية التي لا تنسى.',
-    content: `تظل مراكش جوهرة السياحة المغربية، حيث تمزج بين التاريخ العريق والخدمات السياحية العصرية، مما يجعلها وجهة عالمية لا غنى عنها. ننصح السياح بزيارة المتاحف الفنية المعاصرة بجانب ساحة جامع الفنا التاريخية.`,
-    image: 'https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&q=80&w=1200',
-    category: Category.MOROCCO_NEWS,
-    date: '25 مارس 2025',
-    views: 18900,
-    author: 'عبدو المحلل'
-  },
-  {
-    id: 'digital-wellbeing-tips',
-    title: 'الصحة النفسية في عصر الشاشات: كيف تحافظ على هدوئك الرقمي؟',
-    excerpt: 'نصائح عملية للتخلص من إدمان الهاتف والتعامل مع ضغوط منصات التواصل الاجتماعي.',
-    content: `الاستخدام المفرط للهواتف يؤدي للقلق وضعف التركيز. في هذا المقال، نقدم تقنيات بسيطة مثل "الصيام الرقمي" لتجديد الطاقة العقلية والحفاظ على التوازن النفسي.`,
-    image: 'https://images.unsplash.com/photo-1512438248247-f0f2a5a8b7f0?auto=format&fit=crop&q=80&w=1200',
-    category: Category.SELF_DEV,
-    date: '07 مارس 2025',
-    views: 18400,
-    author: 'عبدو الموجه'
-  },
-  {
-    id: 'success-morning-routine',
-    title: 'الروتين الصباحي للناجحين: كيف تبدأ يومك بطاقة متجددة؟',
-    excerpt: 'عادات صباحية بسيطة طبقها مشاهير رواد الأعمال لتحسين إنتاجيتهم وصحتهم.',
-    content: `الاستيقاظ المبكر، شرب الماء، والتأمل هي ركائز البداية الناجحة. يشاركنا المقال كيف يمكن لـ 30 دقيقة صباحية أن تغير مسار يومك بالكامل وتزيد من تركيزك.`,
-    image: 'https://images.unsplash.com/photo-1495364141860-b0d03eccd065?auto=format&fit=crop&q=80&w=1200',
-    category: Category.SELF_DEV,
-    date: '05 مارس 2025',
-    views: 21600,
-    author: 'عبدو الموجه'
   }
 ];
 
@@ -169,30 +109,29 @@ const App: React.FC = () => {
   const [cookieConsent, setCookieConsent] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // الإصدار v12.0 لتعزيز المحتوى بمقالات حصرية جديدة للقبول في أدسنس
-  const DATA_VERSION = "v12.0_massive_content_update"; 
+  // الإصدار v13.0 لإضافة مقال تعويم الدرهم المغربي المحدث
+  const DATA_VERSION = "v13.0_dirham_float_update"; 
 
   useEffect(() => {
-    const savedSettings = localStorage.getItem('abdou_settings_v12');
+    const savedSettings = localStorage.getItem('abdou_settings_v13');
     if (savedSettings) setSettings(JSON.parse(savedSettings));
 
-    const savedCart = localStorage.getItem('abdou_cart_v12');
+    const savedCart = localStorage.getItem('abdou_cart_v13');
     if (savedCart) setCart(JSON.parse(savedCart));
 
-    const consent = localStorage.getItem('abdou_cookie_consent_v12');
+    const consent = localStorage.getItem('abdou_cookie_consent_v13');
     if (consent) setCookieConsent(true);
 
-    const savedPostsRaw = localStorage.getItem('abdou_blog_v12');
-    const savedVersion = localStorage.getItem('abdou_data_version_v12');
+    const savedPostsRaw = localStorage.getItem('abdou_blog_v13');
+    const savedVersion = localStorage.getItem('abdou_data_version_v13');
     
     if (savedVersion !== DATA_VERSION) {
       setPosts(INITIAL_DATA);
-      localStorage.setItem('abdou_blog_v12', JSON.stringify(INITIAL_DATA));
-      localStorage.setItem('abdou_data_version_v12', DATA_VERSION);
+      localStorage.setItem('abdou_blog_v13', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_data_version_v13', DATA_VERSION);
       
-      // مسح النسخ القديمة لتقليل حجم التخزين
-      const versionsToDelete = ['v11', 'v10', 'v9', 'v8'];
-      versionsToDelete.forEach(v => {
+      // مسح النسخ السابقة لضمان الأداء
+      ['v12', 'v11', 'v10', 'v9'].forEach(v => {
         localStorage.removeItem(`abdou_blog_${v}`);
         localStorage.removeItem(`abdou_data_version_${v}`);
       });
@@ -206,7 +145,7 @@ const App: React.FC = () => {
       item.id === p.id ? { ...item, views: (item.views || 0) + 1 } : item
     );
     setPosts(updatedPosts);
-    localStorage.setItem('abdou_blog_v12', JSON.stringify(updatedPosts));
+    localStorage.setItem('abdou_blog_v13', JSON.stringify(updatedPosts));
     setSelectedItem({ ...p, views: (p.views || 0) + 1 });
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo(0, 0);
@@ -256,8 +195,8 @@ const App: React.FC = () => {
           <AdminDashboard 
             posts={posts} 
             settings={settings}
-            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v12', JSON.stringify(newPosts));}}
-            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v12', JSON.stringify(s));}}
+            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v13', JSON.stringify(newPosts));}}
+            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v13', JSON.stringify(s));}}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
@@ -283,7 +222,7 @@ const App: React.FC = () => {
           </div>
           <div>
             <h4 className="font-black mb-4">أدسنس 2025</h4>
-            <p className="text-xs opacity-50 mb-4">الموقع يضم حالياً 31 مقالاً حصرياً مكتوباً باحترافية لتلائم شروط القبول الصارمة.</p>
+            <p className="text-xs opacity-50 mb-4">الموقع يضم حالياً 32 مقالاً حصرياً مكتوباً باحترافية لتلائم شروط القبول الصارمة.</p>
             <div className="flex gap-4">
                <span className="opacity-40 text-[10px] font-black uppercase">© 2025 Abdou Web - جميع الحقوق محفوظة</span>
             </div>
@@ -295,7 +234,7 @@ const App: React.FC = () => {
         <div className="fixed bottom-0 left-0 right-0 z-[300] bg-emerald-600 text-white p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fadeIn">
           <p className="text-sm font-bold">نستخدم ملفات تعريف الارتباط لضمان حصولك على أفضل تجربة على موقعنا.</p>
           <button 
-            onClick={() => {setCookieConsent(true); localStorage.setItem('abdou_cookie_consent_v12', 'true');}}
+            onClick={() => {setCookieConsent(true); localStorage.setItem('abdou_cookie_consent_v13', 'true');}}
             className="px-8 py-2 bg-white text-emerald-600 rounded-xl font-black text-sm"
           >أوافق</button>
         </div>
