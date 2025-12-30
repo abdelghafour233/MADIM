@@ -47,6 +47,8 @@ export interface Settings {
   alternativeAdsCode: string; 
   globalAdsCode: string; 
   directLinkCode: string; 
+  popunderCode?: string; // جديد لزيادة الأرباح
+  nativeAdCode?: string; // جديد لإعلانات وسط المحتوى
   dashboardPassword?: string;
   totalVisits: number;
   totalEarnings: number;
