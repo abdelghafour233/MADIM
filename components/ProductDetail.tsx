@@ -13,7 +13,7 @@ interface ProductDetailProps {
 
 const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onBack, darkMode, settings }) => {
   const [imgError, setImgError] = useState(false);
-  const fallbackImage = 'https://via.placeholder.com/800x800/10b981/ffffff?text=Image+Unavailable';
+  const fallbackImage = 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop';
 
   const handleOrderClick = () => {
     // الأولوية لرابط الأفلييت المباشر (تيمو مثلاً)
@@ -35,10 +35,10 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-20 items-start">
         {/* Main Product Image */}
-        <div className="relative rounded-[40px] md:rounded-[60px] overflow-hidden shadow-3xl border-2 md:border-4 border-white/5 group h-[450px] sm:h-[550px] md:h-[700px] bg-[#0d0d0e] flex items-center justify-center">
+        <div className="relative rounded-[40px] md:rounded-[60px] overflow-hidden shadow-3xl border-2 md:border-4 border-white/5 group h-[450px] sm:h-[550px] md:h-[700px] bg-[#0d0d0e] flex items-center justify-center img-loading">
           <div 
-            className="absolute inset-0 bg-cover bg-center blur-3xl opacity-20 scale-150"
-            style={{ backgroundImage: `url(${imgError ? fallbackImage : product.image})` }}
+            className="absolute inset-0 bg-cover bg-center blur-3xl opacity-20 scale-150 transition-all duration-1000 group-hover:scale-110"
+            style={{ backgroundImage: `url("${imgError ? fallbackImage : product.image}")` }}
           ></div>
           
           <div className="relative z-10 w-full h-full flex items-center justify-center p-6 md:p-12">

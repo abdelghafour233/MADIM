@@ -12,6 +12,7 @@ interface PostDetailProps {
 
 const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, settings }) => {
   const [progress, setProgress] = useState(0);
+  const fallbackImage = 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +27,10 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
   const handleBuyClick = () => {
     if (settings.directLinkCode) window.open(settings.directLinkCode, '_blank');
     if (post.affiliateLink) window.open(post.affiliateLink, '_blank');
+  };
+
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = fallbackImage;
   };
 
   return (
@@ -48,14 +53,23 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         </div>
       </div>
 
-      {/* Main Post Image - Corrected sizing */}
-      <div className="relative rounded-[30px] md:rounded-[50px] overflow-hidden shadow-2xl mb-12 border-2 border-white/5 bg-slate-900 h-[250px] sm:h-[400px] md:h-[550px]">
-        <img src={post.image} className="w-full h-full object-cover object-center" alt={post.title} />
+      {/* Main Post Image */}
+      <div className="relative rounded-[30px] md:rounded-[50px] overflow-hidden shadow-2xl mb-12 border-2 border-white/5 bg-slate-900 h-[250px] sm:h-[400px] md:h-[550px] flex items-center justify-center">
+        <div 
+          className="absolute inset-0 bg-cover bg-center blur-3xl opacity-30 scale-110" 
+          style={{ backgroundImage: `url("${post.image}")` }}
+        ></div>
+        <img 
+          src={post.image} 
+          onError={handleImgError}
+          className="relative z-10 w-full h-full object-contain md:object-cover" 
+          alt={post.title} 
+        />
       </div>
 
       <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
 
-      {post.marketPrice && post.price && (
+      {post.marketPrice && post.price && post.price > 0 && (
         <div className="mb-12 overflow-hidden rounded-[30px] md:rounded-[40px] border border-white/10 bg-white/5">
           <div className="bg-emerald-600 p-4 md:p-6 text-center">
              <h3 className="text-white font-black text-sm md:text-xl">تحليل السعر وتوفيرك اليوم 💸</h3>

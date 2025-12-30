@@ -15,6 +15,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
   const trendingPost = posts.find(p => p.isTrending) || posts[0];
   const otherPosts = posts.filter(p => p.id !== trendingPost?.id);
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
+  const fallbackImage = 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop';
 
   useEffect(() => {
     const end = new Date().setHours(23, 59, 59);
@@ -31,6 +32,10 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
     return () => clearInterval(timer);
   }, []);
 
+  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    e.currentTarget.src = fallbackImage;
+  };
+
   if (!trendingPost) return <div className="text-center py-20 opacity-40 font-black">جاري جلب أفضل العروض...</div>;
 
   return (
@@ -45,11 +50,12 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
            <div className="relative h-[300px] sm:h-[400px] lg:h-auto overflow-hidden bg-[#0d0d0e] flex items-center justify-center">
               <div 
                 className="absolute inset-0 bg-cover bg-center blur-3xl opacity-20 scale-125" 
-                style={{ backgroundImage: `url(${trendingPost.image})` }}
+                style={{ backgroundImage: `url("${trendingPost.image}")` }}
               ></div>
               <img 
                 src={trendingPost.image} 
                 referrerPolicy="no-referrer"
+                onError={handleImgError}
                 className="relative z-10 w-full h-full object-contain p-4 md:p-12 group-hover:scale-105 transition-transform duration-1000" 
                 alt={trendingPost.title} 
               />
@@ -117,15 +123,16 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
               className="group cursor-pointer glass-card p-4 md:p-6 overflow-hidden flex flex-col"
               onClick={() => onPostClick(post)}
             >
-              <div className="relative aspect-square rounded-[25px] md:rounded-[40px] overflow-hidden bg-[#0d0d0e] mb-6 flex items-center justify-center">
+              <div className="relative aspect-square rounded-[25px] md:rounded-[40px] overflow-hidden bg-[#0d0d0e] mb-6 flex items-center justify-center img-loading">
                  <div 
                     className="absolute inset-0 bg-cover bg-center blur-2xl opacity-10" 
-                    style={{ backgroundImage: `url(${post.image})` }}
+                    style={{ backgroundImage: `url("${post.image}")` }}
                  ></div>
                  <img 
                     src={post.image} 
                     loading="lazy" 
                     referrerPolicy="no-referrer"
+                    onError={handleImgError}
                     className="relative z-10 w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-700" 
                     alt={post.title} 
                  />

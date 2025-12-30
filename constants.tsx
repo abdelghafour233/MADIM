@@ -3,6 +3,32 @@ import { Article, Category } from './types';
 
 export const INITIAL_POSTS: Article[] = [
   {
+    id: 'leather-jacket-premium-2025',
+    title: 'جاكيت جلد فاخر للرجال - أناقة تدوم طويلاً 🧥',
+    name: 'جاكيت جلد كلاسيكي Premium',
+    excerpt: 'أناقة لا مثيل لها مع هذا الجاكيت الجلدي عالي الجودة. تصميم عصري يناسب جميع المناسبات.',
+    content: `استعد للشتاء والأجواء الباردة مع أرقى جاكيت جلدي متوفر في عروض تيمو الحصرية.
+تصميم يجمع بين الكلاسيكية والعصرية، مصنوع من أجود أنواع الجلود لضمان المتانة والمظهر الجذاب.
+
+المميزات:
+- ✨ جلد عالي الجودة ومقاوم للتآكل.
+- 🧤 بطانة داخلية ناعمة توفر الدفء والراحة.
+- 👔 قصة عصرية تبرز الأناقة الرجالية.
+- 🛠️ سحابات متينة وجيوب عملية متعددة.
+
+متوفر الآن بمقاسات مختلفة لتناسب الجميع. اطلبه الآن مباشرة عبر الرابط بالأسفل قبل نفاذ الكمية.`,
+    image: 'https://images.unsplash.com/photo-1520975916090-3105956dac55?auto=format&fit=crop&q=80&w=800', 
+    category: Category.DEALS,
+    date: 'اليوم',
+    views: 154000,
+    author: 'عبدو ويب',
+    isTrending: true,
+    isProduct: true,
+    price: 0,
+    marketPrice: 1200,
+    affiliateLink: 'https://temu.to/k/en9h0umf4mu'
+  },
+  {
     id: 'dash-cam-premium-2025',
     title: 'كاميرا السيارة Dash Cam 4K - الحارس الذكي لطريقك 🚗',
     name: 'Dash Cam Ultra HD 4K',
@@ -17,12 +43,12 @@ export const INITIAL_POSTS: Article[] = [
 - 🔋 تعمل في أصعب الظروف المناخية.
 
 اغتنم الفرصة واحصل عليها الآن بأفضل سعر متاح عبر الرابط المباشر.`,
-    image: 'https://images.unsplash.com/photo-1593011310166-560641036325?auto=format&fit=crop&q=80&w=1000', 
+    image: 'https://images.unsplash.com/photo-1502466650593-b65a2c690da0?auto=format&fit=crop&q=80&w=800', 
     category: Category.DEALS,
-    date: 'اليوم',
+    date: 'أمس',
     views: 124500,
     author: 'عبدو ويب',
-    isTrending: true,
+    isTrending: false,
     isProduct: true,
     price: 0,
     marketPrice: 850,
@@ -41,7 +67,7 @@ export const INITIAL_POSTS: Article[] = [
 - 🩺 مراقبة دقيقة للصحة (النوم، دقات القلب، الأكسجين).
 - 🏃‍♂️ أكثر من 100 وضع رياضي.
 - 🔋 بطارية تدوم حتى 7 أيام.`,
-    image: 'https://images.unsplash.com/photo-1544117518-30df578096a4?auto=format&fit=crop&q=80&w=1000', 
+    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800', 
     category: Category.DEALS,
     date: 'اليوم',
     views: 89000,
@@ -64,7 +90,7 @@ export const INITIAL_POSTS: Article[] = [
 - ⚡ شحن سريع عبر Type-C وشحن لاسلكي.
 - 🔋 30 ساعة من الاستماع مع العلبة.
 - 🍎 تتصل فوراً مع جميع الهواتف.`,
-    image: 'https://images.unsplash.com/photo-1588423770574-ecdd0056d393?auto=format&fit=crop&q=80&w=1000', 
+    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800', 
     category: Category.DEALS,
     date: 'أمس',
     views: 45600,
@@ -87,7 +113,7 @@ export const INITIAL_POSTS: Article[] = [
 - 🔌 يدعم HDMI و USB و AV.
 - 📱 عرض شاشة الهاتف لاسلكياً.
 - 🔊 مكبر صوت مدمج بجودة عالية.`,
-    image: 'https://images.unsplash.com/photo-1535016120720-40c646bebbbb?auto=format&fit=crop&q=80&w=1000', 
+    image: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&q=80&w=800', 
     category: Category.DEALS,
     date: 'أمس',
     views: 67000,
@@ -96,52 +122,6 @@ export const INITIAL_POSTS: Article[] = [
     isProduct: true,
     price: 0,
     marketPrice: 1200,
-    affiliateLink: 'https://temu.to/k/etuuox67wtr'
-  },
-  {
-    id: 'electric-neck-massager',
-    title: 'جهاز تدليك الرقبة والكتفين - وداعاً لآلام التعب 💆‍♂️',
-    name: 'Electric Neck Massager',
-    excerpt: 'استرخِ بعد يوم عمل طويل. تقنية النبضات الكهربائية والحرارة لتخفيف التشنج.',
-    content: `جهاز تدليك احترافي يعمل على إزالة التوتر العضلي في دقائق.
-    
-الفوائد:
-- 🔥 تقنية التسخين بالأشعة تحت الحمراء.
-- ⚡ 6 أوضاع تدليك مختلفة.
-- 🔋 بطارية قابلة للشحن تدوم طويلاً.
-- 😌 مريح جداً عند الارتداء.`,
-    image: 'https://images.unsplash.com/photo-1616348436168-de43ad0db179?auto=format&fit=crop&q=80&w=1000', 
-    category: Category.DEALS,
-    date: 'منذ يومين',
-    views: 23400,
-    author: 'عبدو ويب',
-    isTrending: false,
-    isProduct: true,
-    price: 0,
-    marketPrice: 450,
-    affiliateLink: 'https://temu.to/k/etuuox67wtr'
-  },
-  {
-    id: 'portable-blender-usb',
-    title: 'خلاط عصير محمول - عصير طازج في أي مكان 🍹',
-    name: 'Portable USB Blender',
-    excerpt: 'مثالي للرياضيين والطلبة. شحن USB، شفرات قوية، وسهل التنظيف.',
-    content: `اصنع عصيرك المفضل في المكتب أو الجيم أو الرحلات.
-    
-الخصائص:
-- 🔋 بطارية 2000mAh قابلة للشحن.
-- 🔪 6 شفرات حادة من الستانلس ستيل.
-- 🥤 سعة 380 ملل.
-- 🧼 سهل الفك والغسل.`,
-    image: 'https://images.unsplash.com/photo-1570197788417-0e93323c93bf?auto=format&fit=crop&q=80&w=1000', 
-    category: Category.DEALS,
-    date: 'منذ يومين',
-    views: 15700,
-    author: 'عبدو ويب',
-    isTrending: false,
-    isProduct: true,
-    price: 0,
-    marketPrice: 250,
     affiliateLink: 'https://temu.to/k/etuuox67wtr'
   }
 ];
