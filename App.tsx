@@ -13,16 +13,16 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-// تم رفع الإصدار إلى 1.2.5 لكسر الكاش بشكل كامل
-const CURRENT_VERSION = '1.2.5'; 
+// رفع الإصدار وتغيير مفاتيح التخزين لإجبار كلود فلير على التحديث
+const CURRENT_VERSION = '1.3.0'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_v9_posts', 
-  SETTINGS: 'abdou_v9_settings',
-  CART: 'abdou_v9_cart',
-  VERSION: 'abdou_v9_version'
+  POSTS: 'abdou_v11_posts_final', 
+  SETTINGS: 'abdou_v11_settings_final',
+  CART: 'abdou_v11_cart_final',
+  VERSION: 'abdou_v11_version_final'
 };
 
-// كود الإعلانات الافتراضي (Social Bar)
+// أكواد Adsterra المطلوبة
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
 
 const INITIAL_SETTINGS: Settings = {
@@ -32,7 +32,7 @@ const INITIAL_SETTINGS: Settings = {
   globalAdsCode: DEFAULT_GLOBAL_ADS,      
   directLinkCode: 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d',
   dashboardPassword: '1234',
-  totalVisits: 3800,
+  totalVisits: 4200,
   whatsappNumber: '212649075664'
 };
 
@@ -54,7 +54,7 @@ const App: React.FC = () => {
     const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
-    // إذا كان الإصدار جديداً، نقوم بتصفير الإعدادات لضمان وجود الأكواد الجديدة
+    // إذا كان الإصدار جديداً أو مفاتيح v11 غير موجودة، قم بإعادة الضبط
     if (lastVersion !== CURRENT_VERSION) {
       setPosts(INITIAL_POSTS);
       setSettings(INITIAL_SETTINGS);
@@ -62,30 +62,28 @@ const App: React.FC = () => {
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
     } else {
-      if (savedPosts) setPosts(JSON.parse(savedPosts));
-      else setPosts(INITIAL_POSTS);
-
-      if (savedSettings) setSettings(JSON.parse(savedSettings));
-      else setSettings(INITIAL_SETTINGS);
+      setPosts(savedPosts ? JSON.parse(savedPosts) : INITIAL_POSTS);
+      setSettings(savedSettings ? JSON.parse(savedSettings) : INITIAL_SETTINGS);
     }
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    setTimeout(() => setIsLoading(false), 600);
+    setTimeout(() => setIsLoading(false), 500);
   }, []);
 
-  // حقن كود Adsterra تلقائياً في الصفحة
+  // حقن كود Adsterra الاجتماعي تلقائياً
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-v9-injector';
-      const old = document.getElementById(scriptId);
-      if (old) old.remove();
+      const scriptId = 'adsterra-v130-script';
+      const existing = document.getElementById(scriptId);
+      if (existing) existing.remove();
       
-      const div = document.createElement('div');
-      div.id = scriptId;
-      document.body.appendChild(div);
+      const container = document.createElement('div');
+      container.id = scriptId;
+      document.body.appendChild(container);
       
       const range = document.createRange();
-      div.appendChild(range.createContextualFragment(settings.globalAdsCode));
+      const fragment = range.createContextualFragment(settings.globalAdsCode);
+      container.appendChild(fragment);
     }
   }, [settings.globalAdsCode]);
 
@@ -99,7 +97,7 @@ const App: React.FC = () => {
   };
 
   const addToCart = (product: Article) => {
-    // فتح الرابط المباشر Adsterra Direct Link للربح عند الضغط
+    // فتح الـ Direct Link عند الضغط لزيادة الأرباح
     if (settings.directLinkCode) window.open(settings.directLinkCode, '_blank');
     
     setCart(prev => {

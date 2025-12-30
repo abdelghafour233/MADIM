@@ -4,16 +4,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <!-- منع الكاش بكل الوسائل الممكنة -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     
-    <!-- SEO & Social Media -->
     <title>abdouweb | أقوى الهميزات والعروض في المغرب 🇲🇦</title>
-    <meta name="description" content="اكتشف أقوى عروض تيمو وأمازون والهميزات التقنية في المغرب مع عبدو ويب. توصيل سريع ودفع عند الاستلام." />
-    <meta property="og:title" content="abdouweb | هميزات المغرب" />
-    <meta property="og:description" content="تخفيضات تصل إلى 90% على أحدث الساعات والأجهزة." />
-    <meta property="og:image" content="https://images.unsplash.com/photo-1434493907317-a46b53b81846?auto=format&fit=crop&q=80&w=1200" />
+    <meta name="description" content="اكتشف أقوى عروض تيمو وأمازون والهميزات التقنية في المغرب مع عبدو ويب." />
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,12 +35,7 @@
         -webkit-backdrop-filter: blur(15px);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 35px;
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      }
-      .glass-card:hover {
-        background: rgba(255, 255, 255, 0.06);
-        transform: translateY(-8px);
-        border-color: rgba(16, 185, 129, 0.3);
+        transition: all 0.4s ease;
       }
       .hero-gradient {
         background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.15), transparent 40%),
@@ -67,7 +59,6 @@
       .group:hover .img-container img {
         transform: scale(1.1);
       }
-
       @keyframes fadeIn {
         from { opacity: 0; transform: translateY(10px); }
         to { opacity: 1; transform: translateY(0); }
@@ -88,7 +79,7 @@
   </head>
   <body class="hero-gradient">
     <div id="root"></div>
-    <!-- النسخة 1.2.5 النهائية والمستقرة -->
-    <script data-cfasync="false" type="module" src="./index.tsx?v=1.2.5"></script>
+    <!-- استخدام طابع زمني (Timestamp) لضمان تحميل نسخة جديدة من السكريبت -->
+    <script data-cfasync="false" type="module" src="./index.tsx?update=20250510_v1.3.0"></script>
   </body>
 </html>
