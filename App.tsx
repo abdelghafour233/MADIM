@@ -18,7 +18,7 @@ const INITIAL_SETTINGS: Settings = {
   siteName: 'عبدو ويب | صيد العروض والأفلييت',
   adsenseCode: 'ca-pub-5578524966832192',
   alternativeAdsCode: '', 
-  globalAdsCode: '',
+  globalAdsCode: '<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>',
   dashboardPassword: '1234',
   totalVisits: 0,
   whatsappNumber: '212649075664'
@@ -78,19 +78,27 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const DATA_VERSION = "v17.0_affiliate_ready"; 
+  const DATA_VERSION = "v18.0_ads_update"; 
 
   useEffect(() => {
-    const savedSettings = localStorage.getItem('abdou_settings_v17');
-    if (savedSettings) setSettings(JSON.parse(savedSettings));
+    const savedSettings = localStorage.getItem('abdou_settings_v18');
+    if (savedSettings) {
+      setSettings(JSON.parse(savedSettings));
+    } else {
+      // If no settings saved, use INITIAL_SETTINGS and save them
+      localStorage.setItem('abdou_settings_v18', JSON.stringify(INITIAL_SETTINGS));
+    }
 
-    const savedPostsRaw = localStorage.getItem('abdou_blog_v17');
-    const savedVersion = localStorage.getItem('abdou_data_version_v17');
+    const savedPostsRaw = localStorage.getItem('abdou_blog_v18');
+    const savedVersion = localStorage.getItem('abdou_data_version_v18');
     
     if (savedVersion !== DATA_VERSION) {
       setPosts(INITIAL_DATA);
-      localStorage.setItem('abdou_blog_v17', JSON.stringify(INITIAL_DATA));
-      localStorage.setItem('abdou_data_version_v17', DATA_VERSION);
+      localStorage.setItem('abdou_blog_v18', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_data_version_v18', DATA_VERSION);
+      // Reset settings to include the new ad code if version changes
+      setSettings(INITIAL_SETTINGS);
+      localStorage.setItem('abdou_settings_v18', JSON.stringify(INITIAL_SETTINGS));
     } else {
       setPosts(savedPostsRaw ? JSON.parse(savedPostsRaw) : INITIAL_DATA);
     }
@@ -159,8 +167,8 @@ const App: React.FC = () => {
           <AdminDashboard 
             posts={posts} 
             settings={settings}
-            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v17', JSON.stringify(newPosts));}}
-            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v17', JSON.stringify(s));}}
+            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v18', JSON.stringify(newPosts));}}
+            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v18', JSON.stringify(s));}}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
