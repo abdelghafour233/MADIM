@@ -10,15 +10,15 @@ import WhatsAppButton from './components/WhatsAppButton.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-// أكواد Adsterra الافتراضية للبدء فوراً
+// الأكواد التي قدمتها لي مفعلة هنا كقيم افتراضية ثابتة
 const DEFAULT_GLOBAL_ADS = `<script type='text/javascript' src='//pl25832734.highperformanceformat.com/9a/5c/7e/9a5c7e6c38827918861e3d366a7b189a.js'></script>`;
 const DEFAULT_NATIVE_ADS = `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`;
 
 const INITIAL_SETTINGS: Settings = {
   siteName: 'عبدو ويب | عروض وأرباح',
   adsenseCode: 'ca-pub-5578524966832192',
-  alternativeAdsCode: DEFAULT_NATIVE_ADS, // Adsterra Native Banner
-  globalAdsCode: DEFAULT_GLOBAL_ADS,      // Adsterra Social Bar
+  alternativeAdsCode: DEFAULT_NATIVE_ADS, 
+  globalAdsCode: DEFAULT_GLOBAL_ADS,      
   dashboardPassword: '1234',
   totalVisits: 100,
   whatsappNumber: '212649075664'
@@ -45,27 +45,35 @@ const App: React.FC = () => {
     }
 
     if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
+      const parsedSettings = JSON.parse(savedSettings);
+      // ضمان تحديث الأكواد الإعلانية حتى لو وجدت إعدادات قديمة فارغة
+      if (!parsedSettings.globalAdsCode || parsedSettings.globalAdsCode === "") {
+        parsedSettings.globalAdsCode = DEFAULT_GLOBAL_ADS;
+      }
+      if (!parsedSettings.alternativeAdsCode || parsedSettings.alternativeAdsCode === "") {
+        parsedSettings.alternativeAdsCode = DEFAULT_NATIVE_ADS;
+      }
+      setSettings(parsedSettings);
     } else {
       setSettings(INITIAL_SETTINGS);
       localStorage.setItem('abdou_aff_settings_v25', JSON.stringify(INITIAL_SETTINGS));
     }
   }, []);
 
-  // حقن كود أدستيرا (Social Bar) تلقائياً في جسم الموقع
+  // تفعيل كود Adsterra الاجتماعي (Pop-under / Social Bar)
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-global-script';
-      const existing = document.getElementById(scriptId);
-      if (existing) existing.remove();
+      const scriptId = 'adsterra-injection-v1';
+      const oldScript = document.getElementById(scriptId);
+      if (oldScript) oldScript.remove();
 
-      const container = document.createElement('div');
-      container.id = scriptId;
-      document.body.appendChild(container);
+      const adContainer = document.createElement('div');
+      adContainer.id = scriptId;
+      document.body.appendChild(adContainer);
       
       const range = document.createRange();
       const fragment = range.createContextualFragment(settings.globalAdsCode);
-      container.appendChild(fragment);
+      adContainer.appendChild(fragment);
     }
   }, [settings.globalAdsCode]);
 
@@ -133,7 +141,7 @@ const App: React.FC = () => {
             <button onClick={() => setView('about')}>من نحن</button>
           </div>
           <div className="inline-block px-3 py-1 bg-emerald-600/20 text-emerald-400 rounded-full text-[10px] font-black border border-emerald-500/20">
-            Adsterra Active ✅
+            Adsterra System Active ✅
           </div>
       </footer>
 
