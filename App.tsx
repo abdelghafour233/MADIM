@@ -13,13 +13,13 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS, CITIES } from './constants.tsx';
 
-// رفع الإصدار وتغيير مفاتيح التخزين هو الحل الأمثل لمشكلة عدم وصول التحديثات
-const CURRENT_VERSION = '1.1.0'; 
+// رفع الإصدار وتغيير مفاتيح التخزين هو الحل النهائي لمشاكل الكاش
+const CURRENT_VERSION = '1.2.0'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdouweb_posts_v3', // تغيير الاسم سيجبر المتصفح على تحميل البيانات الجديدة
-  SETTINGS: 'abdouweb_settings_v3',
-  CART: 'abdouweb_cart_v3',
-  VERSION: 'abdouweb_version_v3'
+  POSTS: 'abdouweb_posts_v4', 
+  SETTINGS: 'abdouweb_settings_v4',
+  CART: 'abdouweb_cart_v4',
+  VERSION: 'abdouweb_version_v4'
 };
 
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
@@ -54,16 +54,16 @@ const App: React.FC = () => {
     const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
-    // إذا كان الإصدار قديماً أو غير موجود، نقوم بعمل تنظيف شامل وتحميل الجديد
     if (lastVersion !== CURRENT_VERSION) {
+      // تحديث جذري: نقوم بمسح النسخ القديمة وتثبيت الجديدة
       setPosts(INITIAL_POSTS);
       setSettings(INITIAL_SETTINGS);
       localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(INITIAL_POSTS));
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
-      // مسح النسخ القديمة جداً من الذاكرة لتقليل الحجم
-      localStorage.removeItem('abdou_shop_posts_v2');
-      localStorage.removeItem('abdou_shop_settings_v2');
+      // مسح الكاش القديم لتوفير المساحة
+      localStorage.removeItem('abdouweb_posts_v3');
+      localStorage.removeItem('abdouweb_settings_v3');
     } else {
       if (savedPosts) setPosts(JSON.parse(savedPosts));
       else setPosts(INITIAL_POSTS);
@@ -86,47 +86,6 @@ const App: React.FC = () => {
     document.addEventListener('click', handleFirstClick);
     return () => document.removeEventListener('click', handleFirstClick);
   }, [settings.directLinkCode]);
-
-  useEffect(() => {
-    const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && !localStorage.getItem('exit_popup_shown_v3')) {
-        setShowExitPopup(true);
-        localStorage.setItem('exit_popup_shown_v3', 'true');
-      }
-    };
-    document.addEventListener('mouseleave', handleMouseLeave);
-    return () => document.removeEventListener('mouseleave', handleMouseLeave);
-  }, []);
-
-  useEffect(() => {
-    const names = ['سفيان', 'ياسين', 'فاطمة الزهراء', 'إدريس', 'خديجة', 'أمين', 'مريم', 'يوسف', 'حمزة', 'سارة', 'عبد الله', 'ليلى'];
-    
-    const triggerNotification = () => {
-      if (posts.length === 0) return;
-      
-      const productPosts = posts.filter(p => p.isProduct || p.price);
-      const randomProduct = productPosts[Math.floor(Math.random() * productPosts.length)] || posts[0];
-      const name = names[Math.floor(Math.random() * names.length)];
-      const city = CITIES[Math.floor(Math.random() * CITIES.length)];
-      
-      setNotification({ 
-        name, 
-        city, 
-        product: randomProduct.title || randomProduct.name || '', 
-        image: randomProduct.image 
-      });
-
-      setTimeout(() => setNotification(null), 6000);
-    };
-
-    const initialTimeout = setTimeout(() => {
-      triggerNotification();
-      const interval = setInterval(triggerNotification, 25000);
-      return () => clearInterval(interval);
-    }, 10000);
-
-    return () => clearTimeout(initialTimeout);
-  }, [posts]);
 
   useEffect(() => {
     if (settings.globalAdsCode) {
@@ -183,13 +142,6 @@ const App: React.FC = () => {
   const cartTotal = cart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
   const filteredPosts = posts.filter(p => (p.title || p.name || '').toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const shareSite = (platform: string) => {
-    const url = window.location.origin;
-    const text = `دخل شوف هاد الموقع فيه هميزات واعرين في المغرب: ${settings.siteName}`;
-    if (platform === 'wa') window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`);
-    if (platform === 'fb') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`);
-  };
-
   return (
     <div className={`min-h-screen flex flex-col transition-all duration-300 ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
       <Navbar 
@@ -230,12 +182,6 @@ const App: React.FC = () => {
         {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={darkMode} siteName={settings.siteName} />}
       </main>
 
-      {/* شريط المشاركة */}
-      <div className="fixed left-0 top-1/2 -translate-y-1/2 z-[150] hidden md:flex flex-col gap-2 p-2 bg-white/10 backdrop-blur-md rounded-r-2xl border border-white/10 shadow-2xl">
-        <button onClick={() => shareSite('wa')} className="w-12 h-12 bg-[#25D366] text-white rounded-xl flex items-center justify-center text-xl hover:translate-x-2 transition-transform shadow-lg">W</button>
-        <button onClick={() => shareSite('fb')} className="w-12 h-12 bg-[#1877F2] text-white rounded-xl flex items-center justify-center text-xl hover:translate-x-2 transition-transform shadow-lg">F</button>
-      </div>
-
       {/* إشعارات حية */}
       {notification && (
         <div className="fixed bottom-24 right-4 md:bottom-32 md:right-8 z-[200] animate-slideLeft">
@@ -259,8 +205,8 @@ const App: React.FC = () => {
 
       <footer className="mt-20 py-24 border-t border-white/5 text-center bg-black/20">
         <h3 className="text-3xl font-black mb-4 text-emerald-500">abdouweb</h3>
-        <p className="text-sm font-bold opacity-40 max-w-md mx-auto mb-8">متجر عبدو ويب هو بوابتك الأولى لأقوى العروض والهميزات في المغرب. تسوق بذكاء ووفر مالك.</p>
-        <p className="text-[10px] font-bold opacity-20">© 2025 جميع الحقوق محفوظة - abdouweb.online (الإصدار {CURRENT_VERSION})</p>
+        <p className="text-sm font-bold opacity-40 max-w-md mx-auto mb-8">متجر عبدو ويب هو بوابتك الأولى لأقوى العروض والهميزات في المغرب. الإصدار {CURRENT_VERSION}</p>
+        <p className="text-[10px] font-bold opacity-20">© 2025 جميع الحقوق محفوظة - abdouweb.online</p>
       </footer>
       <WhatsAppButton />
     </div>

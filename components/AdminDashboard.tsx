@@ -95,15 +95,15 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
   };
 
   const clearAppCache = () => {
-    if(confirm('سيتم تسجيل خروجك ومسح كاش المتصفح لضمان تحميل أحدث نسخة. هل أنت متأكد؟')) {
+    if(confirm('سيتم تسجيل خروجك ومسح كل الكاش لضمان تحميل أحدث نسخة من السكريبت وتجاوز أخطاء كلود فلير. هل أنت متأكد؟')) {
       localStorage.clear();
-      window.location.reload();
+      // القيمة 1.2.0-final تجبر المتصفح على تحميل جديد
+      window.location.href = window.location.pathname + "?refresh=" + Date.now();
     }
   };
 
   return (
     <div className="animate-fadeIn max-w-6xl mx-auto pb-20 px-4" dir="rtl">
-      {/* رأس اللوحة المحسن */}
       <div className="p-6 md:p-10 rounded-[40px] mb-10 flex flex-col md:flex-row justify-between items-center gap-6 bg-white/5 border border-white/10 shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 left-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
         <div className="flex items-center gap-6 relative z-10">
@@ -114,67 +114,66 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
           </div>
         </div>
         <div className="flex gap-2 md:gap-3 flex-wrap justify-center relative z-10">
-          <button onClick={() => setActiveTab('list')} className={`px-6 py-3 rounded-2xl font-black text-sm transition-all ${activeTab === 'list' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'bg-white/5 hover:bg-white/10'}`}>العروض</button>
-          <button onClick={() => setActiveTab('ads')} className={`px-6 py-3 rounded-2xl font-black text-sm transition-all ${activeTab === 'ads' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20' : 'bg-white/5 hover:bg-white/10'}`}>الأرباح</button>
-          <button onClick={() => setActiveTab('security')} className={`px-6 py-3 rounded-2xl font-black text-sm transition-all ${activeTab === 'security' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white/5 hover:bg-white/10'}`}>الأمان</button>
+          <button onClick={() => setActiveTab('list')} className={`px-6 py-3 rounded-2xl font-black text-sm transition-all ${activeTab === 'list' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-white/5 hover:bg-white/10'}`}>العروض</button>
+          <button onClick={() => setActiveTab('ads')} className={`px-6 py-3 rounded-2xl font-black text-sm transition-all ${activeTab === 'ads' ? 'bg-orange-600 text-white shadow-lg' : 'bg-white/5 hover:bg-white/10'}`}>الأرباح</button>
+          <button onClick={() => setActiveTab('security')} className={`px-6 py-3 rounded-2xl font-black text-sm transition-all ${activeTab === 'security' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white/5 hover:bg-white/10'}`}>الأمان</button>
           <button onClick={onLogout} className="px-6 py-3 bg-red-600/10 text-red-500 rounded-2xl font-black text-sm border border-red-500/20 hover:bg-red-600 hover:text-white transition-all">خروج</button>
         </div>
       </div>
 
-      {/* بطاقات الإحصائيات الجديدة لعيون عبدو */}
       {activeTab === 'list' && (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-           <div className="bg-white/5 border border-white/10 p-6 rounded-[35px] text-center">
-              <span className="text-xs font-black text-slate-500 uppercase block mb-1">إجمالي المشاهدات</span>
-              <span className="text-3xl font-black text-emerald-500">{totalViews.toLocaleString()}</span>
-           </div>
-           <div className="bg-white/5 border border-white/10 p-6 rounded-[35px] text-center">
-              <span className="text-xs font-black text-slate-500 uppercase block mb-1">عدد العروض</span>
-              <span className="text-3xl font-black text-white">{posts.length}</span>
-           </div>
-           <div className="bg-white/5 border border-white/10 p-6 rounded-[35px] text-center relative overflow-hidden group">
-              <span className="text-xs font-black text-slate-500 uppercase block mb-1">حالة الإعلانات</span>
-              <div className="flex items-center justify-center gap-2">
-                 <span className={`w-3 h-3 rounded-full ${adsActive ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
-                 <span className="text-xl font-black">{adsActive ? 'نشطة ✅' : 'متوقفة ❌'}</span>
-              </div>
-           </div>
-           <div className="bg-white/5 border border-white/10 p-6 rounded-[35px] text-center">
-              <span className="text-xs font-black text-slate-500 uppercase block mb-1">Direct Link</span>
-              <span className={`text-xl font-black ${directLinkActive ? 'text-orange-500' : 'text-slate-500'}`}>{directLinkActive ? 'مفعل 🔥' : 'غير مبرمج'}</span>
-           </div>
-        </div>
-      )}
+        <>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+             <div className="bg-white/5 border border-white/10 p-6 rounded-[35px] text-center">
+                <span className="text-xs font-black text-slate-500 uppercase block mb-1">إجمالي المشاهدات</span>
+                <span className="text-3xl font-black text-emerald-500">{totalViews.toLocaleString()}</span>
+             </div>
+             <div className="bg-white/5 border border-white/10 p-6 rounded-[35px] text-center">
+                <span className="text-xs font-black text-slate-500 uppercase block mb-1">عدد العروض</span>
+                <span className="text-3xl font-black text-white">{posts.length}</span>
+             </div>
+             <div className="bg-white/5 border border-white/10 p-6 rounded-[35px] text-center relative overflow-hidden group">
+                <span className="text-xs font-black text-slate-500 uppercase block mb-1">حالة الإعلانات</span>
+                <div className="flex items-center justify-center gap-2">
+                   <span className={`w-3 h-3 rounded-full ${adsActive ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
+                   <span className="text-xl font-black">{adsActive ? 'نشطة ✅' : 'متوقفة ❌'}</span>
+                </div>
+             </div>
+             <div className="bg-white/5 border border-white/10 p-6 rounded-[35px] text-center">
+                <span className="text-xs font-black text-slate-500 uppercase block mb-1">Direct Link</span>
+                <span className={`text-xl font-black ${directLinkActive ? 'text-orange-500' : 'text-slate-500'}`}>{directLinkActive ? 'مفعل 🔥' : 'غير مبرمج'}</span>
+             </div>
+          </div>
 
-      {activeTab === 'list' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <button onClick={() => {resetForm(); setActiveTab('editor');}} className="p-10 border-4 border-dashed border-white/10 rounded-[40px] font-black text-slate-500 hover:border-emerald-500/50 hover:text-emerald-500 transition-all group min-h-[250px] flex flex-col items-center justify-center bg-white/5">
-             <span className="text-5xl block mb-4 group-hover:scale-125 transition-transform duration-500">➕</span>
-             إضافة منتج أو عرض جديد
-          </button>
-          {posts.map(p => (
-            <div key={p.id} className="p-6 bg-white/5 border border-white/5 rounded-[40px] flex flex-col justify-between group hover:border-emerald-500/30 transition-all shadow-xl hover:-translate-y-2">
-              <div className="flex items-center gap-4 mb-4">
-                <img src={p.image} className="w-20 h-20 rounded-2xl object-cover border border-white/5 shadow-lg" alt="" />
-                <div className="truncate">
-                  <h4 className="font-black truncate text-lg group-hover:text-emerald-500 transition-colors">{p.title}</h4>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[9px] font-black uppercase text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">{p.category}</span>
-                    <span className="text-[9px] font-black text-slate-500">👁️ {p.views || 0}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <button onClick={() => {resetForm(); setActiveTab('editor');}} className="p-10 border-4 border-dashed border-white/10 rounded-[40px] font-black text-slate-500 hover:border-emerald-500/50 hover:text-emerald-500 transition-all group min-h-[250px] flex flex-col items-center justify-center bg-white/5">
+               <span className="text-5xl block mb-4 group-hover:scale-125 transition-transform duration-500">➕</span>
+               إضافة منتج أو عرض جديد
+            </button>
+            {posts.map(p => (
+              <div key={p.id} className="p-6 bg-white/5 border border-white/5 rounded-[40px] flex flex-col justify-between group hover:border-emerald-500/30 transition-all shadow-xl hover:-translate-y-2">
+                <div className="flex items-center gap-4 mb-4">
+                  <img src={p.image} className="w-20 h-20 rounded-2xl object-cover border border-white/5 shadow-lg" alt="" />
+                  <div className="truncate">
+                    <h4 className="font-black truncate text-lg group-hover:text-emerald-500 transition-colors">{p.title}</h4>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[9px] font-black uppercase text-emerald-500 bg-emerald-500/10 px-2 py-1 rounded-md">{p.category}</span>
+                      <span className="text-[9px] font-black text-slate-500">👁️ {p.views || 0}</span>
+                    </div>
                   </div>
                 </div>
+                <div className="flex gap-2">
+                   <button onClick={() => handleEditClick(p)} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-500 transition-colors">تعديل</button>
+                   <button onClick={() => {if(confirm('حذف هذا العرض نهائياً؟')) onUpdate(posts.filter(i => i.id !== p.id))}} className="p-4 bg-red-600/10 text-red-500 rounded-2xl border border-red-500/20 hover:bg-red-600 hover:text-white transition-all">🗑️</button>
+                </div>
               </div>
-              <div className="flex gap-2">
-                 <button onClick={() => handleEditClick(p)} className="flex-1 py-4 bg-blue-600 text-white rounded-2xl font-black shadow-lg hover:bg-blue-500 transition-colors">تعديل</button>
-                 <button onClick={() => {if(confirm('حذف هذا العرض نهائياً؟')) onUpdate(posts.filter(i => i.id !== p.id))}} className="p-4 bg-red-600/10 text-red-500 rounded-2xl border border-red-500/20 hover:bg-red-600 hover:text-white transition-all">🗑️</button>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
 
       {activeTab === 'editor' && (
-        <div className="p-6 md:p-12 bg-white/5 border border-white/10 rounded-[50px] space-y-8 md:space-y-12 shadow-2xl animate-scaleIn">
+        <div className="p-6 md:p-12 bg-white/5 border border-white/10 rounded-[50px] space-y-8 md:space-y-12 shadow-2xl">
            <div className="flex justify-between items-center">
              <h3 className="text-3xl font-black text-emerald-500">{editingPostId ? 'تعديل البيانات' : 'إضافة عرض جديد لـ abdouweb'}</h3>
              <button onClick={() => setActiveTab('list')} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center text-slate-500 font-bold hover:bg-red-500 hover:text-white transition-all">✕</button>
@@ -214,9 +213,6 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
                   <div className="relative">
                     <input className="w-full p-6 bg-black/40 rounded-3xl font-mono text-sm outline-none border-2 border-transparent focus:border-emerald-500 transition-all pr-14" placeholder="أو ضع رابط الصورة هنا..." value={form.image} onChange={e => setForm({...form, image: e.target.value})} />
                     <span className="absolute right-6 top-1/2 -translate-y-1/2 opacity-30 text-2xl">🔗</span>
-                  </div>
-                  <div className="bg-emerald-600/10 p-6 rounded-3xl border border-emerald-500/20">
-                    <p className="text-xs font-bold text-emerald-400 leading-relaxed">💡 نصيحة الإدارة: يفضل رفع الصور ذات الخلفية البيضاء أو الاحترافية لجذب الزبائن وزيادة النقرات على الإعلانات.</p>
                   </div>
                 </div>
               </div>
@@ -275,20 +271,13 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
 
           <div className="p-10 md:p-16 bg-white/5 border border-white/10 rounded-[60px] space-y-12 shadow-2xl">
               <div className="space-y-6">
-                <div className="flex justify-between items-center px-4">
-                  <label className="block text-lg font-black text-emerald-500 uppercase tracking-widest">كود Social Bar</label>
-                  <span className={`text-[10px] font-black px-3 py-1 rounded-full ${adsActive ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`}>{adsActive ? 'ACTIVE' : 'EMPTY'}</span>
-                </div>
+                <label className="block text-lg font-black text-emerald-500 uppercase tracking-widest">كود Social Bar</label>
                 <textarea className="w-full h-48 p-8 bg-black/40 rounded-[40px] font-mono text-xs text-left border-2 border-transparent focus:border-emerald-500 leading-relaxed shadow-inner" dir="ltr" value={localSettings.globalAdsCode} onChange={e => setLocalSettings({...localSettings, globalAdsCode: e.target.value})} placeholder="الصق كود الـ Social Bar هنا..." />
               </div>
 
               <div className="space-y-6">
-                <div className="flex justify-between items-center px-4">
-                  <label className="block text-lg font-black text-orange-500 uppercase tracking-widest">Direct Link URL</label>
-                  <span className={`text-[10px] font-black px-3 py-1 rounded-full ${directLinkActive ? 'bg-orange-500 text-white' : 'bg-red-500 text-white'}`}>{directLinkActive ? 'ACTIVE' : 'EMPTY'}</span>
-                </div>
+                <label className="block text-lg font-black text-orange-500 uppercase tracking-widest">Direct Link URL</label>
                 <input className="w-full p-8 bg-black/40 rounded-[35px] font-mono text-sm text-left border-2 border-transparent focus:border-orange-500 shadow-inner" dir="ltr" value={localSettings.directLinkCode} onChange={e => setLocalSettings({...localSettings, directLinkCode: e.target.value})} placeholder="https://www.example.com/..." />
-                <p className="text-[11px] font-bold text-slate-500 mr-6">هذا الرابط سيفتح للزائر تلقائياً عند أول ضغطة لزيادة الأرباح.</p>
               </div>
 
               <button onClick={() => {onUpdateSettings(localSettings); alert('✅ تم حفظ أكواد الإعلانات بنجاح!');}} className="w-full py-8 bg-orange-600 text-white rounded-[40px] font-black text-2xl shadow-xl hover:bg-orange-500 transition-all">حفظ وتفعيل الأرباح 💾</button>
@@ -301,7 +290,6 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
            <div className="text-center">
              <div className="w-20 h-20 bg-blue-600 rounded-[30px] flex items-center justify-center text-4xl shadow-xl shadow-blue-500/20 mx-auto mb-6">🔑</div>
              <h3 className="text-2xl font-black">أمان الموقع</h3>
-             <p className="text-slate-500 font-bold mt-2">تحكم في هويتك البرمجية</p>
            </div>
            
            <div className="space-y-6">
@@ -316,8 +304,8 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
            </div>
 
            <div className="pt-6 border-t border-white/5">
-             <button onClick={clearAppCache} className="w-full py-4 bg-yellow-600/10 text-yellow-500 rounded-2xl font-black text-sm border border-yellow-500/20 hover:bg-yellow-600 hover:text-white transition-all mb-4">مسح كاش المتصفح ⚡</button>
-             <button onClick={() => {onUpdateSettings(localSettings); alert('✅ تم تحديث بيانات الأمان!');}} className="w-full py-6 bg-blue-600 text-white rounded-3xl font-black text-xl shadow-xl hover:bg-blue-500 transition-all">حفظ التعديلات 💾</button>
+             <button onClick={clearAppCache} className="w-full py-4 bg-yellow-600/10 text-yellow-500 rounded-2xl font-black text-sm border border-yellow-500/20 hover:bg-yellow-600 hover:text-white transition-all mb-4">تحديث النظام (إصلاح الكاش) ⚡</button>
+             <button onClick={() => {onUpdateSettings(localSettings); alert('✅ تم حفظ التعديلات!');}} className="w-full py-6 bg-blue-600 text-white rounded-3xl font-black text-xl shadow-xl hover:bg-blue-500 transition-all">حفظ التعديلات 💾</button>
            </div>
         </div>
       )}
