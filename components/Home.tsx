@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Article, Settings } from '../types';
 import AdUnit from './AdUnit.tsx';
+import RewardsCenter from './RewardsCenter.tsx';
+import { INITIAL_REWARDS } from '../constants.tsx';
 
 interface HomeProps {
   posts: Article[];
@@ -39,20 +41,19 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
   if (!trendingPost) return <div className="text-center py-20 opacity-40 font-black">جاري جلب أفضل العروض...</div>;
 
   const chunkedPosts = [];
-  const chunkSize = 8; // زيادة عدد المنتجات قبل كل إعلان في الشاشات الكبيرة
+  const chunkSize = 8; 
   for (let i = 0; i < otherPosts.length; i += chunkSize) {
     chunkedPosts.push(otherPosts.slice(i, i + chunkSize));
   }
 
   return (
     <div className="space-y-12 md:space-y-20 animate-fade" dir="rtl">
-      {/* Hero Section Premium - Fully Responsive */}
+      {/* Hero Section Premium */}
       <section 
         className="relative group cursor-pointer overflow-hidden rounded-[40px] md:rounded-[60px] bg-white/5 border border-white/10 shadow-3xl transition-transform duration-500 hover:scale-[1.005]"
         onClick={() => onPostClick(trendingPost)}
       >
         <div className="flex flex-col lg:flex-row items-stretch">
-           {/* Image Container */}
            <div className="relative w-full lg:w-1/2 h-[350px] sm:h-[450px] lg:h-[650px] overflow-hidden bg-[#0d0d0e] flex items-center justify-center p-8 md:p-16">
               <div 
                 className="absolute inset-0 bg-cover bg-center blur-3xl opacity-20 scale-125" 
@@ -71,7 +72,6 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
               </div>
            </div>
 
-           {/* Content Container */}
            <div className="w-full lg:w-1/2 p-8 sm:p-12 md:p-16 lg:p-20 flex flex-col justify-center bg-black/40 lg:bg-transparent relative z-30">
               <div className="flex items-center gap-3 mb-6">
                 <span className="bg-emerald-600/20 text-emerald-500 px-4 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border border-emerald-500/20">همزة اليوم الحصرية 🔥</span>
@@ -91,6 +91,9 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
            </div>
         </div>
       </section>
+
+      {/* Reward Center Section */}
+      <RewardsCenter rewards={INITIAL_REWARDS} settings={settings} darkMode={darkMode} />
 
       <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
 
@@ -135,7 +138,6 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
                 </div>
               ))}
             </div>
-            {/* إعلان بعد كل مجموعة منتجات */}
             <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
           </React.Fragment>
         ))}

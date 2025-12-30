@@ -1,5 +1,35 @@
 
-import { Article, Category } from './types';
+import { Article, Category, Reward } from './types';
+
+export const INITIAL_REWARDS: Reward[] = [
+  {
+    id: 'temu-coupon-2025',
+    title: 'كوبون تيمو 90%',
+    code: 'TEMU90',
+    description: 'خصم هائل على أول طلب لك من تطبيق تيمو المغرب.',
+    image: 'https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=400&auto=format&fit=crop',
+    type: 'coupon',
+    store: 'Temu'
+  },
+  {
+    id: 'amazon-gift-card',
+    title: 'بطاقة هدايا أمازون',
+    code: 'AMZ-FREE-25',
+    description: 'انقر للحصول على كود بطاقة هدايا عشوائية.',
+    image: 'https://images.unsplash.com/photo-1549463599-2424460540fa?q=80&w=400&auto=format&fit=crop',
+    type: 'gift',
+    store: 'Amazon'
+  },
+  {
+    id: 'shein-discount',
+    title: 'كود خصم شي إن',
+    code: 'SHEIN25',
+    description: 'خصم إضافي 25% على جميع الملابس والأحذية.',
+    image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=400&auto=format&fit=crop',
+    type: 'coupon',
+    store: 'SHEIN'
+  }
+];
 
 export const INITIAL_POSTS: Article[] = [
   {

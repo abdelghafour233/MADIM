@@ -4,7 +4,18 @@ export enum Category {
   AMAZON = 'عروض أمازون',
   TECH_REVIEWS = 'مراجعات تقنية',
   MOROCCO_NEWS = 'أخبار المغرب',
-  DEALS = 'هميزات اليوم'
+  DEALS = 'هميزات اليوم',
+  COUPONS = 'كوبونات حصرية'
+}
+
+export interface Reward {
+  id: string;
+  title: string;
+  code: string;
+  description: string;
+  image: string;
+  type: 'coupon' | 'gift';
+  store?: string;
 }
 
 export interface Article {
@@ -38,7 +49,7 @@ export interface Settings {
   directLinkCode: string; 
   dashboardPassword?: string;
   totalVisits: number;
-  totalEarnings: number; // حقل جديد للأرباح
+  totalEarnings: number;
   whatsappNumber: string;
 }
 
