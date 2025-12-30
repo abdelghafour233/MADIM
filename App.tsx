@@ -13,7 +13,7 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '2.2.0-MOBILE-RECOVERY'; 
+const CURRENT_VERSION = '2.3.0-FIX-ADS'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v40_posts', 
   SETTINGS: 'abdou_v40_settings',
@@ -51,24 +51,32 @@ const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // وظيفة حقن السكربتات المتقدمة
-  const injectAdScript = useCallback((id: string, code: string) => {
+  // نظام حقن الإعلانات المتطور (Force Injection)
+  const forceInjectAd = useCallback((containerId: string, code: string) => {
     if (!code) return;
     try {
-      const containerId = `container-${id}`;
-      let container = document.getElementById(containerId);
-      if (container) container.remove();
+      const target = document.getElementById(containerId);
+      if (target) {
+        const range = document.createRange();
+        const fragment = range.createContextualFragment(code);
+        target.innerHTML = '';
+        target.appendChild(fragment);
+      }
       
-      container = document.createElement('div');
-      container.id = containerId;
-      document.body.appendChild(container);
-      
-      const range = document.createRange();
-      const fragment = range.createContextualFragment(code);
-      container.appendChild(fragment);
-      console.log(`Ad script ${id} injected successfully.`);
+      // حقن نسخة في الـ Header أيضاً لضمان عمل الـ Social Bar
+      if (containerId.includes('social')) {
+         const headAdId = 'head-social-ad';
+         let headAd = document.getElementById(headAdId);
+         if (headAd) headAd.remove();
+         headAd = document.createElement('div');
+         headAd.id = headAdId;
+         headAd.style.display = 'none';
+         const headFragment = document.createRange().createContextualFragment(code);
+         headAd.appendChild(headFragment);
+         document.head.appendChild(headAd);
+      }
     } catch (e) {
-      console.error(`Error injecting ad script ${id}:`, e);
+      console.error(`Failed to inject ad into ${containerId}`, e);
     }
   }, []);
 
@@ -94,61 +102,48 @@ const App: React.FC = () => {
     }
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    setTimeout(() => setIsLoading(false), 800);
+    setTimeout(() => setIsLoading(false), 500);
   }, []);
 
-  // تشغيل الإعلانات عند تحميل التطبيق أو تغيير الإعدادات
+  // تنفيذ الحقن عند الجاهزية
   useEffect(() => {
     if (!isLoading) {
-      injectAdScript('social-bar', settings.globalAdsCode);
-      injectAdScript('popunder', settings.popunderCode || '');
+      // حقن الإعلان العلوي الثابت
+      forceInjectAd('top-ad-fixed-container', settings.alternativeAdsCode);
       
-      // محاولة إعادة الحقن عند أول تفاعل للمستخدم (للهواتف)
-      const handleFirstInteraction = () => {
-        injectAdScript('social-bar-retry', settings.globalAdsCode);
-        window.removeEventListener('touchstart', handleFirstInteraction);
-        window.removeEventListener('click', handleFirstInteraction);
+      // حقن الـ Social Bar
+      forceInjectAd('social-bar-container', settings.globalAdsCode);
+      
+      // حقن Popunder عند التفاعل
+      const handleTouch = () => {
+        if (settings.popunderCode) forceInjectAd('pop-container', settings.popunderCode);
+        window.removeEventListener('touchstart', handleTouch);
       };
-      window.addEventListener('touchstart', handleFirstInteraction);
-      window.addEventListener('click', handleFirstInteraction);
+      window.addEventListener('touchstart', handleTouch);
     }
-  }, [isLoading, settings.globalAdsCode, settings.popunderCode, injectAdScript]);
+  }, [isLoading, settings, forceInjectAd]);
 
   const handlePostClick = (p: Article) => {
     setSelectedPost(p);
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // تحفيز فتح الرابط المباشر
     if (settings.directLinkCode && Math.random() > 0.4) {
-      const adTab = window.open(settings.directLinkCode, '_blank');
-      if (adTab) adTab.blur();
-      window.focus();
+      window.open(settings.directLinkCode, '_blank');
     }
   };
 
-  const addToCart = (product: Article) => {
-    setCart(prev => {
-      const updated = prev.find(item => item.id === product.id)
-        ? prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
-        : [...prev, { ...product, quantity: 1 }];
-      localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(updated));
-      return updated;
-    });
-    setIsCartOpen(true);
-  };
-
-  if (isLoading) return (
-    <div className="fixed inset-0 bg-[#0a0a0b] flex items-center justify-center z-[1000]">
-      <div className="w-10 h-10 border-2 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
-    </div>
-  );
+  if (isLoading) return <div className="fixed inset-0 bg-[#0a0a0b] flex items-center justify-center z-[2000]"><div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>;
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
   const filteredPosts = posts.filter(p => (p.title || '').toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <div className={`min-h-screen flex flex-col transition-all duration-500 ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
+      {/* حاويات الإعلانات المخفية للحقن */}
+      <div id="social-bar-container" style={{display:'none'}}></div>
+      <div id="pop-container" style={{display:'none'}}></div>
+
       <Navbar 
         currentView={view} setView={setView} siteName={settings.siteName} onSearch={setSearchQuery} darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} cartCount={cart.reduce((s, i) => s + i.quantity, 0)} onOpenCart={() => setIsCartOpen(true)}
       />
@@ -159,11 +154,17 @@ const App: React.FC = () => {
         )}
         
         {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
-        {view === 'product' && selectedPost && <ProductDetail product={selectedPost} onAddToCart={addToCart} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
+        {view === 'product' && selectedPost && <ProductDetail product={selectedPost} onAddToCart={(p) => {
+          setCart(prev => {
+            const up = prev.find(i => i.id === p.id) ? prev.map(i => i.id === p.id ? {...i, quantity: i.quantity + 1} : i) : [...prev, {...p, quantity: 1}];
+            localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(up));
+            return up;
+          });
+          setIsCartOpen(true);
+        }} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
         {view === 'checkout' && <Checkout total={cartTotal} onPlaceOrder={(data) => {
-          const msg = `طلب جديد: ${data.name}\n${cart.map(i => `- ${i.name} (x${i.quantity})`).join('\n')}`;
-          window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(msg)}`);
-          setCart([]); setView('home');
+           window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(`طلب جديد من ${data.name}`)}`);
+           setCart([]); setView('home');
         }} />}
         {view === 'admin' && (!isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : <AdminDashboard posts={posts} settings={settings} onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(newPosts));}} onUpdateSettings={(s) => {setSettings(s); localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(s));}} onLogout={() => setIsAuth(false)} darkMode={darkMode} />)}
         {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={darkMode} siteName={settings.siteName} />}

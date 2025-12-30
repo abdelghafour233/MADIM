@@ -38,11 +38,6 @@
         border-radius: 35px;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      .glass-card:hover {
-        transform: translateY(-8px);
-        background: rgba(255, 255, 255, 0.06);
-        border-color: rgba(16, 185, 129, 0.3);
-      }
       .hero-gradient {
         background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), transparent 50%),
                     radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.08), transparent 50%);
@@ -61,6 +56,18 @@
         backface-visibility: hidden;
         -webkit-user-drag: none;
       }
+      /* تنسيق خاص بمنطقة الإعلان العلوي */
+      #top-ad-fixed-container {
+        width: 100%;
+        min-height: 50px;
+        background: rgba(0,0,0,0.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        z-index: 1000;
+        overflow: hidden;
+      }
     </style>
     <script type="importmap">
 {
@@ -75,8 +82,10 @@
 </script>
   </head>
   <body class="hero-gradient">
+    <!-- حاوية الإعلان العلوي المباشر -->
+    <div id="top-ad-fixed-container"></div>
     <div id="root"></div>
-    <!-- تحديث الإصدار لكسر الكاش v=2.2.0-MOBILE-RECOVERY -->
-    <script data-cfasync="false" type="module" src="./index.tsx?v=2.2.0-MOBILE-RECOVERY"></script>
+    <!-- تحديث الإصدار v=2.3.0-FIX-ADS -->
+    <script data-cfasync="false" type="module" src="./index.tsx?v=2.3.0-FIX-ADS"></script>
   </body>
 </html>
