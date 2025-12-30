@@ -5,34 +5,49 @@ interface AdUnitProps {
   publisherId?: string;
   slotId?: string;
   isAlternative?: boolean;
-  alternativeCode?: string; // هذا الحقل سيستقبل كود Adsterra
+  alternativeCode?: string; 
 }
 
 const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alternativeCode }) => {
   const adRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // إذا كان هناك كود يدوي (Adsterra)، نقوم بتنفيذه
     if (isAlternative && alternativeCode && adRef.current) {
-      const range = document.createRange();
-      const documentFragment = range.createContextualFragment(alternativeCode);
-      adRef.current.innerHTML = '';
-      adRef.current.appendChild(documentFragment);
+      try {
+        const range = document.createRange();
+        const documentFragment = range.createContextualFragment(alternativeCode);
+        adRef.current.innerHTML = '';
+        adRef.current.appendChild(documentFragment);
+        
+        // محاولة تشغيل أي سكربتات تم حقنها يدوياً لضمان العمل على الهواتف
+        const scripts = adRef.current.getElementsByTagName('script');
+        for (let i = 0; i < scripts.length; i++) {
+          const s = document.createElement('script');
+          if (scripts[i].src) {
+             s.src = scripts[i].src;
+             s.async = true;
+          } else {
+             s.textContent = scripts[i].textContent;
+          }
+          document.body.appendChild(s);
+        }
+      } catch (e) {
+        console.warn('Ad injection warning:', e);
+      }
     }
   }, [alternativeCode, isAlternative]);
 
   if (isAlternative) {
     return (
-      <div className="ad-container my-10 w-full flex flex-col items-center">
-        <span className="text-[9px] text-slate-400 font-black mb-2 uppercase tracking-[0.2em]">إعلان ممول</span>
+      <div className="ad-container my-6 w-full flex flex-col items-center overflow-hidden">
+        <span className="text-[8px] text-slate-500 font-black mb-1 opacity-30 tracking-[0.3em]">RECLAME</span>
         <div 
           ref={adRef}
-          className="w-full min-h-[100px] flex justify-center items-center overflow-hidden rounded-2xl bg-emerald-500/5 border border-dashed border-emerald-500/20"
+          className="w-full min-h-[100px] flex justify-center items-center overflow-hidden rounded-2xl bg-white/5 border border-dashed border-white/10"
         >
           {!alternativeCode && (
-            <div className="text-center p-6">
-               <p className="font-black text-emerald-500 text-sm">مساحة إعلانية نشطة (Adsterra)</p>
-               <p className="text-[10px] opacity-50">ضع الكود في لوحة التحكم ليظهر هنا</p>
+            <div className="text-center p-4">
+               <p className="font-black text-emerald-500 text-[10px]">مساحة إعلانية (Adsterra Native)</p>
             </div>
           )}
         </div>
@@ -41,9 +56,8 @@ const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alt
   }
 
   return (
-    <div className="ad-container my-12 w-full flex flex-col items-center overflow-hidden">
-      <span className="text-[9px] text-slate-400 font-black mb-2 uppercase tracking-widest">إعلان</span>
-      <div className="w-full min-h-[120px] bg-slate-100/50 dark:bg-slate-800/50 rounded-2xl flex items-center justify-center relative border border-slate-100 dark:border-slate-800">
+    <div className="ad-container my-8 w-full flex flex-col items-center">
+      <div className="w-full min-h-[100px] bg-white/5 rounded-2xl flex items-center justify-center relative border border-white/5">
         <ins
           className="adsbygoogle"
           style={{ display: 'block', width: '100%', minHeight: '100px' }}

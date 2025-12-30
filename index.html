@@ -61,22 +61,6 @@
         backface-visibility: hidden;
         -webkit-user-drag: none;
       }
-      .img-loading {
-        background: #1a1a1b;
-        position: relative;
-        overflow: hidden;
-      }
-      .img-loading::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
-        animation: shimmer 1.5s infinite;
-      }
-      @keyframes shimmer {
-        0% { transform: translateX(-100%); }
-        100% { transform: translateX(100%); }
-      }
     </style>
     <script type="importmap">
 {
@@ -92,7 +76,7 @@
   </head>
   <body class="hero-gradient">
     <div id="root"></div>
-    <!-- تغيير الإصدار لضمان تحديث الملفات عند الزوار v=2.0.0 -->
-    <script data-cfasync="false" type="module" src="./index.tsx?v=2.0.0-FIX-CACHE"></script>
+    <!-- تحديث الإصدار لكسر الكاش v=2.2.0-MOBILE-RECOVERY -->
+    <script data-cfasync="false" type="module" src="./index.tsx?v=2.2.0-MOBILE-RECOVERY"></script>
   </body>
 </html>

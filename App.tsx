@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Article, Settings, Category, CartItem } from './types.ts';
 import Navbar from './components/Navbar.tsx';
 import Home from './components/Home.tsx';
@@ -13,7 +13,7 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '2.1.0-ADS-BOOST'; 
+const CURRENT_VERSION = '2.2.0-MOBILE-RECOVERY'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v40_posts', 
   SETTINGS: 'abdou_v40_settings',
@@ -31,7 +31,7 @@ const INITIAL_SETTINGS: Settings = {
   alternativeAdsCode: ADSTERRA_NATIVE_BANNER, 
   globalAdsCode: ADSTERRA_SOCIAL_BAR,      
   directLinkCode: ADSTERRA_DIRECT_LINK,
-  popunderCode: '', // يوضع كود الـ Popunder هنا
+  popunderCode: '', 
   nativeAdCode: ADSTERRA_NATIVE_BANNER,
   dashboardPassword: '1234',
   totalVisits: 18920,
@@ -50,6 +50,27 @@ const App: React.FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // وظيفة حقن السكربتات المتقدمة
+  const injectAdScript = useCallback((id: string, code: string) => {
+    if (!code) return;
+    try {
+      const containerId = `container-${id}`;
+      let container = document.getElementById(containerId);
+      if (container) container.remove();
+      
+      container = document.createElement('div');
+      container.id = containerId;
+      document.body.appendChild(container);
+      
+      const range = document.createRange();
+      const fragment = range.createContextualFragment(code);
+      container.appendChild(fragment);
+      console.log(`Ad script ${id} injected successfully.`);
+    } catch (e) {
+      console.error(`Error injecting ad script ${id}:`, e);
+    }
+  }, []);
 
   useEffect(() => {
     const lastVersion = localStorage.getItem(STORAGE_KEYS.VERSION);
@@ -73,38 +94,36 @@ const App: React.FC = () => {
     }
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    if (view === 'home' && !isAuth) {
-      const updatedVisits = currentSettings.totalVisits + 1;
-      setSettings(prev => ({ ...prev, totalVisits: updatedVisits }));
-    }
-
-    setTimeout(() => setIsLoading(false), 1200);
+    setTimeout(() => setIsLoading(false), 800);
   }, []);
 
-  // حقن الإعلانات (Social Bar + Popunder)
+  // تشغيل الإعلانات عند تحميل التطبيق أو تغيير الإعدادات
   useEffect(() => {
-    const injectScript = (id: string, code: string) => {
-      const old = document.getElementById(id);
-      if (old) old.remove();
-      const el = document.createElement('div');
-      el.id = id;
-      document.body.appendChild(el);
-      const range = document.createRange();
-      el.appendChild(range.createContextualFragment(code));
-    };
-
-    if (settings.globalAdsCode) injectScript('adsterra-social-bar', settings.globalAdsCode);
-    if (settings.popunderCode) injectScript('adsterra-popunder', settings.popunderCode);
-  }, [settings.globalAdsCode, settings.popunderCode]);
+    if (!isLoading) {
+      injectAdScript('social-bar', settings.globalAdsCode);
+      injectAdScript('popunder', settings.popunderCode || '');
+      
+      // محاولة إعادة الحقن عند أول تفاعل للمستخدم (للهواتف)
+      const handleFirstInteraction = () => {
+        injectAdScript('social-bar-retry', settings.globalAdsCode);
+        window.removeEventListener('touchstart', handleFirstInteraction);
+        window.removeEventListener('click', handleFirstInteraction);
+      };
+      window.addEventListener('touchstart', handleFirstInteraction);
+      window.addEventListener('click', handleFirstInteraction);
+    }
+  }, [isLoading, settings.globalAdsCode, settings.popunderCode, injectAdScript]);
 
   const handlePostClick = (p: Article) => {
     setSelectedPost(p);
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // فتح الرابط المباشر فقط في حالات معينة لتحسين الجودة
-    if (settings.directLinkCode && Math.random() > 0.3) {
-      window.open(settings.directLinkCode, '_blank');
+    // تحفيز فتح الرابط المباشر
+    if (settings.directLinkCode && Math.random() > 0.4) {
+      const adTab = window.open(settings.directLinkCode, '_blank');
+      if (adTab) adTab.blur();
+      window.focus();
     }
   };
 
@@ -120,8 +139,8 @@ const App: React.FC = () => {
   };
 
   if (isLoading) return (
-    <div className="fixed inset-0 bg-[#0a0a0b] flex flex-col items-center justify-center z-[1000]">
-      <div className="w-16 h-16 border-4 border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin"></div>
+    <div className="fixed inset-0 bg-[#0a0a0b] flex items-center justify-center z-[1000]">
+      <div className="w-10 h-10 border-2 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
     </div>
   );
 
@@ -134,7 +153,7 @@ const App: React.FC = () => {
         currentView={view} setView={setView} siteName={settings.siteName} onSearch={setSearchQuery} darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} cartCount={cart.reduce((s, i) => s + i.quantity, 0)} onOpenCart={() => setIsCartOpen(true)}
       />
 
-      <main className="container mx-auto px-4 md:px-6 py-6 flex-grow max-w-7xl">
+      <main className="container mx-auto px-4 md:px-6 py-4 flex-grow max-w-7xl">
         {view === 'home' && (
           <Home posts={filteredPosts} onPostClick={handlePostClick} darkMode={darkMode} directLink={settings.directLinkCode} settings={settings} />
         )}
@@ -142,7 +161,7 @@ const App: React.FC = () => {
         {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
         {view === 'product' && selectedPost && <ProductDetail product={selectedPost} onAddToCart={addToCart} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
         {view === 'checkout' && <Checkout total={cartTotal} onPlaceOrder={(data) => {
-          const msg = `طلب جديد من: ${data.name}\nالمنتجات:\n${cart.map(i => `- ${i.name} (x${i.quantity})`).join('\n')}`;
+          const msg = `طلب جديد: ${data.name}\n${cart.map(i => `- ${i.name} (x${i.quantity})`).join('\n')}`;
           window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(msg)}`);
           setCart([]); setView('home');
         }} />}
@@ -152,8 +171,8 @@ const App: React.FC = () => {
 
       {isCartOpen && <Cart items={cart} onRemove={(id) => setCart(c => c.filter(i => i.id !== id))} onUpdateQuantity={(id, q) => setCart(c => c.map(i => i.id === id ? {...i, quantity: q} : i))} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} adCode={settings.alternativeAdsCode} />}
 
-      <footer className="mt-20 py-20 border-t border-white/5 text-center">
-        <p className="text-[11px] font-bold opacity-30 tracking-widest uppercase">© 2025 {settings.siteName} - جميع الحقوق محفوظة</p>
+      <footer className="mt-10 py-10 border-t border-white/5 text-center opacity-40 text-[10px] font-bold">
+        © 2025 {settings.siteName} - جميع الحقوق محفوظة
       </footer>
       <WhatsAppButton />
     </div>
