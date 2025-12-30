@@ -21,6 +21,26 @@ const INITIAL_SETTINGS: Settings = {
 
 const INITIAL_DATA: Article[] = [
   {
+    id: 'temu-winter-jacket-2025',
+    title: 'أفضل جاكيت شتوي من تيمو (Temu): مراجعة الجودة والسعر ورابط الشراء',
+    excerpt: 'تجربتي الحصرية مع جاكيت شتوي أنيق من منصة تيمو، نكتشف معاً جودة القماش، سرعة التوصيل للمغرب وهل يستحق الشراء؟',
+    content: `مع دخول موجة البرد في المغرب، أصبح البحث عن ملابس شتوية تجمع بين الأناقة والدفء والسعر المناسب أمراً ضرورياً. في هذا المقال، أشارككم مراجعة دقيقة لجاكيت شتوي قمت بطلبه مؤخراً من منصة تيمو الشهيرة.
+
+الجاكيت يتميز بتصميم عصري وخامة داخلية دافئة جداً، كما أن القياسات جاءت مطابقة تماماً لما هو معروض في الموقع. ما أبهرني حقاً هو تنافسية السعر مقارنة بالمحلات المحلية، بالإضافة إلى وصول الطلب في وقت قياسي.
+
+إذا كنت تبحث عن التميز هذا الشتاء بميزانية معقولة، فأنصحك بشدة بهذا الموديل.
+
+يمكنكم الحصول على الجاكيت مباشرة من خلال الرابط الرسمي التالي:
+
+https://temu.to/k/epmeiw8zeno`,
+    image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&q=80&w=1200',
+    category: Category.REVIEWS,
+    date: '01 أبريل 2025',
+    views: 1250,
+    author: 'عبدو المراجع',
+    isTrending: true
+  },
+  {
     id: 'ww3-future-2025',
     title: 'أعقاب الحرب العالمية الثالثة: سيناريوهات تقنية وجيوسياسية لمستقبل البشرية',
     excerpt: 'تحليل مستقبلي لما قد يؤول إليه العالم تقنياً وبيئياً في حال نشوب صراع عالمي وتأثير ذلك على استقرار القارة الأفريقية.',
@@ -29,8 +49,7 @@ const INITIAL_DATA: Article[] = [
     category: Category.TECH,
     date: '30 مارس 2025',
     views: 15400,
-    author: 'عبدو المحلل',
-    isTrending: true
+    author: 'عبدو المحلل'
   },
   {
     id: 'olive-oil-prices-2025',
@@ -268,7 +287,7 @@ const INITIAL_DATA: Article[] = [
     title: 'الصحة النفسية في عصر الشاشات: كيف تحافظ على هدوئك الرقمي؟',
     excerpt: 'نصائح عملية للتخلص من إدمان الهاتف والتعامل مع ضغوط منصات التواصل الاجتماعي.',
     content: `الاستخدام المفرط للهواتف يؤدي للقلق وضعف التركيز. في هذا المقال، نقدم تقنيات بسيطة مثل "الصيام الرقمي" لتجديد الطاقة العقلية والحفاظ على التوازن النفسي.`,
-    image: 'https://images.unsplash.com/photo-1499209974431-9dac3adaf471?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1512438248247-f0f2a5a8b7f0?auto=format&fit=crop&q=80&w=1200',
     category: Category.SELF_DEV,
     date: '07 مارس 2025',
     views: 18400,
@@ -321,33 +340,31 @@ const App: React.FC = () => {
   const [cookieConsent, setCookieConsent] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // الإصدار v9.0 يضمن مسح الكاش القديم وتحديث كافة الروابط (بما في ذلك صورة مراكش)
-  const DATA_VERSION = "v9.0_marrakech_fix"; 
+  // الإصدار v11.0 لإضافة مقال جاكيط تيمو الجديد وتحديث الكاش
+  const DATA_VERSION = "v11.0_temu_jacket"; 
 
   useEffect(() => {
-    // استخدام مفاتيح تخزين جديدة للإصدار 9 لضمان المزامنة التامة
-    const savedSettings = localStorage.getItem('abdou_settings_v9');
+    const savedSettings = localStorage.getItem('abdou_settings_v11');
     if (savedSettings) setSettings(JSON.parse(savedSettings));
 
-    const savedCart = localStorage.getItem('abdou_cart_v9');
+    const savedCart = localStorage.getItem('abdou_cart_v11');
     if (savedCart) setCart(JSON.parse(savedCart));
 
-    const consent = localStorage.getItem('abdou_cookie_consent_v9');
+    const consent = localStorage.getItem('abdou_cookie_consent_v11');
     if (consent) setCookieConsent(true);
 
-    const savedPostsRaw = localStorage.getItem('abdou_blog_v9');
-    const savedVersion = localStorage.getItem('abdou_data_version_v9');
+    const savedPostsRaw = localStorage.getItem('abdou_blog_v11');
+    const savedVersion = localStorage.getItem('abdou_data_version_v11');
     
     if (savedVersion !== DATA_VERSION) {
-      // تحديث جذري للبيانات
       setPosts(INITIAL_DATA);
-      localStorage.setItem('abdou_blog_v9', JSON.stringify(INITIAL_DATA));
-      localStorage.setItem('abdou_data_version_v9', DATA_VERSION);
+      localStorage.setItem('abdou_blog_v11', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_data_version_v11', DATA_VERSION);
       
-      // تنظيف إصدارات v8 وما قبلها
-      localStorage.removeItem('abdou_blog_v8');
-      localStorage.removeItem('abdou_data_version_v8');
-      localStorage.removeItem('abdou_blog_v7');
+      // تنظيف النسخ السابقة
+      localStorage.removeItem('abdou_blog_v10');
+      localStorage.removeItem('abdou_data_version_v10');
+      localStorage.removeItem('abdou_blog_v9');
     } else {
       setPosts(savedPostsRaw ? JSON.parse(savedPostsRaw) : INITIAL_DATA);
     }
@@ -358,7 +375,7 @@ const App: React.FC = () => {
       item.id === p.id ? { ...item, views: (item.views || 0) + 1 } : item
     );
     setPosts(updatedPosts);
-    localStorage.setItem('abdou_blog_v9', JSON.stringify(updatedPosts));
+    localStorage.setItem('abdou_blog_v11', JSON.stringify(updatedPosts));
     setSelectedItem({ ...p, views: (p.views || 0) + 1 });
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo(0, 0);
@@ -408,8 +425,8 @@ const App: React.FC = () => {
           <AdminDashboard 
             posts={posts} 
             settings={settings}
-            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v9', JSON.stringify(newPosts));}}
-            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v9', JSON.stringify(s));}}
+            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v11', JSON.stringify(newPosts));}}
+            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v11', JSON.stringify(s));}}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
@@ -435,7 +452,7 @@ const App: React.FC = () => {
           </div>
           <div>
             <h4 className="font-black mb-4">أدسنس 2025</h4>
-            <p className="text-xs opacity-50 mb-4">الموقع يضم حالياً 26 مقالاً حصرياً مكتوباً باحترافية لتلائم شروط القبول.</p>
+            <p className="text-xs opacity-50 mb-4">الموقع يضم حالياً 27 مقالاً حصرياً مكتوباً باحترافية لتلائم شروط القبول.</p>
             <div className="flex gap-4">
                <span className="opacity-40 text-[10px] font-black uppercase">© 2025 Abdou Web - جميع الحقوق محفوظة</span>
             </div>
@@ -447,7 +464,7 @@ const App: React.FC = () => {
         <div className="fixed bottom-0 left-0 right-0 z-[300] bg-emerald-600 text-white p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fadeIn">
           <p className="text-sm font-bold">نستخدم ملفات تعريف الارتباط لضمان حصولك على أفضل تجربة على موقعنا.</p>
           <button 
-            onClick={() => {setCookieConsent(true); localStorage.setItem('abdou_cookie_consent_v9', 'true');}}
+            onClick={() => {setCookieConsent(true); localStorage.setItem('abdou_cookie_consent_v11', 'true');}}
             className="px-8 py-2 bg-white text-emerald-600 rounded-xl font-black text-sm"
           >أوافق</button>
         </div>
