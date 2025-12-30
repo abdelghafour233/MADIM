@@ -13,12 +13,13 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS, CITIES } from './constants.tsx';
 
-const CURRENT_VERSION = '1.0.2'; // تغيير هذا الرقم عند تحديث المنتجات في الكود يدوياً
+// رفع الإصدار وتغيير مفاتيح التخزين هو الحل الأمثل لمشكلة عدم وصول التحديثات
+const CURRENT_VERSION = '1.1.0'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_shop_posts_v2',
-  SETTINGS: 'abdou_shop_settings_v2',
-  CART: 'abdou_shop_cart_v2',
-  VERSION: 'abdou_shop_version'
+  POSTS: 'abdouweb_posts_v3', // تغيير الاسم سيجبر المتصفح على تحميل البيانات الجديدة
+  SETTINGS: 'abdouweb_settings_v3',
+  CART: 'abdouweb_cart_v3',
+  VERSION: 'abdouweb_version_v3'
 };
 
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
@@ -48,39 +49,22 @@ const App: React.FC = () => {
   const [showExitPopup, setShowExitPopup] = useState(false);
 
   useEffect(() => {
-    // نظام فحص النسخة لضمان وصول التحديثات
     const lastVersion = localStorage.getItem(STORAGE_KEYS.VERSION);
     const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
     const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
-    // إذا كان الإصدار قديماً، نقوم بدمج المنتجات الجديدة أو إعادة التعيين
+    // إذا كان الإصدار قديماً أو غير موجود، نقوم بعمل تنظيف شامل وتحميل الجديد
     if (lastVersion !== CURRENT_VERSION) {
-      // إذا كان هناك بوستات قديمة، ندمج الجديد معها (الأولوية للجديد في الكود إذا تشابهت الـ ID)
-      let finalPosts = INITIAL_POSTS;
-      if (savedPosts) {
-        const oldPosts = JSON.parse(savedPosts) as Article[];
-        const newIds = new Set(INITIAL_POSTS.map(p => p.id));
-        const userCustomPosts = oldPosts.filter(p => !newIds.has(p.id));
-        finalPosts = [...INITIAL_POSTS, ...userCustomPosts];
-      }
-      
-      setPosts(finalPosts);
-      localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(finalPosts));
+      setPosts(INITIAL_POSTS);
+      setSettings(INITIAL_SETTINGS);
+      localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(INITIAL_POSTS));
+      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
-      
-      // لا نحذف الإعدادات لكي لا يفقد العميل كود الإعلانات، ولكن نحدث اسم الموقع فقط
-      if (savedSettings) {
-        const oldSettings = JSON.parse(savedSettings);
-        const updatedSettings = { ...oldSettings, siteName: INITIAL_SETTINGS.siteName };
-        setSettings(updatedSettings);
-        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(updatedSettings));
-      } else {
-        setSettings(INITIAL_SETTINGS);
-        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
-      }
+      // مسح النسخ القديمة جداً من الذاكرة لتقليل الحجم
+      localStorage.removeItem('abdou_shop_posts_v2');
+      localStorage.removeItem('abdou_shop_settings_v2');
     } else {
-      // إذا كانت النسخة مطابقة، نحمل من الذاكرة العادية
       if (savedPosts) setPosts(JSON.parse(savedPosts));
       else setPosts(INITIAL_POSTS);
 
@@ -105,9 +89,9 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && !localStorage.getItem('exit_popup_shown_v2')) {
+      if (e.clientY <= 0 && !localStorage.getItem('exit_popup_shown_v3')) {
         setShowExitPopup(true);
-        localStorage.setItem('exit_popup_shown_v2', 'true');
+        localStorage.setItem('exit_popup_shown_v3', 'true');
       }
     };
     document.addEventListener('mouseleave', handleMouseLeave);
@@ -246,47 +230,17 @@ const App: React.FC = () => {
         {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={darkMode} siteName={settings.siteName} />}
       </main>
 
-      {/* Social Bars and Popups */}
+      {/* شريط المشاركة */}
       <div className="fixed left-0 top-1/2 -translate-y-1/2 z-[150] hidden md:flex flex-col gap-2 p-2 bg-white/10 backdrop-blur-md rounded-r-2xl border border-white/10 shadow-2xl">
         <button onClick={() => shareSite('wa')} className="w-12 h-12 bg-[#25D366] text-white rounded-xl flex items-center justify-center text-xl hover:translate-x-2 transition-transform shadow-lg">W</button>
         <button onClick={() => shareSite('fb')} className="w-12 h-12 bg-[#1877F2] text-white rounded-xl flex items-center justify-center text-xl hover:translate-x-2 transition-transform shadow-lg">F</button>
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-[150] md:hidden bg-white/10 backdrop-blur-2xl border-t border-white/10 flex items-center justify-around p-3 animate-slideUp">
-         <button onClick={() => shareSite('wa')} className="flex flex-col items-center gap-1">
-            <span className="w-10 h-10 bg-[#25D366] text-white rounded-full flex items-center justify-center text-lg shadow-lg">W</span>
-            <span className="text-[10px] font-black text-white/60">واتساب</span>
-         </button>
-         <button onClick={() => shareSite('fb')} className="flex flex-col items-center gap-1">
-            <span className="w-10 h-10 bg-[#1877F2] text-white rounded-full flex items-center justify-center text-lg shadow-lg">F</span>
-            <span className="text-[10px] font-black text-white/60">فيسبوك</span>
-         </button>
-         <div className="h-8 w-px bg-white/10"></div>
-         <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="flex flex-col items-center gap-1">
-            <span className="w-10 h-10 bg-white/10 text-white rounded-full flex items-center justify-center text-lg border border-white/20">↑</span>
-            <span className="text-[10px] font-black text-white/60">لأعلى</span>
-         </button>
-      </div>
-
-      {showExitPopup && (
-        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowExitPopup(false)}></div>
-          <div className="relative bg-gradient-to-b from-slate-900 to-black border border-white/20 p-10 rounded-[50px] max-w-lg w-full text-center shadow-2xl animate-scaleIn">
-            <span className="text-7xl block mb-6 animate-bounce">🛑</span>
-            <h2 className="text-3xl font-black text-white mb-4">انتظر لحظة!</h2>
-            <p className="text-white/60 font-bold mb-8">لقد فزت بقسيمة شراء مجانية بقيمة 200 درهم قبل مغادرتك!</p>
-            <a 
-              href={settings.directLinkCode} target="_blank" onClick={() => setShowExitPopup(false)}
-              className="block w-full py-5 bg-emerald-600 text-white rounded-2xl font-black text-2xl shadow-xl hover:scale-105 transition-all"
-            >استلم القسيمة الآن 🔓</a>
-          </div>
-        </div>
-      )}
-
+      {/* إشعارات حية */}
       {notification && (
         <div className="fixed bottom-24 right-4 md:bottom-32 md:right-8 z-[200] animate-slideLeft">
-          <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 rounded-3xl flex items-center gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] min-w-[300px] max-w-sm">
-            <div className="relative shrink-0">
+          <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 rounded-3xl flex items-center gap-4 shadow-2xl min-w-[300px] max-w-sm">
+            <div className="shrink-0 relative">
               <img src={notification.image} className="w-16 h-16 rounded-2xl object-cover border border-white/10" alt="" />
               <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-[10px] shadow-lg">✔</div>
             </div>
@@ -295,10 +249,7 @@ const App: React.FC = () => {
               <p className="text-xs font-black text-white leading-tight mb-1">
                 {notification.name} من <span className="text-emerald-400">{notification.city}</span>
               </p>
-              <p className="text-[10px] text-white/60 font-bold truncate">
-                اشترى: {notification.product}
-              </p>
-              <p className="text-[8px] text-white/40 mt-1 font-bold">منذ دقيقتين • تأكيد الطلب ✅</p>
+              <p className="text-[10px] text-white/60 font-bold truncate">اشترى: {notification.product}</p>
             </div>
           </div>
         </div>
@@ -307,13 +258,9 @@ const App: React.FC = () => {
       {isCartOpen && <Cart items={cart} onRemove={removeFromCart} onUpdateQuantity={updateQuantity} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} />}
 
       <footer className="mt-20 py-24 border-t border-white/5 text-center bg-black/20">
-        <h3 className="text-3xl font-black mb-4 text-emerald-500">{settings.siteName}</h3>
-        <p className="text-sm font-bold opacity-40 max-w-md mx-auto mb-8">متجر عبدو هو بوابتك الأولى لأقوى العروض والهميزات في المغرب. تسوق بذكاء ووفر مالك.</p>
-        <div className="flex justify-center gap-4 mb-10">
-           <button onClick={() => shareSite('wa')} className="p-4 bg-white/5 rounded-2xl hover:bg-emerald-600 transition-colors">واتساب</button>
-           <button onClick={() => shareSite('fb')} className="p-4 bg-white/5 rounded-2xl hover:bg-blue-600 transition-colors">فيسبوك</button>
-        </div>
-        <p className="text-[10px] font-bold opacity-20">© 2025 جميع الحقوق محفوظة لمتجر عبدو</p>
+        <h3 className="text-3xl font-black mb-4 text-emerald-500">abdouweb</h3>
+        <p className="text-sm font-bold opacity-40 max-w-md mx-auto mb-8">متجر عبدو ويب هو بوابتك الأولى لأقوى العروض والهميزات في المغرب. تسوق بذكاء ووفر مالك.</p>
+        <p className="text-[10px] font-bold opacity-20">© 2025 جميع الحقوق محفوظة - abdouweb.online (الإصدار {CURRENT_VERSION})</p>
       </footer>
       <WhatsAppButton />
     </div>
