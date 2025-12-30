@@ -1,15 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
-import { Article } from '../types';
+import { Article, Settings } from '../types';
+import AdUnit from './AdUnit.tsx';
 
 interface HomeProps {
   posts: Article[];
   onPostClick: (p: Article) => void;
   darkMode?: boolean;
   directLink?: string;
+  settings: Settings;
 }
 
-const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, directLink }) => {
+const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, directLink, settings }) => {
   const trendingPost = posts.find(p => p.isTrending) || posts[0];
   const otherPosts = posts.filter(p => p.id !== trendingPost?.id);
   const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
@@ -84,6 +86,9 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
         ))}
       </div>
 
+      {/* Ad Unit Middle */}
+      <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
+
       {/* العروض المميزة Grid */}
       <div className="space-y-10">
         <div className="flex items-center justify-between">
@@ -91,10 +96,6 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
               <span className="w-3 h-10 bg-emerald-600 rounded-full"></span>
               أحدث الهميزات
            </h2>
-           <div className="hidden md:flex gap-2">
-              <span className="w-12 h-1 bg-emerald-600 rounded-full"></span>
-              <span className="w-4 h-1 bg-white/10 rounded-full"></span>
-           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -104,16 +105,11 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
               className="group cursor-pointer glass-card p-4 md:p-6"
               onClick={() => onPostClick(post)}
             >
-              <div className="img-container mb-6 shadow-xl">
-                 <img src={post.image} loading="lazy" alt={post.title} />
+              <div className="img-container mb-6 shadow-xl relative aspect-square rounded-[28px] overflow-hidden bg-white/5">
+                 <img src={post.image} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={post.title} />
                  <div className="absolute top-4 right-4 bg-emerald-600 text-white px-4 py-2 rounded-xl text-[10px] font-black shadow-lg">
                     وفر {post.marketPrice ? post.marketPrice - (post.price || 0) : 0} د.م
                  </div>
-                 {post.isTrending && (
-                   <div className="absolute top-4 left-4 bg-orange-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black animate-pulse">
-                     جديد 🔥
-                   </div>
-                 )}
               </div>
               <h3 className="text-lg md:text-xl font-black mb-4 line-clamp-2 min-h-[3.5rem] group-hover:text-emerald-500 transition-colors">
                 {post.title}
@@ -131,6 +127,9 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
           ))}
         </div>
       </div>
+
+      {/* Ad Unit Bottom */}
+      <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
     </div>
   );
 };
