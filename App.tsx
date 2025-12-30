@@ -13,16 +13,15 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-// الإصدار 1.5.0: تفعيل شامل للربح
-const CURRENT_VERSION = '1.5.0-ULTRA'; 
+// الإصدار 1.6.0: ثورة الصور وتجاوز الكاش
+const CURRENT_VERSION = '1.6.0-IMAGE-ULTRA'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_v18_posts', 
-  SETTINGS: 'abdou_v18_settings',
-  CART: 'abdou_v18_cart',
-  VERSION: 'abdou_v18_version'
+  POSTS: 'abdou_v20_posts', 
+  SETTINGS: 'abdou_v20_settings',
+  CART: 'abdou_v20_cart',
+  VERSION: 'abdou_v20_version'
 };
 
-// أكواد Adsterra النهائية
 const ADSTERRA_SOCIAL_BAR = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
 const ADSTERRA_NATIVE_BANNER = `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`;
 const ADSTERRA_DIRECT_LINK = 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d';
@@ -34,7 +33,7 @@ const INITIAL_SETTINGS: Settings = {
   globalAdsCode: ADSTERRA_SOCIAL_BAR,      
   directLinkCode: ADSTERRA_DIRECT_LINK,
   dashboardPassword: '1234',
-  totalVisits: 6200,
+  totalVisits: 7500,
   whatsappNumber: '212649075664'
 };
 
@@ -71,10 +70,9 @@ const App: React.FC = () => {
     setTimeout(() => setIsLoading(false), 800);
   }, []);
 
-  // حقن الأكواد الإعلانية (Social Bar)
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-global-inject';
+      const scriptId = 'adsterra-v160-loader';
       const old = document.getElementById(scriptId);
       if (old) old.remove();
       
@@ -95,7 +93,6 @@ const App: React.FC = () => {
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // فتح Direct Link عند الانتقال للمنتج
     if (settings.directLinkCode && p.isProduct) {
       window.open(settings.directLinkCode, '_blank');
     }
@@ -123,7 +120,7 @@ const App: React.FC = () => {
   );
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
-  const filteredPosts = posts.filter(p => (p.title || p.name || '').toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredPosts = posts.filter(p => (p.title || p.name || p.id || '').toLowerCase().includes(searchQuery.toLowerCase()));
 
   return (
     <div className={`min-h-screen flex flex-col transition-all duration-500 ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>

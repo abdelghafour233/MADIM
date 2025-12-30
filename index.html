@@ -48,6 +48,13 @@
         to { opacity: 1; transform: translateY(0); }
       }
       .animate-fade { animation: fadeIn 0.6s ease-out forwards; }
+      
+      /* تحسين عرض الصور */
+      img {
+        max-width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
     </style>
     <script type="importmap">
 {
@@ -63,6 +70,6 @@
   </head>
   <body class="hero-gradient">
     <div id="root"></div>
-    <script data-cfasync="false" type="module" src="./index.tsx?v=1.5.0-AD-STABLE"></script>
+    <script data-cfasync="false" type="module" src="./index.tsx?v=1.6.0-IMAGE-REVOLUTION"></script>
   </body>
 </html>
