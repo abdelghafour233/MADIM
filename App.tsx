@@ -46,24 +46,6 @@ const INITIAL_DATA: Article[] = [
     isProduct: true,
     rating: 5,
     inStock: true
-  },
-  {
-    id: 'post-smart-home',
-    title: 'كيف تحول منزلك لبيت ذكي بأقل من 500 درهم من تيمو؟',
-    excerpt: 'دليل شامل لاختيار أرخص وأجود قطع الـ Smart Home المتوفرة حالياً مع روابط الشحن للمغرب.',
-    content: `المنزل الذكي لم يعد ترفاً للأغنياء فقط. بفضل تيمو يمكنك الحصول على مصابيح ذكية، مقابس واي فاي، وحساسات حركة بأسعار خيالية.
-    
-    إليك القائمة التي جربناها:
-    1. مصابيح RGB ذكية (تتحكم بها من الهاتف).
-    2. حساسات الأبواب.
-    3. ريموت كنترول شامل لكل الأجهزة.`,
-    image: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=1200',
-    category: Category.TEMU,
-    date: '05 أبريل 2025',
-    views: 3200,
-    author: 'عبدو التقني',
-    affiliateLink: 'https://temu.to/k/example2',
-    couponCode: 'SALE2025'
   }
 ];
 
@@ -78,36 +60,47 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // تغيير النسخة إلى v19 لإجبار المتصفحات على تحديث الإعلانات والإعدادات
-  const DATA_VERSION = "v19.0_forced_ads_update"; 
+  // التحديث الأقوى v21 لإجبار كل الأجهزة على التحديث
+  const DATA_VERSION = "v21.0_ultra_refresh"; 
 
   useEffect(() => {
-    const savedVersion = localStorage.getItem('abdou_data_version_v19');
+    const savedVersion = localStorage.getItem('abdou_version_v21');
     
     if (savedVersion !== DATA_VERSION) {
-      // إجبار التحديث وحذف البيانات القديمة
+      // إجبار المتصفح على حذف كل البيانات القديمة والمخزنة نهائياً
+      localStorage.clear(); 
+      
       setPosts(INITIAL_DATA);
       setSettings(INITIAL_SETTINGS);
-      localStorage.setItem('abdou_blog_v19', JSON.stringify(INITIAL_DATA));
-      localStorage.setItem('abdou_settings_v19', JSON.stringify(INITIAL_SETTINGS));
-      localStorage.setItem('abdou_data_version_v19', DATA_VERSION);
+      
+      localStorage.setItem('abdou_posts_v21', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_settings_v21', JSON.stringify(INITIAL_SETTINGS));
+      localStorage.setItem('abdou_version_v21', DATA_VERSION);
+      
+      console.log("System Updated to v21 - Cache Cleared");
     } else {
-      const savedSettings = localStorage.getItem('abdou_settings_v19');
-      const savedPostsRaw = localStorage.getItem('abdou_blog_v19');
-      if (savedSettings) setSettings(JSON.parse(savedSettings));
-      if (savedPostsRaw) setPosts(JSON.parse(savedPostsRaw));
+      const s = localStorage.getItem('abdou_settings_v21');
+      const p = localStorage.getItem('abdou_posts_v21');
+      if (s) setSettings(JSON.parse(s));
+      if (p) setPosts(JSON.parse(p));
     }
   }, []);
 
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptContainer = document.getElementById('global-ads-container') || document.createElement('div');
-      scriptContainer.id = 'global-ads-container';
+      const containerId = 'adsterra-v21-injection';
+      let scriptContainer = document.getElementById(containerId);
+      
+      if (!scriptContainer) {
+        scriptContainer = document.createElement('div');
+        scriptContainer.id = containerId;
+        document.body.appendChild(scriptContainer);
+      }
+      
       scriptContainer.innerHTML = '';
       const range = document.createRange();
       const fragment = range.createContextualFragment(settings.globalAdsCode);
       scriptContainer.appendChild(fragment);
-      if (!document.getElementById('global-ads-container')) document.body.appendChild(scriptContainer);
     }
   }, [settings.globalAdsCode]);
 
@@ -162,8 +155,8 @@ const App: React.FC = () => {
           <AdminDashboard 
             posts={posts} 
             settings={settings}
-            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v19', JSON.stringify(newPosts));}}
-            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v19', JSON.stringify(s));}}
+            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_posts_v21', JSON.stringify(newPosts));}}
+            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v21', JSON.stringify(s));}}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
@@ -183,7 +176,10 @@ const App: React.FC = () => {
 
       <footer className="mt-20 py-12 border-t border-white/5 text-center opacity-60">
           <h3 className="text-xl font-black mb-2">{settings.siteName}</h3>
-          <p className="text-xs">المتجر المغربي الأول لخدمة الشباب - 2025</p>
+          <p className="text-xs mb-4">المتجر المغربي الأول لخدمة الشباب - 2025</p>
+          <div className="inline-block px-3 py-1 bg-emerald-600/20 text-emerald-500 rounded-full text-[10px] font-black border border-emerald-500/20">
+            System Version: {DATA_VERSION.split('_')[0]}
+          </div>
       </footer>
 
       <WhatsAppButton />

@@ -37,7 +37,10 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
       <div className="container mx-auto px-4 md:px-6 h-16 md:h-24 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <div className="text-xl md:text-3xl font-black cursor-pointer tracking-tighter flex items-center gap-3" onClick={() => setView('home')}>
-            <span className="bg-emerald-600 text-white w-10 h-10 flex items-center justify-center rounded-xl shadow-lg">A</span>
+            <div className="relative">
+              <span className="bg-emerald-600 text-white w-10 h-10 flex items-center justify-center rounded-xl shadow-lg">A</span>
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-black animate-pulse shadow-[0_0_10px_#34d399]"></span>
+            </div>
             <span className={darkMode ? 'text-white' : 'text-slate-900'}>{siteName.split(' | ')[0]}</span>
           </div>
 
