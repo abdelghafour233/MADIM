@@ -27,15 +27,25 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16 items-start">
-        {/* Main Product Image - Responsive Fix */}
-        <div className="relative rounded-[35px] md:rounded-[50px] overflow-hidden shadow-2xl border-2 md:border-4 border-white/5 group h-[350px] sm:h-[450px] md:h-[650px] bg-slate-900">
-          <img 
-            src={imgError ? fallbackImage : product.image} 
-            alt={product.name} 
-            className="w-full h-full object-cover object-center group-hover:scale-105 transition duration-1000"
-            onError={() => setImgError(true)}
-          />
-          <div className="absolute top-4 right-4 md:top-8 md:right-8 bg-emerald-600 text-white px-4 py-2 md:px-6 md:py-2.5 rounded-xl md:rounded-2xl font-black shadow-2xl text-[9px] md:text-xs">
+        {/* Main Product Image - Premium Responsive Fix */}
+        <div className="relative rounded-[35px] md:rounded-[50px] overflow-hidden shadow-2xl border-2 md:border-4 border-white/5 group h-[400px] sm:h-[500px] md:h-[650px] bg-black flex items-center justify-center">
+          {/* Backdrop Blur */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center blur-3xl opacity-50 scale-125"
+            style={{ backgroundImage: `url(${imgError ? fallbackImage : product.image})` }}
+          ></div>
+          
+          {/* Main Image Container */}
+          <div className="relative z-10 w-full h-full flex items-center justify-center p-4">
+             <img 
+                src={imgError ? fallbackImage : product.image} 
+                alt={product.name} 
+                className="max-w-full max-h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:scale-105 transition duration-1000"
+                onError={() => setImgError(true)}
+              />
+          </div>
+
+          <div className="absolute top-4 right-4 md:top-8 md:right-8 bg-emerald-600 text-white px-4 py-2 md:px-6 md:py-2.5 rounded-xl md:rounded-2xl font-black shadow-2xl text-[9px] md:text-xs z-20">
             {product.category}
           </div>
         </div>

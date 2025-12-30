@@ -13,13 +13,13 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-// الإصدار 1.7.0: إضافة عرض الكاميرا وتجاوز الكاش
-const CURRENT_VERSION = '1.7.0-DASHCAM-ULTRA'; 
+// الإصدار 1.8.0: ثورة الصور الشاملة (PC & Mobile)
+const CURRENT_VERSION = '1.8.0-ULTRA-RES'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_v25_posts', 
-  SETTINGS: 'abdou_v25_settings',
-  CART: 'abdou_v25_cart',
-  VERSION: 'abdou_v25_version'
+  POSTS: 'abdou_v30_posts', 
+  SETTINGS: 'abdou_v30_settings',
+  CART: 'abdou_v30_cart',
+  VERSION: 'abdou_v30_version'
 };
 
 const ADSTERRA_SOCIAL_BAR = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
@@ -33,7 +33,7 @@ const INITIAL_SETTINGS: Settings = {
   globalAdsCode: ADSTERRA_SOCIAL_BAR,      
   directLinkCode: ADSTERRA_DIRECT_LINK,
   dashboardPassword: '1234',
-  totalVisits: 8900,
+  totalVisits: 10200,
   whatsappNumber: '212649075664'
 };
 
@@ -72,7 +72,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-v170-loader';
+      const scriptId = 'adsterra-v180-loader';
       const old = document.getElementById(scriptId);
       if (old) old.remove();
       

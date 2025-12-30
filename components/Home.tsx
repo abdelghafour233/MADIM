@@ -34,24 +34,30 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
 
   return (
     <div className="space-y-12 animate-fade" dir="rtl">
-      {/* Hero Section Premium - Improved for PC & Mobile */}
+      {/* Hero Section Premium - Optimized Image Container */}
       <section 
         className="relative group cursor-pointer overflow-hidden rounded-[40px] md:rounded-[60px] bg-white/5 border border-white/10 shadow-3xl"
         onClick={() => onPostClick(trendingPost)}
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch min-h-[500px] md:min-h-[600px]">
-           <div className="relative h-[300px] sm:h-[400px] lg:h-auto overflow-hidden">
+           {/* Image Container with Blur Background Fix */}
+           <div className="relative h-[300px] sm:h-[400px] lg:h-auto overflow-hidden bg-black flex items-center justify-center">
+              <div 
+                className="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-110" 
+                style={{ backgroundImage: `url(${trendingPost.image})` }}
+              ></div>
               <img 
                 src={trendingPost.image} 
-                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-1000" 
+                className="relative z-10 w-full h-full object-contain md:object-cover group-hover:scale-105 transition-transform duration-1000" 
                 alt={trendingPost.title} 
               />
-              <div className="absolute inset-0 bg-gradient-to-t lg:hidden from-black/80 via-black/20 to-transparent"></div>
-              <div className="absolute top-4 right-4 md:top-8 md:right-8 bg-red-600 text-white px-4 py-2 rounded-xl text-[10px] md:text-xs font-black shadow-xl animate-pulse">
+              <div className="absolute inset-0 bg-gradient-to-t lg:hidden from-black/80 via-black/20 to-transparent z-20"></div>
+              <div className="absolute top-4 right-4 md:top-8 md:right-8 bg-red-600 text-white px-4 py-2 rounded-xl text-[10px] md:text-xs font-black shadow-xl animate-pulse z-30">
                 ينتهي في {timeLeft.h}:{timeLeft.m}:{timeLeft.s}
               </div>
            </div>
-           <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center bg-black/20 lg:bg-transparent">
+
+           <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center bg-black/20 lg:bg-transparent relative z-30">
               <div className="flex items-center gap-3 mb-6">
                 <span className="bg-emerald-600/20 text-emerald-500 px-4 py-1.5 rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest border border-emerald-500/20">همزة اليوم 🔥</span>
               </div>
@@ -91,7 +97,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
 
       <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
 
-      {/* Grid Updates - Fixed Image Containers */}
+      {/* Grid Updates - Responsive Square Aspect Ratio */}
       <div className="space-y-10">
         <div className="flex items-center justify-between">
            <h2 className="text-xl md:text-3xl font-black flex items-center gap-3">
@@ -100,34 +106,38 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
            </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-10">
           {otherPosts.map(post => (
             <div 
               key={post.id} 
-              className="group cursor-pointer glass-card p-4 overflow-hidden"
+              className="group cursor-pointer glass-card p-3 md:p-5 overflow-hidden"
               onClick={() => onPostClick(post)}
             >
-              <div className="img-container mb-5 shadow-xl relative aspect-square md:aspect-[4/3] rounded-[25px] overflow-hidden bg-slate-900">
+              <div className="relative aspect-square rounded-[20px] md:rounded-[30px] overflow-hidden bg-slate-900 mb-4 md:mb-6">
+                 <div 
+                    className="absolute inset-0 bg-cover bg-center blur-lg opacity-30" 
+                    style={{ backgroundImage: `url(${post.image})` }}
+                 ></div>
                  <img 
                     src={post.image} 
                     loading="lazy" 
-                    className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700" 
+                    className="relative z-10 w-full h-full object-contain md:object-cover group-hover:scale-110 transition-transform duration-700" 
                     alt={post.title} 
                  />
-                 <div className="absolute top-3 right-3 bg-emerald-600/90 backdrop-blur-md text-white px-3 py-1.5 rounded-xl text-[9px] font-black shadow-lg">
+                 <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-emerald-600/90 backdrop-blur-md text-white px-2 py-1 md:px-3 md:py-1.5 rounded-lg md:rounded-xl text-[7px] md:text-[9px] font-black shadow-lg z-20">
                     وفر {post.marketPrice ? post.marketPrice - (post.price || 0) : 0} د.م
                  </div>
               </div>
-              <div className="px-2">
-                <h3 className="text-base md:text-xl font-black mb-3 line-clamp-2 min-h-[3rem] group-hover:text-emerald-500 transition-colors">
+              <div className="px-1 md:px-2">
+                <h3 className="text-xs md:text-xl font-black mb-2 md:mb-4 line-clamp-2 min-h-[2rem] md:min-h-[3.5rem] group-hover:text-emerald-500 transition-colors">
                   {post.title}
                 </h3>
-                <div className="flex items-center justify-between mt-4">
-                   <div>
-                      <span className="text-[9px] font-black text-slate-500 block">ثمن الهمزة:</span>
-                      <span className="text-lg md:text-2xl font-black text-emerald-500">{post.price} د.م</span>
+                <div className="flex items-center justify-between mt-2 md:mt-4">
+                   <div className="flex flex-col">
+                      <span className="text-[7px] md:text-[9px] font-black text-slate-500">الثمن:</span>
+                      <span className="text-sm md:text-2xl font-black text-emerald-500">{post.price} د.م</span>
                    </div>
-                   <button className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-xl md:rounded-2xl flex items-center justify-center text-lg hover:bg-emerald-600 hover:text-white transition-all shadow-inner">
+                   <button className="w-8 h-8 md:w-12 md:h-12 bg-white/5 rounded-lg md:rounded-2xl flex items-center justify-center text-xs md:text-lg hover:bg-emerald-600 hover:text-white transition-all shadow-inner">
                       ➕
                    </button>
                 </div>
