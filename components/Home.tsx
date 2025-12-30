@@ -14,8 +14,8 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
   const otherPosts = posts.filter(p => p.id !== trendingPost?.id);
   const [isSpinning, setIsSpinning] = useState(false);
   const [timeLeft, setTimeLeft] = useState({ h: 2, m: 45, s: 10 });
+  const [stockLevel, setStockLevel] = useState(89);
 
-  // عداد تنازلي للعروض لزيادة الاستعجال
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(prev => {
@@ -24,6 +24,8 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
         if (prev.h > 0) return { h: prev.h - 1, m: 59, s: 59 };
         return prev;
       });
+      // خفض المخزون تدريجياً لزيادة الإثارة
+      if (Math.random() > 0.85) setStockLevel(prev => Math.max(prev - 1, 12));
     }, 1000);
     return () => clearInterval(timer);
   }, []);
@@ -42,28 +44,40 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
 
   return (
     <div className="space-y-16 animate-fadeIn" dir="rtl">
-      {/* Hero Section with Countdown */}
+      {/* Hero Section with Countdown & Stock Bar */}
       <section className="relative group cursor-pointer" onClick={() => onPostClick(trendingPost)}>
         <div className="relative h-[450px] md:h-[650px] rounded-[40px] md:rounded-[60px] overflow-hidden shadow-2xl border border-white/5">
           <img src={trendingPost.image} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-1000" alt={trendingPost.title} />
           <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
           
-          <div className="absolute top-8 right-8 flex gap-2">
-            <div className="bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-black shadow-lg animate-pulse">
+          <div className="absolute top-8 right-8 flex flex-col gap-3">
+            <div className="bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-black shadow-lg animate-pulse flex items-center gap-2">
+              <span className="w-2 h-2 bg-white rounded-full animate-ping"></span>
               ينتهي في: {timeLeft.h}:{timeLeft.m}:{timeLeft.s}
             </div>
-            <div className="bg-white/10 backdrop-blur-md text-white px-4 py-2 rounded-xl text-xs font-black border border-white/20">
-              مخزون محدود 🔥
+            <div className="bg-white/10 backdrop-blur-md text-white p-3 rounded-2xl border border-white/20 min-w-[180px]">
+              <div className="flex justify-between mb-2">
+                 <span className="text-[10px] font-black uppercase">تم بيع {stockLevel}%</span>
+                 <span className="text-[10px] font-black uppercase text-red-400">مخزون محدود</span>
+              </div>
+              <div className="h-2 w-full bg-white/20 rounded-full overflow-hidden">
+                 <div className="h-full bg-gradient-to-r from-orange-400 to-red-600 transition-all duration-1000" style={{ width: `${stockLevel}%` }}></div>
+              </div>
             </div>
           </div>
 
           <div className="absolute bottom-10 right-8 left-8 md:bottom-16 md:right-16 md:left-16 text-white">
-            <span className="bg-orange-600 px-5 py-2 rounded-xl text-xs font-black uppercase mb-6 inline-block shadow-xl tracking-widest">همزة اليوم الحصرية 🔥</span>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="bg-orange-600 px-5 py-2 rounded-xl text-xs font-black uppercase shadow-xl tracking-widest">همزة اليوم الحصرية 🔥</span>
+              {trendingPost.marketPrice && (
+                 <span className="bg-emerald-600 px-4 py-2 rounded-xl text-[10px] font-black">وفر {trendingPost.marketPrice - (trendingPost.price || 0)} د.م</span>
+              )}
+            </div>
             <h1 className="text-3xl md:text-6xl font-black mb-6 leading-tight group-hover:text-emerald-400 transition-colors">{trendingPost.title}</h1>
             <div className="flex items-center gap-6">
               <p className="text-lg opacity-80 line-clamp-2 max-w-2xl font-bold hidden md:block">{trendingPost.excerpt}</p>
-              <div className="shrink-0 bg-white text-black p-4 rounded-3xl font-black text-center shadow-2xl">
-                <span className="text-xs block opacity-50 uppercase">السعر</span>
+              <div className="shrink-0 bg-white text-black p-4 rounded-3xl font-black text-center shadow-2xl scale-110">
+                <span className="text-xs block opacity-50 uppercase">السعر الآن</span>
                 <span className="text-2xl">{trendingPost.price} د.م</span>
               </div>
             </div>
@@ -71,7 +85,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
         </div>
       </section>
 
-      {/* Trust Badges Section */}
+      {/* Trust Badges */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
           { t: 'شحن سريع بالمغرب', d: '24-48 ساعة', i: '🚚' },
@@ -87,7 +101,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
         ))}
       </div>
 
-      {/* عجلة الحظ التفاعلية */}
+      {/* عجلة الحظ */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         <div 
           onClick={handleSpin}
@@ -131,7 +145,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
         </div>
       </div>
 
-      {/* أحدث العروض */}
+      {/* قائمة العروض */}
       <div className="space-y-10">
         <h2 className="text-3xl font-black flex items-center gap-4">
           <span className="w-3 h-10 bg-emerald-500 rounded-full"></span> أقوى الهميزات في المغرب
@@ -141,14 +155,14 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
             <div key={post.id} className="group cursor-pointer bg-white/5 rounded-[45px] overflow-hidden border border-white/5 hover:border-emerald-500/30 hover:shadow-2xl transition-all duration-500" onClick={() => onPostClick(post)}>
               <div className="relative h-64 overflow-hidden">
                 <img src={post.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={post.title} />
-                <div className="absolute top-4 left-4 flex gap-2">
-                   <span className="bg-emerald-600 text-white px-3 py-1 rounded-lg text-[9px] font-black uppercase">أصلي ✅</span>
-                </div>
-                {post.price && (
-                  <div className="absolute bottom-6 right-6 bg-emerald-600 px-4 py-2 rounded-xl font-black text-white shadow-xl">
-                    {post.price} د.م
+                {post.marketPrice && post.price && (
+                  <div className="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-lg text-[10px] font-black">
+                    -{Math.round((1 - post.price / post.marketPrice) * 100)}%
                   </div>
                 )}
+                <div className="absolute bottom-6 right-6 bg-emerald-600 px-4 py-2 rounded-xl font-black text-white shadow-xl">
+                  {post.price} د.م
+                </div>
               </div>
               <div className="p-8">
                 <h3 className="text-xl font-black mb-4 group-hover:text-emerald-500 transition-colors line-clamp-2">{post.title}</h3>

@@ -36,7 +36,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
 
   return (
     <div className="max-w-4xl mx-auto animate-fadeIn relative pb-32" dir="rtl">
-      {/* شريط القراءة العلوي */}
+      {/* شريط القراءة */}
       <div className="fixed top-0 left-0 h-2 bg-emerald-500 z-[200] transition-all duration-300 shadow-[0_0_15px_#10b981]" style={{ width: `${progress}%` }}></div>
       
       <button onClick={onBack} className={`mt-8 mb-12 flex items-center gap-2 font-black transition-all ${darkMode ? 'text-slate-500' : 'text-slate-400'} hover:text-emerald-500 group`}>
@@ -56,6 +56,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         </div>
       </div>
 
+      {/* الصورة الرئيسية مع عداد المشاهدة الحي */}
       <div className="relative rounded-[50px] overflow-hidden shadow-2xl mb-16 border-4 border-white/5">
         <img src={post.image} className="w-full h-[400px] md:h-[550px] object-cover" alt={post.title} />
         <div className="absolute bottom-6 left-6 bg-black/60 backdrop-blur-md p-4 rounded-2xl flex items-center gap-3">
@@ -64,32 +65,31 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         </div>
       </div>
 
-      {/* إعلان أدستيرا العلوي */}
+      {/* جدول مقارنة الأسعار - ميزة الأفلييت القوية */}
+      {post.marketPrice && post.price && (
+        <div className="mb-16 overflow-hidden rounded-[40px] border border-white/10 bg-white/5">
+          <div className="bg-emerald-600 p-6 text-center">
+             <h3 className="text-white font-black text-xl">تحليل السعر وتوفيرك اليوم 💸</h3>
+          </div>
+          <div className="grid grid-cols-2 divide-x divide-x-reverse divide-white/10">
+             <div className="p-8 text-center bg-red-500/5">
+                <span className="block text-slate-400 text-xs font-black mb-2 uppercase">ثمن السوق المحلي</span>
+                <span className="text-3xl font-black text-slate-500 line-through">{post.marketPrice} د.م</span>
+             </div>
+             <div className="p-8 text-center bg-emerald-500/10">
+                <span className="block text-emerald-500 text-xs font-black mb-2 uppercase">ثمن "همزة عبدو"</span>
+                <span className="text-4xl font-black text-emerald-500">{post.price} د.م</span>
+             </div>
+          </div>
+          <div className="p-6 bg-emerald-600/20 text-center">
+             <p className="font-black text-emerald-400">✅ وفرت الآن مبلغ {post.marketPrice - post.price} درهم مغربي!</p>
+          </div>
+        </div>
+      )}
+
+      {/* إعلان */}
       <div className="mb-12">
         <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
-      </div>
-
-      {/* لماذا هذا العرض؟ */}
-      <div className="mb-16 bg-white/5 p-10 rounded-[40px] border border-white/10">
-         <h3 className="text-2xl font-black mb-8 flex items-center gap-4">
-            <span className="w-10 h-1 bg-orange-500 rounded-full"></span> مميزات الهمزة
-         </h3>
-         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {[
-              { t: 'توفير حقيقي', d: 'أقل بنسبة 40% من السوق المحلي' },
-              { t: 'جودة مضمونة', d: 'نسخة أصلية تم اختبارها' },
-              { t: 'رابط مباشر', d: 'شراء آمن بدون وسيط' },
-              { t: 'توصيل لباب الدار', d: 'عبر Speedaf أو Amana' }
-            ].map((f, i) => (
-              <div key={i} className="flex gap-4 items-start">
-                 <span className="text-emerald-500 text-xl">✔</span>
-                 <div>
-                    <h4 className="font-black text-sm">{f.t}</h4>
-                    <p className="text-xs opacity-50 font-bold">{f.d}</p>
-                 </div>
-              </div>
-            ))}
-         </div>
       </div>
 
       {/* كود الخصم */}
@@ -117,15 +117,39 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         ))}
       </div>
 
-      {/* زر الشراء الثابت (Desktop) */}
+      {/* دليل الشراء الخطوة بخطوة */}
+      <div className="mb-20 bg-white/5 p-10 rounded-[50px] border border-white/10">
+         <h3 className="text-2xl font-black mb-10 flex items-center gap-4">
+            <span className="w-10 h-1 bg-orange-500 rounded-full"></span> كيفاش تطلب الهمزة؟ (3 خطوات)
+         </h3>
+         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              { n: '1', t: 'اضغط على زر الشراء', d: 'غادي يحولك الصفحة الرسمية للمنتج.' },
+              { n: '2', t: 'ضيف المنتج للسلة', d: 'استعمل كود الخصم باش تستافد من أقل ثمن.' },
+              { n: '3', t: 'أدخل معلومات الشحن', d: 'اختار Speedaf باش توصلك السلعة لدارك.' }
+            ].map((step, idx) => (
+              <div key={idx} className="relative p-6 bg-black/20 rounded-3xl border border-white/5">
+                 <span className="absolute -top-5 -right-5 w-12 h-12 bg-orange-600 rounded-2xl flex items-center justify-center font-black text-2xl shadow-xl">{step.n}</span>
+                 <h4 className="font-black text-lg mb-2 mt-4">{step.t}</h4>
+                 <p className="text-sm opacity-50 font-bold">{step.d}</p>
+              </div>
+            ))}
+         </div>
+      </div>
+
+      {/* زر الشراء الرئيسي */}
       {post.affiliateLink && (
         <div className="px-4 md:px-0 mb-20">
           <a 
             href={post.affiliateLink} target="_blank" rel="noopener noreferrer" 
-            className="block w-full text-center py-7 bg-orange-600 text-white rounded-[30px] font-black text-2xl shadow-xl hover:bg-orange-500 hover:-translate-y-1 transition-all flex items-center justify-center gap-4"
+            className="group relative block w-full text-center py-7 bg-orange-600 text-white rounded-[30px] font-black text-2xl shadow-xl hover:bg-orange-500 hover:-translate-y-1 transition-all overflow-hidden"
           >
-            <span className="text-3xl">🛍️</span> اطلب الآن قبل انتهاء الكمية
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            <span className="relative z-10 flex items-center justify-center gap-4">
+               <span className="text-3xl">🛍️</span> اطلب الآن قبل انتهاء الكمية
+            </span>
           </a>
+          <p className="text-center mt-4 text-xs font-bold opacity-40">دفع آمن وشحن مضمون لجميع المدن المغربية 🇲🇦</p>
         </div>
       )}
 
@@ -141,12 +165,12 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         </div>
       )}
       
-      {/* إعلان أدستيرا السفلي */}
+      {/* إعلان سفلي */}
       <div className="mt-12">
         <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
       </div>
 
-      {/* قسم التقييمات الوهمية للمصداقية */}
+      {/* تقييمات الزبائن */}
       <div className="mt-20 space-y-8">
          <h3 className="text-2xl font-black">آراء زبائننا في المغرب ⭐</h3>
          <div className="grid gap-6">

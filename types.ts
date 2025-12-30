@@ -23,6 +23,7 @@ export interface Article {
   isTrending?: boolean;
   isProduct?: boolean; 
   price?: number;
+  marketPrice?: number; // السعر الأصلي في السوق المحلي للمقارنة
 }
 
 export interface CartItem extends Article {

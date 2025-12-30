@@ -27,6 +27,7 @@ export const INITIAL_POSTS: Article[] = [
     isTrending: true,
     isProduct: true,
     price: 149,
+    marketPrice: 450,
     affiliateLink: 'https://temu.to/k/eg6h0ltmwzi',
     couponCode: 'TEMU2025'
   },
@@ -52,7 +53,8 @@ export const INITIAL_POSTS: Article[] = [
     author: 'عبدو ستور',
     isTrending: false,
     isProduct: true,
-    price: 399
+    price: 399,
+    marketPrice: 850
   },
   {
     id: 'gaming-mouse-pro',
@@ -74,7 +76,8 @@ export const INITIAL_POSTS: Article[] = [
     views: 8500,
     author: 'عبدو ستور',
     isProduct: true,
-    price: 189
+    price: 189,
+    marketPrice: 350
   },
   {
     id: 'temu-coupon-news',

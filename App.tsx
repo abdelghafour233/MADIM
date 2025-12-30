@@ -13,7 +13,6 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS, CITIES } from './constants.tsx';
 
-// الأكواد النهائية التي زودتني بها
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
 
 const INITIAL_SETTINGS: Settings = {
@@ -37,7 +36,7 @@ const App: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [notification, setNotification] = useState<{name: string, city: string} | null>(null);
+  const [notification, setNotification] = useState<{name: string, city: string, product: string, image: string} | null>(null);
   const [showExitPopup, setShowExitPopup] = useState(false);
 
   useEffect(() => {
@@ -60,13 +59,11 @@ const App: React.FC = () => {
     if (savedCart) setCart(JSON.parse(savedCart));
   }, []);
 
-  // ميزة الربح من النقرة الأولى (Smart Popunder)
   useEffect(() => {
     const handleFirstClick = () => {
       if (!localStorage.getItem('popunder_done')) {
         window.open(settings.directLinkCode, '_blank');
         localStorage.setItem('popunder_done', 'true');
-        // إعادة التفعيل بعد 30 دقيقة لزيادة الربح
         setTimeout(() => localStorage.removeItem('popunder_done'), 1800000);
       }
     };
@@ -74,7 +71,6 @@ const App: React.FC = () => {
     return () => document.removeEventListener('click', handleFirstClick);
   }, [settings.directLinkCode]);
 
-  // اكتشاف محاولة الخروج
   useEffect(() => {
     const handleMouseLeave = (e: MouseEvent) => {
       if (e.clientY <= 0 && !localStorage.getItem('exit_popup_shown_v2')) {
@@ -86,19 +82,39 @@ const App: React.FC = () => {
     return () => document.removeEventListener('mouseleave', handleMouseLeave);
   }, []);
 
-  // إشعارات وهمية للمصداقية
+  // إشعارات المبيعات الحية المتطورة
   useEffect(() => {
-    const names = ['سفيان', 'ياسين', 'فاطمة', 'إدريس', 'خديجة', 'أمين', 'مريم', 'يوسف'];
-    const interval = setInterval(() => {
+    const names = ['سفيان', 'ياسين', 'فاطمة الزهراء', 'إدريس', 'خديجة', 'أمين', 'مريم', 'يوسف', 'حمزة', 'سارة', 'عبد الله', 'ليلى'];
+    
+    const triggerNotification = () => {
+      if (posts.length === 0) return;
+      
+      const productPosts = posts.filter(p => p.isProduct || p.price);
+      const randomProduct = productPosts[Math.floor(Math.random() * productPosts.length)] || posts[0];
       const name = names[Math.floor(Math.random() * names.length)];
       const city = CITIES[Math.floor(Math.random() * CITIES.length)];
-      setNotification({ name, city });
-      setTimeout(() => setNotification(null), 5000);
-    }, 20000);
-    return () => clearInterval(interval);
-  }, []);
+      
+      setNotification({ 
+        name, 
+        city, 
+        product: randomProduct.title || randomProduct.name || '', 
+        image: randomProduct.image 
+      });
 
-  // حقن كود Social Bar
+      // إخفاء الإشعار بعد 6 ثوانٍ
+      setTimeout(() => setNotification(null), 6000);
+    };
+
+    // البدء بعد 10 ثوانٍ من دخول الموقع، ثم تكرار كل 25 ثانية
+    const initialTimeout = setTimeout(() => {
+      triggerNotification();
+      const interval = setInterval(triggerNotification, 25000);
+      return () => clearInterval(interval);
+    }, 10000);
+
+    return () => clearTimeout(initialTimeout);
+  }, [posts]);
+
   useEffect(() => {
     if (settings.globalAdsCode) {
       const scriptId = 'adsterra-social-bar-final';
@@ -183,7 +199,7 @@ const App: React.FC = () => {
         {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={darkMode} siteName={settings.siteName} />}
       </main>
 
-      {/* نافذة الخروج المنبثقة */}
+      {/* نافذة الخروج */}
       {showExitPopup && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowExitPopup(false)}></div>
@@ -199,19 +215,30 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* إشعارات الأرباح */}
+      {/* إشعارات المبيعات الحية المتطورة */}
       {notification && (
-        <div className="fixed bottom-32 left-8 z-[200] animate-slideLeft bg-white/10 backdrop-blur-xl border border-white/20 p-4 rounded-2xl flex items-center gap-4 shadow-2xl">
-          <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white">✔</div>
-          <div>
-            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">تأكيد الجائزة</p>
-            <p className="text-xs font-bold text-white">{notification.name} من {notification.city} ربح الآن!</p>
+        <div className="fixed bottom-24 right-4 md:bottom-32 md:right-8 z-[200] animate-slideLeft">
+          <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 rounded-3xl flex items-center gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] min-w-[300px] max-w-sm">
+            <div className="relative shrink-0">
+              <img src={notification.image} className="w-16 h-16 rounded-2xl object-cover border border-white/10" alt="" />
+              <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-[10px] shadow-lg">✔</div>
+            </div>
+            <div className="flex-1 text-right" dir="rtl">
+              <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">اشترى الآن! 🛍️</p>
+              <p className="text-xs font-black text-white leading-tight mb-1">
+                {notification.name} من <span className="text-emerald-400">{notification.city}</span>
+              </p>
+              <p className="text-[10px] text-white/60 font-bold truncate">
+                اشترى: {notification.product}
+              </p>
+              <p className="text-[8px] text-white/40 mt-1 font-bold">منذ دقيقتين • تأكيد الطلب ✅</p>
+            </div>
           </div>
         </div>
       )}
 
       {settings.directLinkCode && (
-        <a href={settings.directLinkCode} target="_blank" className="fixed bottom-24 right-8 z-[90] w-14 h-14 bg-orange-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl animate-bounce hover:scale-110 shadow-orange-600/50">🎁</a>
+        <a href={settings.directLinkCode} target="_blank" className="fixed bottom-24 left-8 z-[90] w-14 h-14 bg-orange-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl animate-bounce hover:scale-110 shadow-orange-600/50">🎁</a>
       )}
 
       {isCartOpen && <Cart items={cart} onRemove={removeFromCart} onUpdateQuantity={updateQuantity} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} />}
