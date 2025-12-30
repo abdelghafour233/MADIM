@@ -13,6 +13,14 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS, CITIES } from './constants.tsx';
 
+const CURRENT_VERSION = '1.0.2'; // تغيير هذا الرقم عند تحديث المنتجات في الكود يدوياً
+const STORAGE_KEYS = {
+  POSTS: 'abdou_shop_posts_v2',
+  SETTINGS: 'abdou_shop_settings_v2',
+  CART: 'abdou_shop_cart_v2',
+  VERSION: 'abdou_shop_version'
+};
+
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
 
 const INITIAL_SETTINGS: Settings = {
@@ -40,20 +48,44 @@ const App: React.FC = () => {
   const [showExitPopup, setShowExitPopup] = useState(false);
 
   useEffect(() => {
-    const savedPosts = localStorage.getItem('abdou_shop_posts_final_v1');
-    const savedSettings = localStorage.getItem('abdou_shop_settings_final_v1');
-    const savedCart = localStorage.getItem('abdou_shop_cart_final_v1');
+    // نظام فحص النسخة لضمان وصول التحديثات
+    const lastVersion = localStorage.getItem(STORAGE_KEYS.VERSION);
+    const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
+    const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+    const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
-    if (savedPosts) setPosts(JSON.parse(savedPosts));
-    else {
-      setPosts(INITIAL_POSTS);
-      localStorage.setItem('abdou_shop_posts_final_v1', JSON.stringify(INITIAL_POSTS));
-    }
+    // إذا كان الإصدار قديماً، نقوم بدمج المنتجات الجديدة أو إعادة التعيين
+    if (lastVersion !== CURRENT_VERSION) {
+      // إذا كان هناك بوستات قديمة، ندمج الجديد معها (الأولوية للجديد في الكود إذا تشابهت الـ ID)
+      let finalPosts = INITIAL_POSTS;
+      if (savedPosts) {
+        const oldPosts = JSON.parse(savedPosts) as Article[];
+        const newIds = new Set(INITIAL_POSTS.map(p => p.id));
+        const userCustomPosts = oldPosts.filter(p => !newIds.has(p.id));
+        finalPosts = [...INITIAL_POSTS, ...userCustomPosts];
+      }
+      
+      setPosts(finalPosts);
+      localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(finalPosts));
+      localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
+      
+      // لا نحذف الإعدادات لكي لا يفقد العميل كود الإعلانات، ولكن نحدث اسم الموقع فقط
+      if (savedSettings) {
+        const oldSettings = JSON.parse(savedSettings);
+        const updatedSettings = { ...oldSettings, siteName: INITIAL_SETTINGS.siteName };
+        setSettings(updatedSettings);
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(updatedSettings));
+      } else {
+        setSettings(INITIAL_SETTINGS);
+        localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
+      }
+    } else {
+      // إذا كانت النسخة مطابقة، نحمل من الذاكرة العادية
+      if (savedPosts) setPosts(JSON.parse(savedPosts));
+      else setPosts(INITIAL_POSTS);
 
-    if (savedSettings) setSettings(JSON.parse(savedSettings));
-    else {
-      setSettings(INITIAL_SETTINGS);
-      localStorage.setItem('abdou_shop_settings_final_v1', JSON.stringify(INITIAL_SETTINGS));
+      if (savedSettings) setSettings(JSON.parse(savedSettings));
+      else setSettings(INITIAL_SETTINGS);
     }
 
     if (savedCart) setCart(JSON.parse(savedCart));
@@ -129,7 +161,7 @@ const App: React.FC = () => {
   const handlePostClick = (p: Article) => {
     const updated = posts.map(item => item.id === p.id ? { ...item, views: (item.views || 0) + 1 } : item);
     setPosts(updated);
-    localStorage.setItem('abdou_shop_posts_final_v1', JSON.stringify(updated));
+    localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(updated));
     setSelectedPost(p);
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo(0, 0);
@@ -138,19 +170,30 @@ const App: React.FC = () => {
   const addToCart = (product: Article) => {
     window.open(settings.directLinkCode, '_blank');
     setCart(prev => {
-      const exists = prev.find(item => item.id === product.id);
-      if (exists) {
-        return prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
-      }
-      return [...prev, { ...product, quantity: 1 }];
+      const updated = prev.find(item => item.id === product.id)
+        ? prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
+        : [...prev, { ...product, quantity: 1 }];
+      localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(updated));
+      return updated;
     });
     setIsCartOpen(true);
   };
 
-  const removeFromCart = (id: string) => setCart(prev => prev.filter(i => i.id !== id));
+  const removeFromCart = (id: string) => {
+    setCart(prev => {
+      const updated = prev.filter(i => i.id !== id);
+      localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const updateQuantity = (id: string, q: number) => {
     if (q < 1) return removeFromCart(id);
-    setCart(prev => prev.map(item => item.id === id ? { ...item, quantity: q } : item));
+    setCart(prev => {
+      const updated = prev.map(item => item.id === id ? { ...item, quantity: q } : item);
+      localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const cartTotal = cart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
@@ -197,19 +240,18 @@ const App: React.FC = () => {
         {view === 'checkout' && <Checkout total={cartTotal} onPlaceOrder={(data) => {
           const msg = `طلب جديد من ${data.name}\nالمدينة: ${data.city}\nالمجموع: ${cartTotal} د.م.\nالمنتجات:\n${cart.map(i => `- ${i.name || i.title}`).join('\n')}`;
           window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(msg)}`);
-          setCart([]); setView('home'); alert('تم تسجيل طلبك!');
+          setCart([]); localStorage.removeItem(STORAGE_KEYS.CART); setView('home'); alert('تم تسجيل طلبك!');
         }} />}
-        {view === 'admin' && (!isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : <AdminDashboard posts={posts} settings={settings} onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_shop_posts_final_v1', JSON.stringify(newPosts));}} onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_shop_settings_final_v1', JSON.stringify(s));}} onLogout={() => setIsAuth(false)} darkMode={darkMode} />)}
+        {view === 'admin' && (!isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : <AdminDashboard posts={posts} settings={settings} onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(newPosts));}} onUpdateSettings={(s) => {setSettings(s); localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(s));}} onLogout={() => setIsAuth(false)} darkMode={darkMode} />)}
         {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={darkMode} siteName={settings.siteName} />}
       </main>
 
-      {/* شريط المشاركة العائم - الجانب (Desktop) */}
+      {/* Social Bars and Popups */}
       <div className="fixed left-0 top-1/2 -translate-y-1/2 z-[150] hidden md:flex flex-col gap-2 p-2 bg-white/10 backdrop-blur-md rounded-r-2xl border border-white/10 shadow-2xl">
         <button onClick={() => shareSite('wa')} className="w-12 h-12 bg-[#25D366] text-white rounded-xl flex items-center justify-center text-xl hover:translate-x-2 transition-transform shadow-lg">W</button>
         <button onClick={() => shareSite('fb')} className="w-12 h-12 bg-[#1877F2] text-white rounded-xl flex items-center justify-center text-xl hover:translate-x-2 transition-transform shadow-lg">F</button>
       </div>
 
-      {/* شريط المشاركة العائم - الأسفل (Mobile) */}
       <div className="fixed bottom-0 left-0 right-0 z-[150] md:hidden bg-white/10 backdrop-blur-2xl border-t border-white/10 flex items-center justify-around p-3 animate-slideUp">
          <button onClick={() => shareSite('wa')} className="flex flex-col items-center gap-1">
             <span className="w-10 h-10 bg-[#25D366] text-white rounded-full flex items-center justify-center text-lg shadow-lg">W</span>
@@ -226,7 +268,6 @@ const App: React.FC = () => {
          </button>
       </div>
 
-      {/* نافذة الخروج */}
       {showExitPopup && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowExitPopup(false)}></div>
@@ -242,7 +283,6 @@ const App: React.FC = () => {
         </div>
       )}
 
-      {/* إشعارات المبيعات الحية المتطورة */}
       {notification && (
         <div className="fixed bottom-24 right-4 md:bottom-32 md:right-8 z-[200] animate-slideLeft">
           <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 rounded-3xl flex items-center gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] min-w-[300px] max-w-sm">
@@ -262,10 +302,6 @@ const App: React.FC = () => {
             </div>
           </div>
         </div>
-      )}
-
-      {settings.directLinkCode && (
-        <a href={settings.directLinkCode} target="_blank" className="fixed bottom-24 left-8 z-[90] w-14 h-14 bg-orange-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl animate-bounce hover:scale-110 shadow-orange-600/50">🎁</a>
       )}
 
       {isCartOpen && <Cart items={cart} onRemove={removeFromCart} onUpdateQuantity={updateQuantity} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} />}
