@@ -13,7 +13,8 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '1.9.7-FIX-LINK'; 
+// رفع الإصدار لكسر الـ Cache في المتصفحات
+const CURRENT_VERSION = '2.0.0-FIX-CACHE'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v40_posts', 
   SETTINGS: 'abdou_v40_settings',
@@ -70,8 +71,9 @@ const App: React.FC = () => {
       currentSettings = { ...INITIAL_SETTINGS, ...JSON.parse(savedSettings) };
     }
 
-    // إذا تغير الإصدار، نقوم بتحديث المنتجات من INITIAL_POSTS لضمان وصول الروابط الجديدة
+    // إذا تغير الإصدار، نقوم بتحديث المنتجات إجبارياً
     if (lastVersion !== CURRENT_VERSION) {
+      console.log('Detected version change, updating local data...');
       setPosts(INITIAL_POSTS);
       setSettings(currentSettings);
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
@@ -94,7 +96,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-v195-loader';
+      const scriptId = 'adsterra-v200-loader';
       const old = document.getElementById(scriptId);
       if (old) old.remove();
       
