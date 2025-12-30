@@ -42,7 +42,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
               <span className="text-6xl font-black">{product.price?.toLocaleString()}</span>
               <span className="text-2xl font-black opacity-80">درهم مغربي</span>
             </div>
-            <p className="mt-4 text-sm font-bold bg-white/20 inline-block px-4 py-2 rounded-xl">🚚 شحن مجاني - عرض تيمو الأصلي</p>
+            <p className="mt-4 text-sm font-bold bg-white/20 inline-block px-4 py-2 rounded-xl">🚚 توصيل سريع - الدفع عند الاستلام</p>
           </div>
 
           <div className={`text-xl leading-[1.8] font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -60,7 +60,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
                 rel="noopener noreferrer"
                 className="w-full bg-orange-600 text-white py-6 rounded-3xl font-black text-2xl shadow-2xl shadow-orange-600/30 hover:bg-orange-700 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-4"
               >
-                <span>🛍️</span> اطلب الآن من تيمو
+                <span>🛍️</span> اطلب المنتج الآن من المتجر
               </a>
             ) : (
               <button 
@@ -72,7 +72,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
             )}
             
             <button 
-              onClick={() => window.open(`https://wa.me/212649075664?text=${encodeURIComponent('أريد استفسار حول منتج: ' + product.name)}`)}
+              onClick={() => window.open(`https://wa.me/212649075664?text=${encodeURIComponent('أريد استفسار حول منتج: ' + (product.name || product.title))}`)}
               className="w-full bg-slate-900 text-white py-6 rounded-3xl font-black text-2xl shadow-2xl hover:bg-black hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-4"
             >
               <span>💬</span> تواصل معنا واتساب
