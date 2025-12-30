@@ -13,13 +13,13 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-// تم تحديث الإصدار والمفاتيح لكسر الكاش بشكل نهائي
-const CURRENT_VERSION = '1.2.3'; 
+// تحديث الإصدار والمفاتيح لضمان تحميل الأكواد الجديدة
+const CURRENT_VERSION = '1.2.4'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_premium_posts_v7', 
-  SETTINGS: 'abdou_premium_settings_v7',
-  CART: 'abdou_premium_cart_v7',
-  VERSION: 'abdou_premium_version_v7'
+  POSTS: 'abdou_stable_posts_v8', 
+  SETTINGS: 'abdou_stable_settings_v8',
+  CART: 'abdou_stable_cart_v8',
+  VERSION: 'abdou_stable_version_v8'
 };
 
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
@@ -31,7 +31,7 @@ const INITIAL_SETTINGS: Settings = {
   globalAdsCode: DEFAULT_GLOBAL_ADS,      
   directLinkCode: 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d',
   dashboardPassword: '1234',
-  totalVisits: 3200,
+  totalVisits: 3500,
   whatsappNumber: '212649075664'
 };
 
@@ -68,13 +68,13 @@ const App: React.FC = () => {
     }
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    setTimeout(() => setIsLoading(false), 800);
+    setTimeout(() => setIsLoading(false), 700);
   }, []);
 
-  // إضافة الجزء المفقود لحقن أكواد Adsterra تلقائياً
+  // تشغيل أكواد Adsterra تلقائياً عند تحميل الموقع
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-premium-v3';
+      const scriptId = 'adsterra-inject-v124';
       const old = document.getElementById(scriptId);
       if (old) old.remove();
       
@@ -97,6 +97,7 @@ const App: React.FC = () => {
   };
 
   const addToCart = (product: Article) => {
+    // تشغيل الـ Direct Link عند الضغط على إضافة للسلة
     if (settings.directLinkCode) window.open(settings.directLinkCode, '_blank');
     setCart(prev => {
       const updated = prev.find(item => item.id === product.id)
