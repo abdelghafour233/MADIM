@@ -25,7 +25,7 @@ const INITIAL_DATA: Article[] = [
     title: 'أعقاب الحرب العالمية الثالثة: سيناريوهات تقنية وجيوسياسية لمستقبل البشرية',
     excerpt: 'تحليل مستقبلي لما قد يؤول إليه العالم تقنياً وبيئياً في حال نشوب صراع عالمي وتأثير ذلك على استقرار القارة الأفريقية.',
     content: `تعد فرضية الحرب العالمية الثالثة من أكثر المواضيع إثارة للقلق والتحليل. في هذا المقال، نستعرض كيف يمكن للتكنولوجيا أن تلعب دوراً مزدوجاً كأداة للدمار ووسيلة لإعادة الإعمار. أعقاب هذه الحرب لن تكون مجرد دمار مادي، بل ستشهد تحولاً جذرياً في سلاسل الإمداد، والاعتماد الكلي على الطاقة المتجددة، وظهور أنظمة ذكاء اصطناعي لإدارة الموارد. المغرب بموقعه الاستراتيجي قد يلعب دوراً محورياً كجسر للسلام أو كمركز لإعادة الربط القاري.`,
-    image: 'https://images.unsplash.com/photo-1464802686167-b939a6910659?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH,
     date: '30 مارس 2025',
     views: 15400,
@@ -48,7 +48,7 @@ const INITIAL_DATA: Article[] = [
     title: 'الدار البيضاء 2025: كيف تتحول العاصمة الاقتصادية إلى مدينة ذكية؟',
     excerpt: 'استعراض للمشاريع الكبرى التي تغير وجه كازابلانكا، من النقل الذكي إلى المساحات الخضراء الرقمية.',
     content: `تشهد مدينة الدار البيضاء تحولات هيكلية كبرى تهدف إلى جعلها مدينة ذكية بامتياز، من خلال رقمنة الخدمات العمومية وتطوير شبكة نقل حديثة وصديقة للبيئة. مشاريع الترامواي والحافلات عالية الجودة تساهم في تقليل الازدحام وتحسين جودة الحياة للسكان.`,
-    image: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1541410965313-d53b3c16ef17?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '27 مارس 2025',
     views: 45600,
@@ -59,7 +59,7 @@ const INITIAL_DATA: Article[] = [
     title: 'محطة نور ورزازات: كيف يقود المغرب العالم في إنتاج الطاقة الشمسية؟',
     excerpt: 'رحلة إلى أكبر مجمع للطاقة الشمسية في العالم وكيف يساهم في تأمين السيادة الطاقية للمملكة.',
     content: `يعد مشروع "نور" في ورزازات نموذجاً عالمياً للنجاح في مجال الطاقات المتجددة، حيث يضع المغرب في صدارة الدول المصدرة للطاقة النظيفة. يهدف المغرب لتغطية أكثر من 52% من احتياجاته الكهربائية من مصادر نظيفة بحلول 2030.`,
-    image: 'https://images.unsplash.com/photo-1509391366360-fe5bb58583bb?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH,
     date: '26 مارس 2025',
     views: 31200,
@@ -70,7 +70,7 @@ const INITIAL_DATA: Article[] = [
     title: 'مراكش 2025: دليل المسافر لاكتشاف المدينة الحمراء بين الأصالة والمعاصرة',
     excerpt: 'نصائح حصرية لزيارة مراكش، أفضل الرياضات، المطاعم الخفية، والتجارب الثقافية التي لا تنسى.',
     content: `تظل مراكش جوهرة السياحة المغربية، حيث تمزج بين التاريخ العريق والخدمات السياحية العصرية، مما يجعلها وجهة عالمية لا غنى عنها. ننصح السياح بزيارة المتاحف الفنية المعاصرة بجانب ساحة جامع الفنا التاريخية.`,
-    image: 'https://images.unsplash.com/photo-1548013146-72479768bbaa?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1539650116574-8efeb43e2750?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '25 مارس 2025',
     views: 18900,
@@ -81,7 +81,7 @@ const INITIAL_DATA: Article[] = [
     title: 'الذكاء الاصطناعي في قطاع الصحة بالمغرب: ثورة التشخيص عن بعد',
     excerpt: 'كيف تساهم التقنيات الحديثة في تحسين جودة العلاجات وتقريب الخدمات الصحية من المناطق النائية.',
     content: `بدأت المستشفيات المغربية في تبني تقنيات الذكاء الاصطناعي لتحسين دقة التشخيص وتدبير الملفات الطبية، مما يمثل قفزة نوعية في الرعاية الصحية خاصة في المناطق القروية التي تعاني من نقص الأطباء المتخصصين.`,
-    image: 'https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH,
     date: '24 مارس 2025',
     views: 12400,
@@ -92,7 +92,7 @@ const INITIAL_DATA: Article[] = [
     title: 'دليل التغطية الصحية AMO في المغرب: كيف تستفيد من التعويضات؟',
     excerpt: 'كل ما تحتاج معرفته عن نظام التأمين الإجباري عن المرض وكيفية تسجيل أفراد أسرتك.',
     content: `يعد تعميم التغطية الصحية بالمغرب مشروعاً مجتمعياً ضخماً. في هذا المقال نوضح الخطوات العملية للاستفادة من خدمات الضمان الاجتماعي وتتبع ملفات التعويض عن المرض عبر البوابة الإلكترونية.`,
-    image: 'https://images.unsplash.com/photo-1584432810601-6c7f27d2362b?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1505751172107-5972297c3377?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '23 مارس 2025',
     views: 56700,
@@ -103,7 +103,7 @@ const INITIAL_DATA: Article[] = [
     title: 'أفضل طرق الربح من الإنترنت في المغرب 2025: دليل شامل للمبتدئين',
     excerpt: 'اكتشف كيف يمكنك تحقيق دخل إضافي بالدرهم من خلال العمل الحر والتجارة الإلكترونية.',
     content: `أصبح العمل عبر الإنترنت خياراً واقعياً للشباب المغربي، من خلال التجارة الإلكترونية بنظام COD، البرمجة، أو صناعة المحتوى. المفتاح هو الاستمرارية وتعلم مهارات مطلوبة عالمياً.`,
-    image: 'https://images.unsplash.com/photo-1518186239751-2477cf795151?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1553729459-efe14ef6055d?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH,
     date: '22 مارس 2025',
     views: 84300,
@@ -125,7 +125,7 @@ const INITIAL_DATA: Article[] = [
     title: 'تعويم الدرهم المغربي في 2025: هل تنجح المملكة في تحقيق التوازن المالي؟',
     excerpt: 'دراسة اقتصادية حول مسار مرونة سعر صرف الدرهم وتأثيراته على القدرة الشرائية.',
     content: `يواصل المغرب نهجه التدريجي في تعويم العملة الوطنية، وهو إجراء يهدف إلى تعزيز تنافسية الاقتصاد الوطني وجذب الاستثمارات الأجنبية، مع مراقبة صارمة لمعدلات التضخم.`,
-    image: 'https://images.unsplash.com/photo-1611974717537-b76503c2678f?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1580519542036-c47de6196ba5?auto=format&fit=crop&q=80&w=1200',
     category: Category.MOROCCO_NEWS,
     date: '20 مارس 2025',
     views: 42300,
@@ -268,7 +268,7 @@ const INITIAL_DATA: Article[] = [
     title: 'الصحة النفسية في عصر الشاشات: كيف تحافظ على هدوئك الرقمي؟',
     excerpt: 'نصائح عملية للتخلص من إدمان الهاتف والتعامل مع ضغوط منصات التواصل الاجتماعي.',
     content: `الاستخدام المفرط للهواتف يؤدي للقلق وضعف التركيز. في هذا المقال، نقدم تقنيات بسيطة مثل "الصيام الرقمي" لتجديد الطاقة العقلية والحفاظ على التوازن النفسي.`,
-    image: 'https://images.unsplash.com/photo-1520333789090-1afc82db536a?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1499209974431-9dac3adaf471?auto=format&fit=crop&q=80&w=1200',
     category: Category.SELF_DEV,
     date: '07 مارس 2025',
     views: 18400,
@@ -321,31 +321,33 @@ const App: React.FC = () => {
   const [cookieConsent, setCookieConsent] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // الإصدار v7.0 يفرض تحديثاً جذرياً لمسح كافة الروابط القديمة من المتصفح
-  const DATA_VERSION = "v7.0_total_refresh"; 
+  // الإصدار v9.0 يضمن مسح الكاش القديم وتحديث كافة الروابط (بما في ذلك صورة مراكش)
+  const DATA_VERSION = "v9.0_marrakech_fix"; 
 
   useEffect(() => {
-    // استخدام مفاتيح تخزين جديدة (v7) لتجاوز أي تعليق في الـ Cache
-    const savedSettings = localStorage.getItem('abdou_settings_v7');
+    // استخدام مفاتيح تخزين جديدة للإصدار 9 لضمان المزامنة التامة
+    const savedSettings = localStorage.getItem('abdou_settings_v9');
     if (savedSettings) setSettings(JSON.parse(savedSettings));
 
-    const savedCart = localStorage.getItem('abdou_cart_v7');
+    const savedCart = localStorage.getItem('abdou_cart_v9');
     if (savedCart) setCart(JSON.parse(savedCart));
 
-    const consent = localStorage.getItem('abdou_cookie_consent_v7');
+    const consent = localStorage.getItem('abdou_cookie_consent_v9');
     if (consent) setCookieConsent(true);
 
-    const savedPostsRaw = localStorage.getItem('abdou_blog_v7');
-    const savedVersion = localStorage.getItem('abdou_data_version_v7');
+    const savedPostsRaw = localStorage.getItem('abdou_blog_v9');
+    const savedVersion = localStorage.getItem('abdou_data_version_v9');
     
     if (savedVersion !== DATA_VERSION) {
-      // تحديث قسري: مسح كل شيء وتحميل الـ 26 مقالاً بروابطها الجديدة
+      // تحديث جذري للبيانات
       setPosts(INITIAL_DATA);
-      localStorage.setItem('abdou_blog_v7', JSON.stringify(INITIAL_DATA));
-      localStorage.setItem('abdou_data_version_v7', DATA_VERSION);
-      // تنظيف النسخ القديمة لضمان الأداء
-      localStorage.removeItem('abdou_blog_v6');
-      localStorage.removeItem('abdou_data_version_v6');
+      localStorage.setItem('abdou_blog_v9', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_data_version_v9', DATA_VERSION);
+      
+      // تنظيف إصدارات v8 وما قبلها
+      localStorage.removeItem('abdou_blog_v8');
+      localStorage.removeItem('abdou_data_version_v8');
+      localStorage.removeItem('abdou_blog_v7');
     } else {
       setPosts(savedPostsRaw ? JSON.parse(savedPostsRaw) : INITIAL_DATA);
     }
@@ -356,7 +358,7 @@ const App: React.FC = () => {
       item.id === p.id ? { ...item, views: (item.views || 0) + 1 } : item
     );
     setPosts(updatedPosts);
-    localStorage.setItem('abdou_blog_v7', JSON.stringify(updatedPosts));
+    localStorage.setItem('abdou_blog_v9', JSON.stringify(updatedPosts));
     setSelectedItem({ ...p, views: (p.views || 0) + 1 });
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo(0, 0);
@@ -406,8 +408,8 @@ const App: React.FC = () => {
           <AdminDashboard 
             posts={posts} 
             settings={settings}
-            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v7', JSON.stringify(newPosts));}}
-            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v7', JSON.stringify(s));}}
+            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v9', JSON.stringify(newPosts));}}
+            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v9', JSON.stringify(s));}}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
@@ -445,7 +447,7 @@ const App: React.FC = () => {
         <div className="fixed bottom-0 left-0 right-0 z-[300] bg-emerald-600 text-white p-4 flex flex-col md:flex-row items-center justify-between gap-4 animate-fadeIn">
           <p className="text-sm font-bold">نستخدم ملفات تعريف الارتباط لضمان حصولك على أفضل تجربة على موقعنا.</p>
           <button 
-            onClick={() => {setCookieConsent(true); localStorage.setItem('abdou_cookie_consent_v7', 'true');}}
+            onClick={() => {setCookieConsent(true); localStorage.setItem('abdou_cookie_consent_v9', 'true');}}
             className="px-8 py-2 bg-white text-emerald-600 rounded-xl font-black text-sm"
           >أوافق</button>
         </div>
