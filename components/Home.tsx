@@ -9,121 +9,67 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true }) => {
-  if (posts.length === 0) {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center animate-fadeIn px-4">
-        <div className="w-24 h-24 bg-emerald-600/10 rounded-full flex items-center justify-center text-5xl mb-8 animate-bounce">✨</div>
-        <h2 className="text-3xl md:text-5xl font-black mb-4">جاري التحميل...</h2>
-      </div>
-    );
-  }
-
   const trendingPost = posts.find(p => p.isTrending) || posts[0];
-  const regularPosts = posts.filter(p => p.id !== trendingPost.id);
-  const techPosts = posts.filter(p => p.category === Category.TECH);
-  const selfDevPosts = posts.filter(p => p.category === Category.SELF_DEV);
-
-  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=60&w=800';
-  };
+  const deals = posts.filter(p => p.id !== trendingPost.id);
 
   return (
-    <div className="space-y-16 md:space-y-24 animate-fadeIn">
-      {/* Hero Section */}
+    <div className="space-y-20 animate-fadeIn" dir="rtl">
+      {/* Hero Section - المميز */}
       <section className="relative group cursor-pointer" onClick={() => onPostClick(trendingPost)}>
-        <div className="relative h-[450px] sm:h-[600px] md:h-[700px] rounded-[30px] md:rounded-[50px] overflow-hidden shadow-2xl">
-          <img 
-            src={trendingPost.image} 
-            onError={handleImgError}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000" 
-            alt={trendingPost.title}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-black/30 to-transparent"></div>
-          
-          <div className="absolute bottom-6 right-4 left-4 md:bottom-12 md:right-16 md:left-16 text-white">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="bg-red-600 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase animate-pulse">ترند الآن</span>
-              <span className="text-white/70 font-bold text-xs">{trendingPost.category}</span>
-            </div>
-            <h1 className="text-2xl sm:text-4xl md:text-6xl font-black mb-4 leading-tight max-w-5xl group-hover:text-emerald-400 transition-colors">
-              {trendingPost.title}
-            </h1>
-            <p className="text-slate-300 text-sm md:text-xl max-w-3xl line-clamp-2 font-medium opacity-80 leading-relaxed hidden sm:block">
-              {trendingPost.excerpt}
-            </p>
+        <div className="relative h-[500px] md:h-[650px] rounded-[50px] overflow-hidden shadow-2xl">
+          <img src={trendingPost.image} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-1000" alt={trendingPost.title} />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0b] via-black/20 to-transparent"></div>
+          <div className="absolute bottom-12 right-12 left-12 text-white">
+            <span className="bg-emerald-600 px-5 py-2 rounded-xl text-xs font-black uppercase mb-6 inline-block shadow-xl">صفقة اليوم 🔥</span>
+            <h1 className="text-3xl md:text-6xl font-black mb-6 leading-tight group-hover:text-emerald-400 transition-colors">{trendingPost.title}</h1>
+            <p className="text-lg opacity-80 line-clamp-2 max-w-3xl font-bold">{trendingPost.excerpt}</p>
           </div>
         </div>
       </section>
 
-      {/* أقسام سريعة */}
-      <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-        {Object.values(Category).map((cat, i) => (
-          <button key={i} className={`px-8 py-4 rounded-2xl font-black text-xs whitespace-nowrap transition-all border ${darkMode ? 'bg-white/5 border-white/5 hover:bg-emerald-600/20 text-white' : 'bg-white shadow-sm border-slate-100 text-slate-700 hover:bg-slate-50'}`}>
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* شبكة المقالات الرئيسية */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-        <div className="lg:col-span-2 space-y-10">
-          <div className="flex items-center justify-between">
-             <h2 className="text-2xl md:text-3xl font-black flex items-center gap-3">
-               <span className="w-10 h-1 bg-emerald-500 rounded-full"></span> آخر المستجدات
-             </h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-            {regularPosts.slice(0, 4).map(post => (
-              <div key={post.id} className="group cursor-pointer" onClick={() => onPostClick(post)}>
-                <div className="relative h-52 sm:h-64 rounded-[30px] overflow-hidden mb-5 shadow-lg">
-                  <img 
-                    src={post.image} 
-                    onError={handleImgError}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                    alt={post.title} 
-                  />
-                  <div className="absolute top-4 left-4 bg-emerald-600 px-3 py-1 rounded-lg text-[9px] font-black text-white uppercase tracking-tighter shadow-xl">
-                    {post.category}
-                  </div>
-                </div>
-                <h3 className="text-lg md:text-xl font-black mb-3 leading-snug group-hover:text-emerald-500 transition-colors">{post.title}</h3>
-                <p className="text-xs line-clamp-2 opacity-60 font-medium leading-relaxed">{post.excerpt}</p>
-              </div>
-            ))}
+      {/* قسم الكوبونات السريع */}
+      <div className="bg-orange-500/10 border border-orange-500/20 p-8 rounded-[40px] flex items-center justify-between flex-wrap gap-6">
+        <div className="flex items-center gap-4">
+          <span className="text-4xl">🏷️</span>
+          <div>
+            <h3 className="text-xl font-black text-orange-500">كوبونات تيمو الحصرية</h3>
+            <p className="text-sm font-bold opacity-60">محدثة يومياً لمتابعي عبدو ويب</p>
           </div>
         </div>
+        <div className="flex gap-3">
+          {['epm88', 'epm99', 'maroc25'].map(code => (
+            <div key={code} className="bg-white dark:bg-slate-900 px-6 py-3 rounded-2xl border border-orange-500/30 font-mono font-black text-orange-500 shadow-sm">
+              {code}
+            </div>
+          ))}
+        </div>
+      </div>
 
-        {/* Sidebar */}
-        <div className={`p-8 rounded-[40px] h-fit sticky top-24 ${darkMode ? 'bg-white/5 border border-white/5' : 'bg-white shadow-xl border border-slate-50'}`}>
-          <h2 className="text-xl font-black mb-8 text-emerald-500 flex items-center gap-2">تطوير الذات 💡</h2>
-          <div className="space-y-8">
-            {selfDevPosts.map(p => (
-              <div key={p.id} onClick={() => onPostClick(p)} className="group cursor-pointer flex gap-4 items-center">
-                <img 
-                  src={p.image} 
-                  onError={handleImgError}
-                  className="w-16 h-16 rounded-xl object-cover shadow-md flex-shrink-0" 
-                  alt="" 
-                />
-                <div className="overflow-hidden">
-                  <h4 className="font-black text-sm group-hover:text-emerald-500 transition-colors line-clamp-2 leading-tight">{p.title}</h4>
-                  <span className="text-[10px] opacity-40 font-bold uppercase mt-1 block">{p.date}</span>
+      {/* شبكة العروض */}
+      <div className="space-y-12">
+        <h2 className="text-3xl font-black flex items-center gap-4">
+          <span className="w-3 h-10 bg-emerald-500 rounded-full"></span> أحدث مراجعات الأفلييت
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {deals.map(post => (
+            <div key={post.id} className="group cursor-pointer bg-white dark:bg-slate-900 rounded-[40px] overflow-hidden border border-slate-100 dark:border-white/5 hover:shadow-2xl transition-all" onClick={() => onPostClick(post)}>
+              <div className="relative h-64 overflow-hidden">
+                <img src={post.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={post.title} />
+                <div className="absolute top-4 left-4 bg-black/60 backdrop-blur-md px-4 py-2 rounded-xl text-[10px] font-black text-white uppercase tracking-tighter">
+                  {post.category}
                 </div>
               </div>
-            ))}
-          </div>
-          
-          <div className="mt-12 pt-8 border-t border-white/5">
-            <h2 className="text-xl font-black mb-8 text-orange-500 flex items-center gap-2">التقنية 🚀</h2>
-            <div className="space-y-6">
-               {techPosts.slice(0, 3).map(p => (
-                 <div key={p.id} onClick={() => onPostClick(p)} className="flex items-center gap-4 cursor-pointer group">
-                   <div className="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-xs font-black group-hover:bg-orange-500 transition-all">#</div>
-                   <h4 className="font-bold text-xs line-clamp-1 group-hover:text-orange-500">{p.title}</h4>
-                 </div>
-               ))}
+              <div className="p-8">
+                <h3 className="text-xl font-black mb-4 group-hover:text-emerald-500 transition-colors leading-snug">{post.title}</h3>
+                <div className="flex items-center justify-between mt-6">
+                  <span className="text-emerald-500 font-black text-sm">اقرأ المزيد ←</span>
+                  <div className="flex gap-1 text-yellow-400">
+                    {'★'.repeat(5)}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

@@ -13,7 +13,6 @@ interface PostDetailProps {
 const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, settings }) => {
   const [progress, setProgress] = useState(0);
   const [copied, setCopied] = useState(false);
-  const [imgError, setImgError] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,145 +24,75 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    const script = document.createElement('script');
-    script.type = 'application/ld+json';
-    const schemaData = {
-      "@context": "https://schema.org",
-      "@type": "Article",
-      "headline": post.title || post.name,
-      "image": [post.image],
-      "datePublished": post.date,
-      "author": [{
-          "@type": "Person",
-          "name": post.author,
-          "url": window.location.origin
-        }]
-    };
-    script.text = JSON.stringify(schemaData);
-    document.head.appendChild(script);
-    return () => { if (document.head.contains(script)) document.head.removeChild(script); };
-  }, [post]);
-
-  const shareUrl = window.location.href;
-  const shareTitle = post.title || post.name || '';
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(shareUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const isUrl = (text: string) => {
-    const pattern = new RegExp('^(https?:\\/\\/)?'+ 
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ 
-      '((\\d{1,3}\\.){3}\\d{1,3}))'+ 
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ 
-      '(\\?[;&a-z\\d%_.~+=-]*)?'+ 
-      '(\\#[-a-z\\d_]*)?$','i'); 
-    return !!pattern.test(text.trim());
+  const copyCoupon = () => {
+    if (post.couponCode) {
+      navigator.clipboard.writeText(post.couponCode);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   return (
-    <div className="max-w-4xl mx-auto animate-fadeIn relative pb-10 md:pb-20">
-      <div className="fixed top-0 left-0 h-1 md:h-1.5 bg-emerald-500 z-[100] transition-all duration-100" style={{ width: `${progress}%` }}></div>
+    <div className="max-w-4xl mx-auto animate-fadeIn relative pb-20" dir="rtl">
+      <div className="fixed top-0 left-0 h-1.5 bg-emerald-500 z-[100] transition-all" style={{ width: `${progress}%` }}></div>
       
-      <button onClick={onBack} className={`mt-4 md:mt-8 mb-8 md:mb-12 flex items-center gap-2 font-bold hover:text-emerald-500 transition-all group ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
-        <span className="group-hover:translate-x-1 transition-transform text-xl md:text-2xl">→</span> العودة للرئيسية
+      <button onClick={onBack} className={`mt-8 mb-12 flex items-center gap-2 font-black transition-all ${darkMode ? 'text-slate-500' : 'text-slate-400'} hover:text-emerald-500`}>
+        ← العودة للرئيسية
       </button>
 
-      <div className="mb-8 md:mb-16 px-2">
-        <span className="text-emerald-500 font-black text-[10px] md:text-sm uppercase tracking-[0.2em] md:tracking-[0.3em] mb-4 md:mb-6 block text-center">{post.category}</span>
-        <h1 className={`text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-6 md:mb-10 leading-[1.3] md:leading-tight text-center ${darkMode ? 'text-white' : 'text-slate-900'}`}>{post.title || post.name}</h1>
-        <div className={`flex flex-wrap justify-center items-center gap-4 md:gap-8 text-[8px] md:text-xs font-black uppercase tracking-widest ${darkMode ? 'text-slate-500' : 'text-slate-400'}`}>
-           <div className="flex items-center gap-2">👤 <span>{post.author}</span></div>
-           <div className="flex items-center gap-2">📅 <span>{post.date}</span></div>
-           <div className="flex items-center gap-2">👁️ <span>{post.views} قراءة</span></div>
-        </div>
+      <div className="mb-12 text-center">
+        <span className="bg-orange-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black mb-6 inline-block uppercase tracking-widest shadow-lg">
+          {post.category}
+        </span>
+        <h1 className="text-3xl md:text-6xl font-black mb-8 leading-tight">{post.title}</h1>
       </div>
 
-      <div className={`rounded-[25px] md:rounded-[60px] overflow-hidden mb-8 md:mb-12 shadow-xl md:shadow-2xl border-4 md:border-8 relative min-h-[300px] flex items-center justify-center ${darkMode ? 'border-white/5 bg-slate-900' : 'border-white shadow-slate-200 bg-slate-50'}`}>
-        {!imgError ? (
-          <img 
-            src={post.image} 
-            className="w-full h-auto block" 
-            alt={post.title || post.name} 
-            loading="lazy" 
-            onError={() => setImgError(true)}
-          />
-        ) : (
-          <div className="flex flex-col items-center justify-center p-20 text-center">
-            <span className="text-6xl mb-4">🖼️</span>
-            <p className="font-black opacity-40">نعتذر، الصورة غير متوفرة حالياً</p>
+      <div className="relative group mb-16">
+        <img src={post.image} className="w-full h-[400px] object-cover rounded-[50px] shadow-2xl transition-transform duration-700 group-hover:scale-[1.01]" alt={post.title} />
+        <div className="absolute inset-0 rounded-[50px] ring-1 ring-inset ring-white/10"></div>
+      </div>
+
+      {/* منطقة الكوبون الذكية */}
+      {post.couponCode && (
+        <div className="mb-16 bg-gradient-to-r from-orange-600 to-red-600 p-8 rounded-[40px] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl animate-bounce-slow">
+          <div>
+            <h3 className="text-2xl font-black mb-2">كود خصم حصري! 🎁</h3>
+            <p className="opacity-90 font-bold">استخدم هذا الكود عند الدفع للحصول على تخفيض إضافي</p>
           </div>
-        )}
-      </div>
-
-      <AdUnit publisherId={settings.adsenseCode} slotId="top_ad" />
-
-      <div className={`max-w-none text-right leading-[2] md:leading-[2.2] font-medium px-2 md:px-4 text-lg md:text-2xl mb-8 md:mb-12 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
-        {post.content.split('\n').map((para, i) => {
-          const trimmedPara = para.trim();
-          if (!trimmedPara) return null;
-
-          if (isUrl(trimmedPara)) {
-            return (
-              <div key={i} className="my-10 md:my-16">
-                <a 
-                  href={trimmedPara} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="group relative flex items-center justify-center gap-4 py-6 md:py-8 px-10 bg-gradient-to-r from-emerald-600 to-emerald-500 text-white rounded-[25px] md:rounded-[35px] font-black text-xl md:text-3xl shadow-2xl shadow-emerald-500/30 hover:scale-[1.02] active:scale-95 transition-all overflow-hidden"
-                >
-                  <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
-                  <span className="relative z-10">استفد من العرض الآن</span>
-                  <span className="relative z-10 text-3xl md:text-4xl animate-bounce">🎁</span>
-                  <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
-                </a>
-                <p className="text-center mt-4 text-[10px] md:text-xs font-bold opacity-40 uppercase tracking-widest">اضغط أعلاه للتوجه للموقع الرسمي</p>
-              </div>
-            );
-          }
-
-          return <p key={i} className="mb-8 md:mb-12 last:mb-0">{para}</p>;
-        })}
-      </div>
-
-      <AdUnit publisherId={settings.adsenseCode} slotId="bottom_ad" />
-
-      <div className={`mt-10 md:mt-20 p-6 md:p-16 rounded-[30px] md:rounded-[60px] text-center border-t-2 md:border-t-4 border-emerald-600 shadow-xl md:shadow-2xl transition-all ${darkMode ? 'glass bg-white/5' : 'bg-white border-slate-100 shadow-slate-200/50'}`}>
-        <h3 className={`text-xl md:text-3xl font-black mb-6 md:mb-10 ${darkMode ? 'text-white' : 'text-slate-900'}`}>شارك المقال 🚀</h3>
-        
-        <div className="grid grid-cols-2 xs:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
-           {['facebook', 'twitter', 'whatsapp', 'copy'].map((platform) => {
-             const baseClass = "flex flex-col items-center justify-center p-4 md:p-6 rounded-[20px] md:rounded-[35px] hover:scale-105 transition-all shadow-md group";
-             if (platform === 'facebook') return (
-               <button key={platform} onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`)} className={`${baseClass} bg-[#1877F2] text-white`}>
-                 <span className="text-xl md:text-3xl mb-1 md:mb-2 font-bold">f</span>
-                 <span className="text-[8px] md:text-[10px] font-black uppercase">فيسبوك</span>
-               </button>
-             );
-             if (platform === 'twitter') return (
-               <button key={platform} onClick={() => window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareTitle)}&url=${shareUrl}`)} className={`${baseClass} bg-black text-white border border-white/10`}>
-                 <span className="text-xl md:text-3xl mb-1 md:mb-2">𝕏</span>
-                 <span className="text-[8px] md:text-[10px] font-black uppercase">تويتر</span>
-               </button>
-             );
-             if (platform === 'whatsapp') return (
-               <button key={platform} onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareTitle + ' ' + shareUrl)}`)} className={`${baseClass} bg-[#25D366] text-white`}>
-                 <span className="text-xl md:text-3xl mb-1 md:mb-2">WA</span>
-                 <span className="text-[8px] md:text-[10px] font-black uppercase">واتساب</span>
-               </button>
-             );
-             if (platform === 'copy') return (
-               <button key={platform} onClick={handleCopy} className={`${baseClass} ${darkMode ? 'bg-white/10 text-white' : 'bg-slate-100 text-slate-800'}`}>
-                 <span className="text-xl md:text-3xl mb-1 md:mb-2">{copied ? '✅' : '🔗'}</span>
-                 <span className="text-[8px] md:text-[10px] font-black uppercase">{copied ? 'تم النسخ' : 'نسخ الرابط'}</span>
-               </button>
-             );
-             return null;
-           })}
+          <div className="flex items-center gap-2 bg-white/20 p-2 rounded-2xl border border-white/30">
+            <span className="px-6 py-3 font-mono text-3xl font-black tracking-widest">{post.couponCode}</span>
+            <button 
+              onClick={copyCoupon}
+              className="bg-white text-orange-600 px-6 py-3 rounded-xl font-black hover:bg-slate-100 transition-all active:scale-95"
+            >
+              {copied ? '✅ تم النسخ' : 'نسخ الكود'}
+            </button>
+          </div>
         </div>
+      )}
+
+      <div className="text-right leading-[2.4] font-medium text-lg md:text-2xl space-y-10 mb-16">
+        {post.content.split('\n').map((para, i) => (
+          <p key={i} className={darkMode ? 'text-slate-300' : 'text-slate-700'}>{para}</p>
+        ))}
+      </div>
+
+      {/* أزرار الأفلييت الملونة */}
+      {post.affiliateLink && (
+        <div className="sticky bottom-8 z-[90] px-4">
+          <a 
+            href={post.affiliateLink} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="block w-full text-center py-7 bg-emerald-600 text-white rounded-3xl font-black text-2xl shadow-2xl hover:bg-emerald-500 hover:-translate-y-2 transition-all active:scale-95 flex items-center justify-center gap-4"
+          >
+            <span>🛍️</span> انتقل للعرض مباشرة الآن
+          </a>
+        </div>
+      )}
+
+      <div className="mt-20">
+        <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
       </div>
     </div>
   );
