@@ -10,7 +10,7 @@ export enum Category {
 export interface Article {
   id: string;
   title: string;
-  name?: string; // التوافق مع النسخ السابقة
+  name?: string; 
   excerpt: string;
   content: string;
   image: string;
@@ -21,13 +21,10 @@ export interface Article {
   affiliateLink?: string;
   couponCode?: string;
   isTrending?: boolean;
-  isProduct?: boolean; // للمحافظة على التوافق البرمجي
+  isProduct?: boolean; 
   price?: number;
 }
 
-/**
- * Interface for items stored in the shopping cart, extending Article with quantity.
- */
 export interface CartItem extends Article {
   quantity: number;
 }
@@ -36,7 +33,8 @@ export interface Settings {
   siteName: string;
   adsenseCode: string;
   alternativeAdsCode: string; // Adsterra Native Banner
-  globalAdsCode: string; // Adsterra Social Bar Script
+  globalAdsCode: string; // Adsterra Social Bar / Popunder Script
+  directLinkCode: string; // Adsterra Direct Link (e.g. your ID 5500631)
   dashboardPassword?: string;
   totalVisits: number;
   whatsappNumber: string;

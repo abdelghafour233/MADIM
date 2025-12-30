@@ -106,19 +106,33 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
       {activeTab === 'ads' && (
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="bg-emerald-600/10 border-2 border-emerald-500/20 p-8 rounded-[40px] space-y-4">
-            <h3 className="text-2xl font-black text-emerald-500">💰 تفعيل إعلانات Adsterra</h3>
-            <p className="font-bold opacity-80 leading-relaxed">انسخ الأكواد البرمجية من Adsterra والصقها هنا. الكود الأول للإشعارات الجانبية، والثاني للبنرات داخل المقال.</p>
+            <h3 className="text-2xl font-black text-emerald-500">💰 إعدادات الأرباح المتقدمة</h3>
+            <p className="font-bold opacity-80 leading-relaxed text-sm">لديك الآن 3 قنوات للربح من أدستيرا في موقعك:</p>
+            <ul className="text-xs space-y-2 opacity-70 list-disc pr-5">
+              <li><b>Social Bar:</b> يظهر كإشعار ذكي لجميع الزوار.</li>
+              <li><b>Native Banners:</b> إعلانات مندمجة تظهر داخل المقالات.</li>
+              <li><b>Direct Link:</b> رابط مباشر يظهر كـ "هدية" لزيادة النقرات.</li>
+            </ul>
           </div>
+
           <div className="p-10 bg-white/5 border border-white/10 rounded-[40px] space-y-10">
               <div className="space-y-4">
-                <label className="block text-sm font-black text-emerald-500">كود Social Bar Script (سيظهر في كل الصفحات)</label>
+                <label className="block text-sm font-black text-emerald-500">كود Social Bar / Popunder Script</label>
                 <textarea className="w-full h-32 p-5 bg-black/40 rounded-2xl font-mono text-xs text-left" dir="ltr" placeholder="<script ...></script>" value={localSettings.globalAdsCode} onChange={e => setLocalSettings({...localSettings, globalAdsCode: e.target.value})} />
               </div>
+
               <div className="space-y-4">
-                <label className="block text-sm font-black text-orange-500">كود Native Banner (سيظهر داخل كل مقال)</label>
+                <label className="block text-sm font-black text-orange-500">الرابط المباشر - Direct Link (مثال الآيدي 5500631)</label>
+                <input className="w-full p-5 bg-black/40 rounded-2xl font-mono text-xs text-left" dir="ltr" placeholder="https://www.example.com/..." value={localSettings.directLinkCode} onChange={e => setLocalSettings({...localSettings, directLinkCode: e.target.value})} />
+                <p className="text-[10px] text-orange-400 font-bold">انسخ الرابط الكامل الذي يبدأ بـ http من حسابك في أدستيرا.</p>
+              </div>
+
+              <div className="space-y-4">
+                <label className="block text-sm font-black text-blue-500">كود Native Banner (داخل المقالات)</label>
                 <textarea className="w-full h-32 p-5 bg-black/40 rounded-2xl font-mono text-xs text-left" dir="ltr" placeholder="<div id='...'></div>" value={localSettings.alternativeAdsCode} onChange={e => setLocalSettings({...localSettings, alternativeAdsCode: e.target.value})} />
               </div>
-              <button onClick={() => {onUpdateSettings(localSettings); alert('✅ تم حفظ أكواد الأرباح!');}} className="w-full py-6 bg-emerald-600 text-white rounded-3xl font-black text-2xl shadow-xl">حفظ الأكواد الإعلانية 💾</button>
+
+              <button onClick={() => {onUpdateSettings(localSettings); alert('✅ تم حفظ جميع إعدادات الأرباح!');}} className="w-full py-6 bg-emerald-600 text-white rounded-3xl font-black text-2xl shadow-xl">حفظ التغييرات 💾</button>
           </div>
         </div>
       )}

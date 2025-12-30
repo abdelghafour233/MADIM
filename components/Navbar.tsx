@@ -13,7 +13,7 @@ interface NavbarProps {
   onOpenCart: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearch, darkMode, toggleDarkMode }) => {
+const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearch, darkMode, toggleDarkMode, cartCount, onOpenCart }) => {
   const [query, setQuery] = useState('');
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,7 +43,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
             <button 
               onClick={() => setView('admin')} 
               className={`px-4 py-2 rounded-xl font-bold transition-all ${currentView === 'admin' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/20' : 'opacity-60 hover:opacity-100'}`}
-            >لوحة التحكم</button>
+            >الإدارة</button>
           </div>
         </div>
 
@@ -52,7 +52,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
           <div className="relative group">
             <input 
               type="text" 
-              placeholder="ابحث عن عرض أو كوبون..." 
+              placeholder="ابحث عن منتج أو همزة..." 
               className={`w-full py-2 md:py-4 px-12 rounded-2xl outline-none border-2 transition-all text-xs md:text-sm font-bold ${
                 darkMode 
                 ? 'bg-white/5 border-transparent focus:border-emerald-500 text-white focus:bg-white/10' 
@@ -66,20 +66,35 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
         </div>
 
         {/* أزرار التحكم */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+          {/* زر السلة */}
+          <button 
+            onClick={onOpenCart}
+            className={`relative p-2 md:p-4 rounded-2xl border transition-all ${
+              darkMode 
+              ? 'bg-white/5 border-white/10 text-emerald-400 hover:bg-white/10' 
+              : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200'
+            }`}
+          >
+            <span className="text-xl md:text-2xl">🛒</span>
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -left-1 w-5 h-5 bg-orange-600 text-white text-[10px] font-black rounded-full flex items-center justify-center animate-bounce">
+                {cartCount}
+              </span>
+            )}
+          </button>
+
           <button 
             onClick={toggleDarkMode} 
-            className={`p-2 md:p-4 rounded-2xl border transition-all ${
+            className={`hidden sm:block p-2 md:p-4 rounded-2xl border transition-all ${
               darkMode 
               ? 'bg-white/5 border-white/10 text-yellow-400 hover:bg-white/10' 
               : 'bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200'
             }`}
-            title={darkMode ? "الوضع النهاري" : "الوضع الليلي"}
           >
             {darkMode ? '☀️' : '🌙'}
           </button>
           
-          {/* نسخة الجوال - زر الإدارة */}
           <button 
             onClick={() => setView('admin')}
             className="md:hidden p-2 bg-emerald-600/10 text-emerald-500 rounded-2xl border border-emerald-500/20"
