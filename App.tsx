@@ -13,16 +13,16 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-// رفع الإصدار وتغيير مفاتيح التخزين لإجبار كلود فلير على التحديث
-const CURRENT_VERSION = '1.3.0'; 
+// إصدار 1.4.0: النسخة القاطعة للشك باليقين
+const CURRENT_VERSION = '1.4.0-STABLE'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_v11_posts_final', 
-  SETTINGS: 'abdou_v11_settings_final',
-  CART: 'abdou_v11_cart_final',
-  VERSION: 'abdou_v11_version_final'
+  POSTS: 'abdou_v15_final_posts', 
+  SETTINGS: 'abdou_v15_final_settings',
+  CART: 'abdou_v15_final_cart',
+  VERSION: 'abdou_v15_final_version'
 };
 
-// أكواد Adsterra المطلوبة
+// أكواد Adsterra الثابتة (Social Bar)
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
 
 const INITIAL_SETTINGS: Settings = {
@@ -32,7 +32,7 @@ const INITIAL_SETTINGS: Settings = {
   globalAdsCode: DEFAULT_GLOBAL_ADS,      
   directLinkCode: 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d',
   dashboardPassword: '1234',
-  totalVisits: 4200,
+  totalVisits: 5100,
   whatsappNumber: '212649075664'
 };
 
@@ -54,7 +54,7 @@ const App: React.FC = () => {
     const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
-    // إذا كان الإصدار جديداً أو مفاتيح v11 غير موجودة، قم بإعادة الضبط
+    // إجبار النظام على إعادة الضبط إذا كان الإصدار قديماً
     if (lastVersion !== CURRENT_VERSION) {
       setPosts(INITIAL_POSTS);
       setSettings(INITIAL_SETTINGS);
@@ -67,23 +67,22 @@ const App: React.FC = () => {
     }
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    setTimeout(() => setIsLoading(false), 500);
+    setTimeout(() => setIsLoading(false), 800);
   }, []);
 
-  // حقن كود Adsterra الاجتماعي تلقائياً
+  // حقن الإعلانات الاجتماعية Adsterra
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-v130-script';
-      const existing = document.getElementById(scriptId);
-      if (existing) existing.remove();
+      const scriptId = 'adsterra-v140-loader';
+      const old = document.getElementById(scriptId);
+      if (old) old.remove();
       
-      const container = document.createElement('div');
-      container.id = scriptId;
-      document.body.appendChild(container);
+      const el = document.createElement('div');
+      el.id = scriptId;
+      document.body.appendChild(el);
       
       const range = document.createRange();
-      const fragment = range.createContextualFragment(settings.globalAdsCode);
-      container.appendChild(fragment);
+      el.appendChild(range.createContextualFragment(settings.globalAdsCode));
     }
   }, [settings.globalAdsCode]);
 
@@ -97,7 +96,7 @@ const App: React.FC = () => {
   };
 
   const addToCart = (product: Article) => {
-    // فتح الـ Direct Link عند الضغط لزيادة الأرباح
+    // تشغيل الـ Direct Link عند الضغط على أي منتج
     if (settings.directLinkCode) window.open(settings.directLinkCode, '_blank');
     
     setCart(prev => {
@@ -114,6 +113,7 @@ const App: React.FC = () => {
     <div className="fixed inset-0 bg-[#0a0a0b] flex flex-col items-center justify-center z-[1000]">
       <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
       <h2 className="text-emerald-500 font-black text-xl animate-pulse tracking-tighter uppercase">abdouweb.online</h2>
+      <p className="text-white/20 text-[10px] mt-4 font-bold tracking-[0.3em]">VERSION {CURRENT_VERSION}</p>
     </div>
   );
 
@@ -153,7 +153,7 @@ const App: React.FC = () => {
               <button onClick={() => setView('terms')} className="hover:text-emerald-500 transition-colors">الشروط</button>
               <button onClick={() => setView('contact')} className="hover:text-emerald-500 transition-colors">اتصل بنا</button>
            </div>
-           <p className="text-[11px] font-bold opacity-30 tracking-widest uppercase">© 2025 abdouweb.online - جميع الحقوق محفوظة</p>
+           <p className="text-[11px] font-bold opacity-30 tracking-widest uppercase">© 2025 abdouweb.online - جميع الحقوق محفوظة | v{CURRENT_VERSION}</p>
         </div>
       </footer>
       <WhatsAppButton />
