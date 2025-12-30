@@ -14,12 +14,12 @@ import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
 // تم تحديث الإصدار والمفاتيح لكسر الكاش بشكل نهائي
-const CURRENT_VERSION = '1.2.2'; 
+const CURRENT_VERSION = '1.2.3'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_final_posts_v6', 
-  SETTINGS: 'abdou_final_settings_v6',
-  CART: 'abdou_final_cart_v6',
-  VERSION: 'abdou_final_version_v6'
+  POSTS: 'abdou_premium_posts_v7', 
+  SETTINGS: 'abdou_premium_settings_v7',
+  CART: 'abdou_premium_cart_v7',
+  VERSION: 'abdou_premium_version_v7'
 };
 
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
@@ -31,7 +31,7 @@ const INITIAL_SETTINGS: Settings = {
   globalAdsCode: DEFAULT_GLOBAL_ADS,      
   directLinkCode: 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d',
   dashboardPassword: '1234',
-  totalVisits: 2500,
+  totalVisits: 3200,
   whatsappNumber: '212649075664'
 };
 
@@ -68,8 +68,24 @@ const App: React.FC = () => {
     }
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    setTimeout(() => setIsLoading(false), 600);
+    setTimeout(() => setIsLoading(false), 800);
   }, []);
+
+  // إضافة الجزء المفقود لحقن أكواد Adsterra تلقائياً
+  useEffect(() => {
+    if (settings.globalAdsCode) {
+      const scriptId = 'adsterra-premium-v3';
+      const old = document.getElementById(scriptId);
+      if (old) old.remove();
+      
+      const div = document.createElement('div');
+      div.id = scriptId;
+      document.body.appendChild(div);
+      
+      const range = document.createRange();
+      div.appendChild(range.createContextualFragment(settings.globalAdsCode));
+    }
+  }, [settings.globalAdsCode]);
 
   const handlePostClick = (p: Article) => {
     const updated = posts.map(item => item.id === p.id ? { ...item, views: (item.views || 0) + 1 } : item);
@@ -95,7 +111,7 @@ const App: React.FC = () => {
   if (isLoading) return (
     <div className="fixed inset-0 bg-[#0a0a0b] flex flex-col items-center justify-center z-[1000]">
       <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
-      <h2 className="text-emerald-500 font-black text-xl animate-pulse tracking-tighter">abdouweb.online</h2>
+      <h2 className="text-emerald-500 font-black text-xl animate-pulse tracking-tighter uppercase">abdouweb.online</h2>
     </div>
   );
 
