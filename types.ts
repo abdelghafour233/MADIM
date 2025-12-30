@@ -23,7 +23,7 @@ export interface Article {
   isTrending?: boolean;
   isProduct?: boolean; 
   price?: number;
-  marketPrice?: number; // السعر الأصلي في السوق المحلي للمقارنة
+  marketPrice?: number; 
 }
 
 export interface CartItem extends Article {
@@ -33,11 +33,12 @@ export interface CartItem extends Article {
 export interface Settings {
   siteName: string;
   adsenseCode: string;
-  alternativeAdsCode: string; // Adsterra Native Banner
-  globalAdsCode: string; // Adsterra Social Bar / Popunder Script
-  directLinkCode: string; // Adsterra Direct Link (e.g. your ID 5500631)
+  alternativeAdsCode: string; 
+  globalAdsCode: string; 
+  directLinkCode: string; 
   dashboardPassword?: string;
   totalVisits: number;
+  totalEarnings: number; // حقل جديد للأرباح
   whatsappNumber: string;
 }
 

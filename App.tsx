@@ -13,8 +13,7 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-// الإصدار 1.9.0: إصلاح شامل للصور وتجاوز الحماية
-const CURRENT_VERSION = '1.9.0-RES-FIX'; 
+const CURRENT_VERSION = '1.9.1-STATS-UPDATE'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v40_posts', 
   SETTINGS: 'abdou_v40_settings',
@@ -34,6 +33,7 @@ const INITIAL_SETTINGS: Settings = {
   directLinkCode: ADSTERRA_DIRECT_LINK,
   dashboardPassword: '1234',
   totalVisits: 10500,
+  totalEarnings: 0, // القيمة الافتراضية
   whatsappNumber: '212649075664'
 };
 
@@ -55,18 +55,29 @@ const App: React.FC = () => {
     const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
+    let currentSettings = INITIAL_SETTINGS;
+    if (savedSettings) {
+      currentSettings = { ...INITIAL_SETTINGS, ...JSON.parse(savedSettings) };
+    }
+
     if (lastVersion !== CURRENT_VERSION) {
-      setPosts(INITIAL_POSTS);
-      setSettings(INITIAL_SETTINGS);
-      localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(INITIAL_POSTS));
-      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(INITIAL_SETTINGS));
+      setPosts(savedPosts ? JSON.parse(savedPosts) : INITIAL_POSTS);
+      setSettings(currentSettings);
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
     } else {
       setPosts(savedPosts ? JSON.parse(savedPosts) : INITIAL_POSTS);
-      setSettings(savedSettings ? JSON.parse(savedSettings) : INITIAL_SETTINGS);
+      setSettings(currentSettings);
     }
     if (savedCart) setCart(JSON.parse(savedCart));
     
+    // محاكاة زيادة عدد الزوار عند كل دخول
+    if (view === 'home' && !isAuth) {
+      const updatedVisits = currentSettings.totalVisits + 1;
+      const newSettings = { ...currentSettings, totalVisits: updatedVisits };
+      setSettings(newSettings);
+      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(newSettings));
+    }
+
     setTimeout(() => setIsLoading(false), 800);
   }, []);
 

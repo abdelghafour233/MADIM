@@ -11,7 +11,7 @@ interface AdminProps {
   darkMode?: boolean;
 }
 
-type AdminTab = 'list' | 'editor' | 'ads' | 'security';
+type AdminTab = 'list' | 'editor' | 'ads' | 'security' | 'stats';
 
 const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpdateSettings, onLogout, darkMode = true }) => {
   const [activeTab, setActiveTab] = useState<AdminTab>('list');
@@ -20,7 +20,6 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const totalViews = posts.reduce((sum, p) => sum + (p.views || 0), 0);
-  const adsActive = settings.globalAdsCode && settings.globalAdsCode.length > 10;
   
   const [form, setForm] = useState<Partial<Article>>({
     title: '', excerpt: '', content: '', image: '', category: Category.TEMU, author: 'عبدو التقني', affiliateLink: '', couponCode: '', isTrending: false, price: 0, marketPrice: 0
@@ -45,22 +44,13 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
     setActiveTab('editor');
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setForm({ ...form, image: reader.result as string });
-      reader.readAsDataURL(file);
-    }
-  };
-
   const resetForm = () => {
     setEditingPostId(null);
     setForm({ title: '', excerpt: '', content: '', image: '', category: Category.TEMU, author: 'عبدو التقني', affiliateLink: '', couponCode: '', isTrending: false, price: 0, marketPrice: 0 });
   };
 
   const forceFullRefresh = () => {
-    if(confirm('سيتم حذف كل البيانات المخزنة محلياً وإعادة التحميل من السيرفر لتجاوز كاش كلود فلير. هل أنت متأكد؟')) {
+    if(confirm('سيتم حذف كل البيانات المخزنة محلياً وإعادة التحميل من السيرفر. هل أنت متأكد؟')) {
       localStorage.clear();
       window.location.href = window.location.pathname + "?refresh=" + Date.now();
     }
@@ -68,19 +58,39 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
 
   return (
     <div className="animate-fadeIn max-w-6xl mx-auto pb-20 px-4" dir="rtl">
-      <div className="p-6 md:p-10 rounded-[40px] mb-10 flex flex-col md:flex-row justify-between items-center gap-6 bg-white/5 border border-white/10 shadow-2xl relative">
-        <div className="flex items-center gap-6">
-          <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-3xl">🚀</div>
-          <div>
-            <h2 className="text-2xl font-black">إدارة abdouweb</h2>
-            <p className="text-slate-500 font-bold text-sm">الإصدار الحالي: v1.4.0</p>
+      {/* رأس اللوحة مع إحصائيات سريعة */}
+      <div className="p-6 md:p-10 rounded-[40px] mb-10 bg-white/5 border border-white/10 shadow-2xl">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-10">
+          <div className="flex items-center gap-6">
+            <div className="w-16 h-16 bg-emerald-600 rounded-2xl flex items-center justify-center text-3xl">🚀</div>
+            <div>
+              <h2 className="text-2xl font-black">إدارة abdouweb</h2>
+              <p className="text-slate-500 font-bold text-sm">مرحباً بك في لوحة التحكم الخاصة بك</p>
+            </div>
+          </div>
+          <div className="flex gap-2 flex-wrap justify-center">
+            <button onClick={() => setActiveTab('list')} className={`px-5 py-2.5 rounded-xl font-black text-xs ${activeTab === 'list' ? 'bg-emerald-600' : 'bg-white/5'}`}>العروض</button>
+            <button onClick={() => setActiveTab('stats')} className={`px-5 py-2.5 rounded-xl font-black text-xs ${activeTab === 'stats' ? 'bg-purple-600' : 'bg-white/5'}`}>الإحصائيات</button>
+            <button onClick={() => setActiveTab('ads')} className={`px-5 py-2.5 rounded-xl font-black text-xs ${activeTab === 'ads' ? 'bg-orange-600' : 'bg-white/5'}`}>الإعلانات</button>
+            <button onClick={() => setActiveTab('security')} className={`px-5 py-2.5 rounded-xl font-black text-xs ${activeTab === 'security' ? 'bg-blue-600' : 'bg-white/5'}`}>الأمان</button>
+            <button onClick={forceFullRefresh} className="px-5 py-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl font-black text-xs border border-yellow-500/20">تحديث الكاش</button>
           </div>
         </div>
-        <div className="flex gap-2 flex-wrap justify-center">
-          <button onClick={() => setActiveTab('list')} className={`px-5 py-2.5 rounded-xl font-black text-xs ${activeTab === 'list' ? 'bg-emerald-600' : 'bg-white/5'}`}>العروض</button>
-          <button onClick={() => setActiveTab('ads')} className={`px-5 py-2.5 rounded-xl font-black text-xs ${activeTab === 'ads' ? 'bg-orange-600' : 'bg-white/5'}`}>الإعلانات</button>
-          <button onClick={() => setActiveTab('security')} className={`px-5 py-2.5 rounded-xl font-black text-xs ${activeTab === 'security' ? 'bg-blue-600' : 'bg-white/5'}`}>الأمان</button>
-          <button onClick={forceFullRefresh} className="px-5 py-2.5 bg-yellow-600/20 text-yellow-500 rounded-xl font-black text-xs border border-yellow-500/20">تحديث الكاش</button>
+
+        {/* كروت الإحصائيات السريعة */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+           <div className="bg-emerald-600/10 p-6 rounded-3xl border border-emerald-500/20">
+              <span className="block text-emerald-500 text-[10px] font-black mb-1 uppercase tracking-widest">إجمالي الزوار</span>
+              <span className="text-3xl font-black">{settings.totalVisits.toLocaleString()}</span>
+           </div>
+           <div className="bg-purple-600/10 p-6 rounded-3xl border border-purple-500/20">
+              <span className="block text-purple-500 text-[10px] font-black mb-1 uppercase tracking-widest">أرباح أدستيرا</span>
+              <span className="text-3xl font-black">{settings.totalEarnings.toLocaleString()} $</span>
+           </div>
+           <div className="bg-orange-600/10 p-6 rounded-3xl border border-orange-500/20">
+              <span className="block text-orange-500 text-[10px] font-black mb-1 uppercase tracking-widest">مشاهدات العروض</span>
+              <span className="text-3xl font-black">{totalViews.toLocaleString()}</span>
+           </div>
         </div>
       </div>
 
@@ -101,6 +111,34 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {activeTab === 'stats' && (
+        <div className="p-10 bg-white/5 border border-white/10 rounded-[50px] space-y-8 max-w-2xl mx-auto">
+            <h3 className="text-2xl font-black text-purple-500">📊 إعدادات الإحصائيات والأرباح</h3>
+            <div className="space-y-6">
+                <div className="space-y-2">
+                    <label className="block text-xs font-black text-slate-400">عدد الزوار الإجمالي</label>
+                    <input 
+                      type="number"
+                      className="w-full p-6 bg-black/40 rounded-3xl font-black text-xl text-emerald-500" 
+                      value={localSettings.totalVisits} 
+                      onChange={e => setLocalSettings({...localSettings, totalVisits: Number(e.target.value)})} 
+                    />
+                </div>
+                <div className="space-y-2">
+                    <label className="block text-xs font-black text-slate-400">أرباح أدستيرا بالدولار ($)</label>
+                    <input 
+                      type="number"
+                      step="0.01"
+                      className="w-full p-6 bg-black/40 rounded-3xl font-black text-xl text-purple-500" 
+                      value={localSettings.totalEarnings} 
+                      onChange={e => setLocalSettings({...localSettings, totalEarnings: Number(e.target.value)})} 
+                    />
+                </div>
+            </div>
+            <button onClick={() => {onUpdateSettings(localSettings); alert('تم تحديث الإحصائيات بنجاح!');}} className="w-full py-6 bg-emerald-600 text-white rounded-3xl font-black shadow-xl shadow-emerald-500/20 transition-all hover:scale-[1.02]">حفظ التغييرات 💾</button>
         </div>
       )}
 
