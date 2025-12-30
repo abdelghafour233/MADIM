@@ -19,8 +19,14 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
   const [localSettings, setLocalSettings] = useState<Settings>(settings);
 
   const [form, setForm] = useState<Partial<Article>>({
-    // Corrected Category.TECH to Category.TECH_REVIEWS
-    title: '', excerpt: '', content: '', image: '', category: Category.TECH_REVIEWS, author: 'عبدو التقني'
+    title: '', 
+    excerpt: '', 
+    content: '', 
+    image: '', 
+    category: Category.TECH_REVIEWS, 
+    author: 'عبدو التقني',
+    affiliateLink: '',
+    couponCode: ''
   });
 
   const handleSavePost = () => {
@@ -38,18 +44,26 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
 
   const handleEditClick = (p: Article) => {
     setEditingPostId(p.id);
-    setForm({ title: p.title || p.name, excerpt: p.excerpt, content: p.content, image: p.image, category: p.category, author: p.author });
+    setForm({ 
+      title: p.title || p.name, 
+      excerpt: p.excerpt, 
+      content: p.content, 
+      image: p.image, 
+      category: p.category, 
+      author: p.author,
+      affiliateLink: p.affiliateLink || '',
+      couponCode: p.couponCode || ''
+    });
     setActiveTab('editor');
   };
 
   const resetForm = () => {
     setEditingPostId(null);
-    // Corrected Category.TECH to Category.TECH_REVIEWS
-    setForm({ title: '', excerpt: '', content: '', image: '', category: Category.TECH_REVIEWS, author: 'عبدو التقني' });
+    setForm({ title: '', excerpt: '', content: '', image: '', category: Category.TECH_REVIEWS, author: 'عبدو التقني', affiliateLink: '', couponCode: '' });
   };
 
   return (
-    <div className="animate-fadeIn max-w-6xl mx-auto pb-20">
+    <div className="animate-fadeIn max-w-6xl mx-auto pb-20" dir="rtl">
       <div className={`p-8 rounded-[40px] mb-10 flex flex-col md:flex-row justify-between items-center gap-6 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white shadow-xl'}`}>
         <h2 className="text-3xl font-black">غرفة التحكم</h2>
         <div className="flex gap-4">
@@ -75,49 +89,102 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
       )}
 
       {activeTab === 'ads' && (
-        <div className="max-w-4xl mx-auto p-10 bg-white/5 border border-white/10 rounded-[40px] space-y-12">
-          <div className="text-center">
-            <span className="text-6xl mb-4 block">📡</span>
-            <h3 className="text-2xl font-black text-orange-500">مركز التحكم في إعلانات Adsterra</h3>
+        <div className="max-w-4xl mx-auto space-y-12">
+          {/* شرح تعليمي لاستخراج الأكواد */}
+          <div className="bg-emerald-600/10 border-2 border-emerald-500/20 p-8 rounded-[40px] space-y-4">
+            <h3 className="text-2xl font-black text-emerald-500 flex items-center gap-3">
+              <span>💡</span> كيف تحصل على الأكواد الصحيحة من Adsterra؟
+            </h3>
+            <ul className="list-decimal list-inside space-y-3 font-bold opacity-80 leading-relaxed">
+              <li>سجل دخولك في <a href="https://adsterra.com/" target="_blank" className="underline text-emerald-500">Adsterra</a> كـ Publisher.</li>
+              <li>اذهب لـ <span className="text-orange-500">Websites</span> من القائمة اليسرى.</li>
+              <li>بجانب رابط موقعك، ستجد زر <span className="bg-emerald-500 px-2 py-0.5 rounded text-white text-xs font-black">All codes</span>، اضغط عليه.</li>
+              <li>ستظهر لك قائمة بالوحدات الإعلانية التي أنشأتها (مثلاً Social Bar أو Native Banner).</li>
+              <li>اضغط على زر <span className="text-emerald-500 font-black">Get Code</span> الموجود بجانب كل وحدة.</li>
+              <li>انسخ النص البرمجي الطويل (يبدأ بـ &lt;script...) والصقه في الخانات أدناه.</li>
+            </ul>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="space-y-4">
-              <label className="block text-xs font-black opacity-60 uppercase mr-2">كود Social Bar / Popunder (شامل للموقع)</label>
-              <p className="text-[10px] text-emerald-500 mb-2">هذا الإعلان هو الأكثر ربحية في المغرب ويظهر كإشعار.</p>
-              <textarea 
-                className="w-full h-48 p-5 bg-black/40 rounded-2xl border-2 border-transparent focus:border-orange-500 outline-none font-mono text-[10px]"
-                placeholder="<!-- Paste Social Bar script here -->"
-                value={localSettings.globalAdsCode}
-                onChange={e => setLocalSettings({...localSettings, globalAdsCode: e.target.value})}
-              />
+          <div className="p-10 bg-white/5 border border-white/10 rounded-[40px] space-y-12">
+            <div className="text-center">
+              <span className="text-6xl mb-4 block">📡</span>
+              <h3 className="text-2xl font-black text-orange-500">تفعيل أرباح Adsterra</h3>
+              <p className="text-slate-400 mt-2">لا تضع المعرف (ID) فقط، بل انسخ الكود البرمجي بالكامل</p>
             </div>
 
-            <div className="space-y-4">
-              <label className="block text-xs font-black opacity-60 uppercase mr-2">أكواد البنرات (Banners)</label>
-              <p className="text-[10px] text-blue-500 mb-2">تظهر هذه الإعلانات داخل المقالات في أماكن محددة.</p>
-              <textarea 
-                className="w-full h-48 p-5 bg-black/40 rounded-2xl border-2 border-transparent focus:border-blue-500 outline-none font-mono text-[10px]"
-                placeholder="<!-- Paste Banner script here -->"
-                value={localSettings.alternativeAdsCode}
-                onChange={e => setLocalSettings({...localSettings, alternativeAdsCode: e.target.value})}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                   <label className="block text-sm font-black text-emerald-500">1. كود إعلانات الإشعارات (Social Bar)</label>
+                </div>
+                <p className="text-[11px] opacity-60 leading-relaxed">هذا هو الأهم للمغرب. يظهر كإشعار جذّاب. الصق الكود البرمجي بالكامل هنا.</p>
+                <textarea 
+                  className="w-full h-48 p-5 bg-black/40 rounded-2xl border-2 border-transparent focus:border-orange-500 outline-none font-mono text-[10px] text-left"
+                  dir="ltr"
+                  placeholder="<script type='text/javascript' src='//...'></script>"
+                  value={localSettings.globalAdsCode}
+                  onChange={e => setLocalSettings({...localSettings, globalAdsCode: e.target.value})}
+                />
+              </div>
+
+              <div className="space-y-4">
+                <label className="block text-sm font-black text-blue-500">2. كود البنرات داخل المقال (Native Banner)</label>
+                <p className="text-[11px] opacity-60 leading-relaxed">يظهر وسط مقالات الأفلييت. انسخ كود الـ Banner أو Native Ads بالكامل هنا.</p>
+                <textarea 
+                  className="w-full h-48 p-5 bg-black/40 rounded-2xl border-2 border-transparent focus:border-blue-500 outline-none font-mono text-[10px] text-left"
+                  dir="ltr"
+                  placeholder="<div id='container-...'></div><script ...></script>"
+                  value={localSettings.alternativeAdsCode}
+                  onChange={e => setLocalSettings({...localSettings, alternativeAdsCode: e.target.value})}
+                />
+              </div>
             </div>
+
+            <button 
+              onClick={() => {onUpdateSettings(localSettings); alert('✅ تم حفظ الأكواد! الإعلانات ستظهر الآن لزوارك فوراً.');}} 
+              className="w-full py-6 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-3xl font-black text-2xl hover:scale-[1.01] transition-all shadow-2xl"
+            >حفظ وتفعيل الأرباح الآن 💰</button>
           </div>
-
-          <button 
-            onClick={() => {onUpdateSettings(localSettings); alert('✅ تم تحديث جميع الإعلانات!');}} 
-            className="w-full py-6 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-3xl font-black text-2xl hover:scale-[1.01] transition-all shadow-2xl"
-          >حفظ وتنشيط الإعلانات 💾</button>
         </div>
       )}
 
       {activeTab === 'editor' && (
-        <div className="p-10 bg-white/5 border border-white/10 rounded-[40px] space-y-6">
-           <input className="w-full p-5 bg-black/40 rounded-2xl font-black text-xl" placeholder="عنوان المقال الربحي..." value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
-           <textarea className="w-full h-80 p-5 bg-black/40 rounded-2xl leading-relaxed" placeholder="المحتوى... (ضع روابط الأفلييت مباشرة)" value={form.content} onChange={e => setForm({...form, content: e.target.value})} />
-           <input className="w-full p-5 bg-black/40 rounded-2xl" placeholder="رابط الصورة المباشر" value={form.image} onChange={e => setForm({...form, image: e.target.value})} />
-           <button onClick={handleSavePost} className="w-full py-6 bg-emerald-600 text-white rounded-3xl font-black text-2xl">نشر المقال الآن 🚀</button>
+        <div className="p-10 bg-white/5 border border-white/10 rounded-[40px] space-y-10">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <label className="text-xs font-black opacity-50 mr-2">عنوان المقال</label>
+                <input className="w-full p-5 bg-black/40 rounded-2xl font-black text-xl" placeholder="مثلاً: أفضل صفقات تيمو اليوم" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
+              </div>
+              <div className="space-y-4">
+                <label className="text-xs font-black opacity-50 mr-2">التصنيف</label>
+                <select className="w-full p-5 bg-black/40 rounded-2xl font-black" value={form.category} onChange={e => setForm({...form, category: e.target.value as Category})}>
+                   {Object.values(Category).map(c => <option key={c} value={c}>{c}</option>)}
+                </select>
+              </div>
+           </div>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <label className="text-xs font-black text-emerald-500 mr-2">رابط الأفلييت (Affiliate Link)</label>
+                <input className="w-full p-5 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl font-bold" placeholder="رابط تيمو أو أمازون الخاص بك..." value={form.affiliateLink} onChange={e => setForm({...form, affiliateLink: e.target.value})} />
+              </div>
+              <div className="space-y-4">
+                <label className="text-xs font-black text-orange-500 mr-2">كود الخصم (Coupon Code)</label>
+                <input className="w-full p-5 bg-orange-500/10 border border-orange-500/30 rounded-2xl font-bold" placeholder="مثلاً: EPM88" value={form.couponCode} onChange={e => setForm({...form, couponCode: e.target.value})} />
+              </div>
+           </div>
+
+           <div className="space-y-4">
+              <label className="text-xs font-black opacity-50 mr-2">محتوى المقال (شرح العرض)</label>
+              <textarea className="w-full h-80 p-5 bg-black/40 rounded-2xl leading-relaxed" placeholder="اشرح للزائر لماذا هذا العرض رائع..." value={form.content} onChange={e => setForm({...form, content: e.target.value})} />
+           </div>
+
+           <div className="space-y-4">
+              <label className="text-xs font-black opacity-50 mr-2">رابط صورة المنتج</label>
+              <input className="w-full p-5 bg-black/40 rounded-2xl" placeholder="رابط الصورة المباشر من جوجل أو تيمو..." value={form.image} onChange={e => setForm({...form, image: e.target.value})} />
+           </div>
+
+           <button onClick={handleSavePost} className="w-full py-6 bg-emerald-600 text-white rounded-3xl font-black text-2xl shadow-xl hover:bg-emerald-500 transition-all">نشر العرض الآن 🚀</button>
         </div>
       )}
     </div>

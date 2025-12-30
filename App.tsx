@@ -12,9 +12,10 @@ import AdminDashboard from './components/AdminDashboard.tsx';
 import Login from './components/Login.tsx';
 import WhatsAppButton from './components/WhatsAppButton.tsx';
 import LegalPage from './components/LegalPage.tsx';
+import { INITIAL_POSTS } from './constants.tsx';
 
 const INITIAL_SETTINGS: Settings = {
-  siteName: 'عبدو ويب | متجر وتقنية',
+  siteName: 'عبدو ويب | صيد العروض والأفلييت',
   adsenseCode: 'ca-pub-5578524966832192',
   alternativeAdsCode: '', 
   globalAdsCode: '',
@@ -24,6 +25,7 @@ const INITIAL_SETTINGS: Settings = {
 };
 
 const INITIAL_DATA: Article[] = [
+  ...INITIAL_POSTS,
   {
     id: 'prod-1',
     name: 'ساعة ذكية Ultra Series 9',
@@ -46,33 +48,22 @@ const INITIAL_DATA: Article[] = [
     inStock: true
   },
   {
-    id: 'prod-2',
-    name: 'سماعات Airpods Pro 2 (Premium Copy)',
-    excerpt: 'جودة صوت مذهلة مع عزل الضوضاء النشط وعلبة شحن تدعم MagSafe.',
-    content: `استمتع بأفضل جودة صوت ممكنة مع سماعاتنا المختارة بعناية.
-    التوصيل متاح لجميع المدن المغربية والدفع عند الاستلام.`,
-    image: 'https://images.unsplash.com/photo-1588423771073-b8903fbb85b5?auto=format&fit=crop&q=80&w=1000',
-    category: Category.STORE,
-    date: '04 أبريل 2025',
-    views: 850,
-    author: 'المتجر',
-    price: 299,
-    oldPrice: 450,
-    isProduct: true,
-    rating: 4,
-    inStock: true
-  },
-  {
-    id: 'post-1',
-    title: 'أفضل 5 هواتف اقتصادية في السوق المغربي لعام 2025',
-    excerpt: 'تعرف على الخيارات الأفضل التي تجمع بين الأداء القوي والسعر المناسب.',
-    content: `السوق المغربي مليء بالخيارات، لكننا اخترنا لكم الأفضل...`,
-    image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&q=80&w=1000',
-    // Corrected Category.TECH to Category.TECH_REVIEWS
-    category: Category.TECH_REVIEWS,
-    date: '03 أبريل 2025',
-    views: 15000,
-    author: 'عبدو التقني'
+    id: 'post-smart-home',
+    title: 'كيف تحول منزلك لبيت ذكي بأقل من 500 درهم من تيمو؟',
+    excerpt: 'دليل شامل لاختيار أرخص وأجود قطع الـ Smart Home المتوفرة حالياً مع روابط الشحن للمغرب.',
+    content: `المنزل الذكي لم يعد ترفاً للأغنياء فقط. بفضل تيمو يمكنك الحصول على مصابيح ذكية، مقابس واي فاي، وحساسات حركة بأسعار خيالية.
+    
+    إليك القائمة التي جربناها:
+    1. مصابيح RGB ذكية (تتحكم بها من الهاتف).
+    2. حساسات الأبواب.
+    3. ريموت كنترول شامل لكل الأجهزة.`,
+    image: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&q=80&w=1200',
+    category: Category.TEMU,
+    date: '05 أبريل 2025',
+    views: 3200,
+    author: 'عبدو التقني',
+    affiliateLink: 'https://temu.to/k/example2',
+    couponCode: 'SALE2025'
   }
 ];
 
@@ -87,19 +78,19 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const DATA_VERSION = "v16.0_ecommerce_update"; 
+  const DATA_VERSION = "v17.0_affiliate_ready"; 
 
   useEffect(() => {
-    const savedSettings = localStorage.getItem('abdou_settings_v16');
+    const savedSettings = localStorage.getItem('abdou_settings_v17');
     if (savedSettings) setSettings(JSON.parse(savedSettings));
 
-    const savedPostsRaw = localStorage.getItem('abdou_blog_v16');
-    const savedVersion = localStorage.getItem('abdou_data_version_v16');
+    const savedPostsRaw = localStorage.getItem('abdou_blog_v17');
+    const savedVersion = localStorage.getItem('abdou_data_version_v17');
     
     if (savedVersion !== DATA_VERSION) {
       setPosts(INITIAL_DATA);
-      localStorage.setItem('abdou_blog_v16', JSON.stringify(INITIAL_DATA));
-      localStorage.setItem('abdou_data_version_v16', DATA_VERSION);
+      localStorage.setItem('abdou_blog_v17', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_data_version_v17', DATA_VERSION);
     } else {
       setPosts(savedPostsRaw ? JSON.parse(savedPostsRaw) : INITIAL_DATA);
     }
@@ -168,8 +159,8 @@ const App: React.FC = () => {
           <AdminDashboard 
             posts={posts} 
             settings={settings}
-            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v16', JSON.stringify(newPosts));}}
-            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v16', JSON.stringify(s));}}
+            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v17', JSON.stringify(newPosts));}}
+            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v17', JSON.stringify(s));}}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
