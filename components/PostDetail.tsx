@@ -12,6 +12,7 @@ interface PostDetailProps {
 
 const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, settings }) => {
   const [progress, setProgress] = useState(0);
+  const [copied, setCopied] = useState(false);
   const fallbackImage = 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop';
 
   useEffect(() => {
@@ -31,6 +32,18 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
 
   const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     e.currentTarget.src = fallbackImage;
+  };
+
+  const shareLinks = {
+    whatsapp: `https://wa.me/?text=${encodeURIComponent(post.title + ' \n ' + window.location.href)}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
+    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -93,16 +106,28 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         ))}
       </div>
 
-      {post.affiliateLink && (
-        <div className="mb-16">
+      <div className="space-y-8">
+        {post.affiliateLink && (
           <button 
             onClick={handleBuyClick}
             className="w-full py-5 md:py-8 bg-orange-600 text-white rounded-[25px] md:rounded-[40px] font-black text-lg md:text-2xl shadow-xl hover:bg-orange-500 transition-all flex items-center justify-center gap-3"
           >
             اطلب الآن قبل انتهاء الكمية 🛍️
           </button>
+        )}
+
+        {/* Share Section for Post */}
+        <div className="bg-white/5 p-8 rounded-[35px] border border-white/5">
+          <h3 className="text-center font-black text-lg mb-6">هل أعجبك هذا المقال؟ شاركه مع الآخرين 🚀</h3>
+          <div className="flex flex-wrap justify-center gap-4">
+             <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-[120px] bg-[#25D366] text-white py-5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-[#25D366]/20 font-black">واتساب</a>
+             <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-[120px] bg-[#1877F2] text-white py-5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-[#1877F2]/20 font-black">فيسبوك</a>
+             <button onClick={copyToClipboard} className={`flex-1 min-w-[120px] ${copied ? 'bg-emerald-600 text-white' : 'bg-white/10 text-slate-300'} py-5 rounded-2xl flex items-center justify-center gap-2 font-black transition-all`}>
+               {copied ? 'تم النسخ!' : 'نسخ الرابط'}
+             </button>
+          </div>
         </div>
-      )}
+      </div>
 
       <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
     </div>

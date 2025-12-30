@@ -13,18 +13,28 @@ interface ProductDetailProps {
 
 const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onBack, darkMode, settings }) => {
   const [imgError, setImgError] = useState(false);
+  const [copied, setCopied] = useState(false);
   const fallbackImage = 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop';
 
   const handleOrderClick = () => {
-    // الأولوية لرابط الأفلييت المباشر (تيمو مثلاً)
     if (product.affiliateLink) {
       window.open(product.affiliateLink, '_blank');
       return;
     }
-    
-    // إذا لم يوجد رابط أفلييت، نستخدم رابط Direct Link للإعلانات ثم السلة
     if (settings.directLinkCode) window.open(settings.directLinkCode, '_blank');
     onAddToCart(product);
+  };
+
+  const shareLinks = {
+    whatsapp: `https://wa.me/?text=${encodeURIComponent(product.title + ' \n ' + window.location.href)}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
+    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(product.title)}`
+  };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -86,6 +96,33 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
             )}
           </div>
 
+          <div className="flex flex-col gap-6 pt-6">
+            <button 
+              onClick={handleOrderClick}
+              className="w-full bg-orange-600 text-white py-6 md:py-10 rounded-[30px] md:rounded-[45px] font-black text-xl md:text-3xl shadow-3xl shadow-orange-600/20 hover:bg-orange-500 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4"
+            >
+              اكتشف الثمن واطلب الآن 🛍️
+            </button>
+            
+            {/* Social Share Buttons */}
+            <div className="space-y-4">
+              <p className="text-center font-black text-xs md:text-sm opacity-60">شارك هذه الهمزة مع أصدقائك عبر:</p>
+              <div className="flex flex-wrap justify-center gap-3 md:gap-4">
+                <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-[100px] bg-[#25D366]/10 text-[#25D366] py-4 rounded-2xl md:rounded-3xl flex items-center justify-center gap-2 border border-[#25D366]/20 hover:bg-[#25D366] hover:text-white transition-all font-black text-xs md:text-sm">
+                   <span>واتساب</span>
+                </a>
+                <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-[100px] bg-[#1877F2]/10 text-[#1877F2] py-4 rounded-2xl md:rounded-3xl flex items-center justify-center gap-2 border border-[#1877F2]/20 hover:bg-[#1877F2] hover:text-white transition-all font-black text-xs md:text-sm">
+                   <span>فيسبوك</span>
+                </a>
+                <button onClick={copyToClipboard} className={`flex-1 min-w-[100px] ${copied ? 'bg-emerald-600 text-white' : 'bg-white/5 text-slate-400'} py-4 rounded-2xl md:rounded-3xl flex items-center justify-center gap-2 border border-white/10 hover:bg-white/10 transition-all font-black text-xs md:text-sm`}>
+                   <span>{copied ? 'تم النسخ ✅' : 'نسخ الرابط'}</span>
+                </button>
+              </div>
+            </div>
+            
+            <p className="text-center text-[10px] md:text-sm font-bold opacity-40">توصيل آمن ودفع عند الاستلام متاح لجميع المدن</p>
+          </div>
+
           <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
 
           <div className={`space-y-6 md:space-y-8 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -96,16 +133,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
             <div className="whitespace-pre-line bg-white/5 p-6 md:p-10 rounded-[35px] md:rounded-[45px] border border-white/5 text-sm md:text-xl leading-relaxed font-medium">
               {product.content}
             </div>
-          </div>
-
-          <div className="flex flex-col gap-6 pt-6">
-            <button 
-              onClick={handleOrderClick}
-              className="w-full bg-orange-600 text-white py-6 md:py-10 rounded-[30px] md:rounded-[45px] font-black text-xl md:text-3xl shadow-3xl shadow-orange-600/20 hover:bg-orange-500 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4"
-            >
-              اكتشف الثمن واطلب الآن 🛍️
-            </button>
-            <p className="text-center text-[10px] md:text-sm font-bold opacity-40">توصيل آمن ودفع عند الاستلام متاح لجميع المدن</p>
           </div>
 
           <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
