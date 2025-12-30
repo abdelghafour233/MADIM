@@ -13,14 +13,13 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS, CITIES } from './constants.tsx';
 
-// الأكواد الجديدة التي زودتني بها
+// الأكواد النهائية التي زودتني بها
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
-const DEFAULT_NATIVE_ADS = `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`;
 
 const INITIAL_SETTINGS: Settings = {
   siteName: 'متجر عبدو | عروض حصرية',
   adsenseCode: 'ca-pub-5578524966832192',
-  alternativeAdsCode: DEFAULT_NATIVE_ADS, 
+  alternativeAdsCode: `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`, 
   globalAdsCode: DEFAULT_GLOBAL_ADS,      
   directLinkCode: 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d',
   dashboardPassword: '1234',
@@ -42,38 +41,52 @@ const App: React.FC = () => {
   const [showExitPopup, setShowExitPopup] = useState(false);
 
   useEffect(() => {
-    const savedPosts = localStorage.getItem('abdou_shop_posts_v29');
-    const savedSettings = localStorage.getItem('abdou_shop_settings_v29');
-    const savedCart = localStorage.getItem('abdou_shop_cart_v29');
+    const savedPosts = localStorage.getItem('abdou_shop_posts_final_v1');
+    const savedSettings = localStorage.getItem('abdou_shop_settings_final_v1');
+    const savedCart = localStorage.getItem('abdou_shop_cart_final_v1');
     
     if (savedPosts) setPosts(JSON.parse(savedPosts));
     else {
       setPosts(INITIAL_POSTS);
-      localStorage.setItem('abdou_shop_posts_v29', JSON.stringify(INITIAL_POSTS));
+      localStorage.setItem('abdou_shop_posts_final_v1', JSON.stringify(INITIAL_POSTS));
     }
 
     if (savedSettings) setSettings(JSON.parse(savedSettings));
     else {
       setSettings(INITIAL_SETTINGS);
-      localStorage.setItem('abdou_shop_settings_v29', JSON.stringify(INITIAL_SETTINGS));
+      localStorage.setItem('abdou_shop_settings_final_v1', JSON.stringify(INITIAL_SETTINGS));
     }
 
     if (savedCart) setCart(JSON.parse(savedCart));
   }, []);
 
-  // ميزة اكتشاف محاولة الخروج لزيادة الأرباح
+  // ميزة الربح من النقرة الأولى (Smart Popunder)
+  useEffect(() => {
+    const handleFirstClick = () => {
+      if (!localStorage.getItem('popunder_done')) {
+        window.open(settings.directLinkCode, '_blank');
+        localStorage.setItem('popunder_done', 'true');
+        // إعادة التفعيل بعد 30 دقيقة لزيادة الربح
+        setTimeout(() => localStorage.removeItem('popunder_done'), 1800000);
+      }
+    };
+    document.addEventListener('click', handleFirstClick);
+    return () => document.removeEventListener('click', handleFirstClick);
+  }, [settings.directLinkCode]);
+
+  // اكتشاف محاولة الخروج
   useEffect(() => {
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && !localStorage.getItem('exit_popup_shown')) {
+      if (e.clientY <= 0 && !localStorage.getItem('exit_popup_shown_v2')) {
         setShowExitPopup(true);
-        localStorage.setItem('exit_popup_shown', 'true');
+        localStorage.setItem('exit_popup_shown_v2', 'true');
       }
     };
     document.addEventListener('mouseleave', handleMouseLeave);
     return () => document.removeEventListener('mouseleave', handleMouseLeave);
   }, []);
 
-  // نظام الإشعارات الوهمية
+  // إشعارات وهمية للمصداقية
   useEffect(() => {
     const names = ['سفيان', 'ياسين', 'فاطمة', 'إدريس', 'خديجة', 'أمين', 'مريم', 'يوسف'];
     const interval = setInterval(() => {
@@ -81,25 +94,19 @@ const App: React.FC = () => {
       const city = CITIES[Math.floor(Math.random() * CITIES.length)];
       setNotification({ name, city });
       setTimeout(() => setNotification(null), 5000);
-    }, 15000);
+    }, 20000);
     return () => clearInterval(interval);
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem('abdou_shop_cart_v29', JSON.stringify(cart));
-  }, [cart]);
 
   // حقن كود Social Bar
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-social-bar-v2';
+      const scriptId = 'adsterra-social-bar-final';
       const oldScript = document.getElementById(scriptId);
       if (oldScript) oldScript.remove();
-      
       const adContainer = document.createElement('div');
       adContainer.id = scriptId;
       document.body.appendChild(adContainer);
-      
       const range = document.createRange();
       const fragment = range.createContextualFragment(settings.globalAdsCode);
       adContainer.appendChild(fragment);
@@ -109,16 +116,14 @@ const App: React.FC = () => {
   const handlePostClick = (p: Article) => {
     const updated = posts.map(item => item.id === p.id ? { ...item, views: (item.views || 0) + 1 } : item);
     setPosts(updated);
-    localStorage.setItem('abdou_shop_posts_v29', JSON.stringify(updated));
+    localStorage.setItem('abdou_shop_posts_final_v1', JSON.stringify(updated));
     setSelectedPost(p);
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo(0, 0);
   };
 
   const addToCart = (product: Article) => {
-    // فتح الرابط المباشر عند الإضافة للسلة لضمان الربح
     window.open(settings.directLinkCode, '_blank');
-    
     setCart(prev => {
       const exists = prev.find(item => item.id === product.id);
       if (exists) {
@@ -174,49 +179,46 @@ const App: React.FC = () => {
           window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(msg)}`);
           setCart([]); setView('home'); alert('تم تسجيل طلبك!');
         }} />}
-        {view === 'admin' && (!isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : <AdminDashboard posts={posts} settings={settings} onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_shop_posts_v29', JSON.stringify(newPosts));}} onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_shop_settings_v29', JSON.stringify(s));}} onLogout={() => setIsAuth(false)} darkMode={darkMode} />)}
+        {view === 'admin' && (!isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : <AdminDashboard posts={posts} settings={settings} onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_shop_posts_final_v1', JSON.stringify(newPosts));}} onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_shop_settings_final_v1', JSON.stringify(s));}} onLogout={() => setIsAuth(false)} darkMode={darkMode} />)}
         {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={darkMode} siteName={settings.siteName} />}
       </main>
 
-      {/* نافذة الخروج المنبثقة (Exit Intent) */}
+      {/* نافذة الخروج المنبثقة */}
       {showExitPopup && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setShowExitPopup(false)}></div>
-          <div className="relative bg-gradient-to-b from-slate-900 to-black border border-white/20 p-10 rounded-[50px] max-w-lg w-full text-center shadow-[0_0_100px_rgba(249,115,22,0.3)] animate-scaleIn">
+          <div className="relative bg-gradient-to-b from-slate-900 to-black border border-white/20 p-10 rounded-[50px] max-w-lg w-full text-center shadow-2xl animate-scaleIn">
             <span className="text-7xl block mb-6 animate-bounce">🛑</span>
             <h2 className="text-3xl font-black text-white mb-4">انتظر لحظة!</h2>
-            <p className="text-white/60 font-bold mb-8 leading-relaxed">لقد نسيت استلام "كود الخصم الشامل" الخاص بك. لا تغادر خالي الوفاض!</p>
+            <p className="text-white/60 font-bold mb-8">لقد فزت بقسيمة شراء مجانية بقيمة 200 درهم قبل مغادرتك!</p>
             <a 
-              href={settings.directLinkCode} 
-              target="_blank"
-              onClick={() => setShowExitPopup(false)}
-              className="block w-full py-5 bg-orange-600 text-white rounded-2xl font-black text-2xl shadow-xl hover:scale-105 transition-all"
-            >استلم الكود الآن 🔓</a>
-            <button onClick={() => setShowExitPopup(false)} className="mt-6 text-white/30 font-bold text-sm">لا أريد خصماً، شكراً</button>
+              href={settings.directLinkCode} target="_blank" onClick={() => setShowExitPopup(false)}
+              className="block w-full py-5 bg-emerald-600 text-white rounded-2xl font-black text-2xl shadow-xl hover:scale-105 transition-all"
+            >استلم القسيمة الآن 🔓</a>
           </div>
         </div>
       )}
 
-      {/* إشعار الربح الصغير */}
+      {/* إشعارات الأرباح */}
       {notification && (
         <div className="fixed bottom-32 left-8 z-[200] animate-slideLeft bg-white/10 backdrop-blur-xl border border-white/20 p-4 rounded-2xl flex items-center gap-4 shadow-2xl">
           <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white">✔</div>
           <div>
-            <p className="text-[10px] font-black text-emerald-500 uppercase">تم التأكيد</p>
-            <p className="text-xs font-bold text-white">{notification.name} من {notification.city} ربح الجائزة!</p>
+            <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">تأكيد الجائزة</p>
+            <p className="text-xs font-bold text-white">{notification.name} من {notification.city} ربح الآن!</p>
           </div>
         </div>
       )}
 
       {settings.directLinkCode && (
-        <a href={settings.directLinkCode} target="_blank" className="fixed bottom-24 right-8 z-[90] w-14 h-14 bg-orange-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl animate-bounce hover:scale-110">🎁</a>
+        <a href={settings.directLinkCode} target="_blank" className="fixed bottom-24 right-8 z-[90] w-14 h-14 bg-orange-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl animate-bounce hover:scale-110 shadow-orange-600/50">🎁</a>
       )}
 
       {isCartOpen && <Cart items={cart} onRemove={removeFromCart} onUpdateQuantity={updateQuantity} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} />}
 
-      <footer className="mt-20 py-12 border-t border-white/5 text-center opacity-60">
+      <footer className="mt-20 py-12 border-t border-white/5 text-center opacity-40">
         <h3 className="text-xl font-black mb-2 text-emerald-500">{settings.siteName}</h3>
-        <p className="text-[10px]">المنصة رقم 1 في المغرب للعروض والربح</p>
+        <p className="text-[10px] font-bold">تسوق بذكاء.. واربح مع عبدو</p>
       </footer>
       <WhatsAppButton />
     </div>
