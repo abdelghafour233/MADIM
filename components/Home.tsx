@@ -69,11 +69,11 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
               
               <div className="flex flex-col sm:flex-row items-center gap-6">
                  <div className="w-full sm:w-auto bg-white text-black p-5 md:p-6 rounded-3xl font-black shadow-2xl flex flex-col items-center min-w-[140px]">
-                    <span className="text-[10px] opacity-40 mb-1 uppercase tracking-tighter">الثمن الحالي</span>
-                    <span className="text-2xl md:text-4xl">{trendingPost.price} د.م</span>
+                    <span className="text-[10px] opacity-40 mb-1 uppercase tracking-tighter">الثمن</span>
+                    <span className="text-xl md:text-4xl">{trendingPost.price && trendingPost.price > 0 ? `${trendingPost.price} د.م` : 'أفضل سعر'}</span>
                  </div>
                  <button className="w-full sm:flex-1 bg-emerald-600 text-white py-6 md:py-8 rounded-[30px] md:rounded-[40px] font-black text-xl md:text-3xl shadow-2xl shadow-emerald-600/30 hover:bg-emerald-500 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4">
-                     شراء الآن مباشرة 🛍️
+                     اكتشف العرض الآن 🛍️
                  </button>
               </div>
            </div>
@@ -130,7 +130,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
                     alt={post.title} 
                  />
                  <div className="absolute top-3 right-3 md:top-6 md:right-6 bg-orange-600 backdrop-blur-md text-white px-3 py-1.5 md:px-5 md:py-2.5 rounded-xl md:rounded-2xl text-[9px] md:text-xs font-black shadow-2xl z-20">
-                    وفر {post.marketPrice ? post.marketPrice - (post.price || 0) : 0} د.م
+                    {post.marketPrice && post.price && post.price > 0 ? `وفر ${post.marketPrice - post.price} د.م` : 'تخفيض كبير'}
                  </div>
               </div>
               <div className="flex flex-col flex-1 px-1">
@@ -140,10 +140,10 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
                 <div className="mt-auto flex items-center justify-between pt-4 border-t border-white/5">
                    <div className="flex flex-col">
                       <span className="text-[8px] md:text-[10px] font-black text-slate-500 uppercase">الثمن:</span>
-                      <span className="text-lg md:text-3xl font-black text-emerald-500">{post.price} د.م</span>
+                      <span className="text-lg md:text-3xl font-black text-emerald-500">{post.price && post.price > 0 ? `${post.price} د.م` : 'انظر العرض'}</span>
                    </div>
                    <button className="w-10 h-10 md:w-14 md:h-14 bg-emerald-600/10 text-emerald-500 rounded-xl md:rounded-[22px] flex items-center justify-center text-lg md:text-2xl hover:bg-emerald-600 hover:text-white transition-all shadow-inner">
-                      🛒
+                      🛍️
                    </button>
                 </div>
               </div>

@@ -69,13 +69,19 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl group-hover:scale-150 transition-transform duration-1000"></div>
             <p className="text-emerald-100 font-black mb-2 text-sm md:text-xl uppercase tracking-widest">عرض خاص ومحدود:</p>
             <div className="flex items-baseline gap-2 md:gap-4">
-              <span className="text-4xl md:text-7xl font-black">{product.price?.toLocaleString()}</span>
-              <span className="text-xl md:text-3xl font-black opacity-80">د.م</span>
+              {product.price && product.price > 0 ? (
+                <>
+                  <span className="text-4xl md:text-7xl font-black">{product.price.toLocaleString()}</span>
+                  <span className="text-xl md:text-3xl font-black opacity-80">د.م</span>
+                </>
+              ) : (
+                <span className="text-3xl md:text-5xl font-black">أفضل سعر متاح اليوم</span>
+              )}
             </div>
-            {product.marketPrice && (
+            {product.marketPrice && product.price && product.price > 0 && (
               <div className="mt-4 flex items-center gap-3">
                 <span className="text-sm md:text-xl opacity-60 line-through">كان بـ {product.marketPrice} د.م</span>
-                <span className="bg-orange-600 px-3 py-1 rounded-lg text-[10px] md:text-sm font-black">وفر {product.marketPrice - (product.price || 0)} د.م</span>
+                <span className="bg-orange-600 px-3 py-1 rounded-lg text-[10px] md:text-sm font-black">وفر {product.marketPrice - product.price} د.م</span>
               </div>
             )}
           </div>
@@ -97,9 +103,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
               onClick={handleOrderClick}
               className="w-full bg-orange-600 text-white py-6 md:py-10 rounded-[30px] md:rounded-[45px] font-black text-xl md:text-3xl shadow-3xl shadow-orange-600/20 hover:bg-orange-500 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4"
             >
-              اطلب الآن من تيمو مباشرة 🛍️
+              اكتشف الثمن واطلب الآن 🛍️
             </button>
-            <p className="text-center text-[10px] md:text-sm font-bold opacity-40">توصيل آمن ودفع عند الاستلام متاح</p>
+            <p className="text-center text-[10px] md:text-sm font-bold opacity-40">توصيل آمن ودفع عند الاستلام متاح لجميع المدن</p>
           </div>
 
           <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
