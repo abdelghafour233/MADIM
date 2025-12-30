@@ -13,12 +13,13 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '1.2.1'; 
+// تم تحديث الإصدار والمفاتيح لكسر الكاش بشكل نهائي
+const CURRENT_VERSION = '1.2.2'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_prod_posts_v5', 
-  SETTINGS: 'abdou_prod_settings_v5',
-  CART: 'abdou_prod_cart_v5',
-  VERSION: 'abdou_prod_version_v5'
+  POSTS: 'abdou_final_posts_v6', 
+  SETTINGS: 'abdou_final_settings_v6',
+  CART: 'abdou_final_cart_v6',
+  VERSION: 'abdou_final_version_v6'
 };
 
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
@@ -30,7 +31,7 @@ const INITIAL_SETTINGS: Settings = {
   globalAdsCode: DEFAULT_GLOBAL_ADS,      
   directLinkCode: 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d',
   dashboardPassword: '1234',
-  totalVisits: 1500,
+  totalVisits: 2500,
   whatsappNumber: '212649075664'
 };
 
@@ -60,25 +61,15 @@ const App: React.FC = () => {
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
     } else {
       if (savedPosts) setPosts(JSON.parse(savedPosts));
+      else setPosts(INITIAL_POSTS);
+
       if (savedSettings) setSettings(JSON.parse(savedSettings));
+      else setSettings(INITIAL_SETTINGS);
     }
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    setTimeout(() => setIsLoading(false), 800);
+    setTimeout(() => setIsLoading(false), 600);
   }, []);
-
-  useEffect(() => {
-    if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-premium-v1';
-      const old = document.getElementById(scriptId);
-      if (old) old.remove();
-      const div = document.createElement('div');
-      div.id = scriptId;
-      document.body.appendChild(div);
-      const range = document.createRange();
-      div.appendChild(range.createContextualFragment(settings.globalAdsCode));
-    }
-  }, [settings.globalAdsCode]);
 
   const handlePostClick = (p: Article) => {
     const updated = posts.map(item => item.id === p.id ? { ...item, views: (item.views || 0) + 1 } : item);
@@ -90,9 +81,7 @@ const App: React.FC = () => {
   };
 
   const addToCart = (product: Article) => {
-    // تشغيل Direct Link لزيادة الربح عند كل عملية إضافة للسلة
     if (settings.directLinkCode) window.open(settings.directLinkCode, '_blank');
-    
     setCart(prev => {
       const updated = prev.find(item => item.id === product.id)
         ? prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
@@ -105,8 +94,8 @@ const App: React.FC = () => {
 
   if (isLoading) return (
     <div className="fixed inset-0 bg-[#0a0a0b] flex flex-col items-center justify-center z-[1000]">
-      <div className="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
-      <h2 className="text-emerald-500 font-black text-xl animate-pulse">abdouweb.online</h2>
+      <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
+      <h2 className="text-emerald-500 font-black text-xl animate-pulse tracking-tighter">abdouweb.online</h2>
     </div>
   );
 
@@ -139,14 +128,14 @@ const App: React.FC = () => {
 
       <footer className="mt-20 py-20 border-t border-white/5 text-center bg-black/40">
         <div className="container mx-auto px-4">
-           <h3 className="text-4xl font-black mb-6 text-emerald-500">abdouweb</h3>
+           <h3 className="text-4xl font-black mb-6 text-emerald-500 tracking-tighter">abdouweb</h3>
            <div className="flex flex-wrap justify-center gap-6 mb-10 text-sm font-bold opacity-60">
-              <button onClick={() => setView('about')}>من نحن</button>
-              <button onClick={() => setView('privacy')}>الخصوصية</button>
-              <button onClick={() => setView('terms')}>الشروط</button>
-              <button onClick={() => setView('contact')}>اتصل بنا</button>
+              <button onClick={() => setView('about')} className="hover:text-emerald-500 transition-colors">من نحن</button>
+              <button onClick={() => setView('privacy')} className="hover:text-emerald-500 transition-colors">الخصوصية</button>
+              <button onClick={() => setView('terms')} className="hover:text-emerald-500 transition-colors">الشروط</button>
+              <button onClick={() => setView('contact')} className="hover:text-emerald-500 transition-colors">اتصل بنا</button>
            </div>
-           <p className="text-[11px] font-bold opacity-30">© 2025 abdouweb.online - جميع الحقوق محفوظة</p>
+           <p className="text-[11px] font-bold opacity-30 tracking-widest uppercase">© 2025 abdouweb.online - جميع الحقوق محفوظة</p>
         </div>
       </footer>
       <WhatsAppButton />

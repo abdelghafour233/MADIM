@@ -19,7 +19,7 @@ export const INITIAL_POSTS: Article[] = [
 
 لماذا تشتريها من متجرنا؟
 نحن نوفر لك النسخة الأصلية مع ضمان الجودة وشحن سريع لجميع المدن المغربية، والدفع لا يتم إلا بعد معاينة المنتج واستلامه.`,
-    image: 'https://m.media-amazon.com/images/I/71YJ4qC2tHL._AC_SL1500_.jpg', // صورة ساعة ألترا احترافية وموثوقة
+    image: 'https://m.media-amazon.com/images/I/71YJ4qC2tHL._AC_SL1500_.jpg', 
     category: Category.DEALS,
     date: 'اليوم',
     views: 15600,
@@ -28,15 +28,17 @@ export const INITIAL_POSTS: Article[] = [
     isProduct: true,
     price: 199,
     marketPrice: 450,
-    affiliateLink: 'https://matjarhalal.youcan.store/products/saaa-thky-mmtaz-1',
+    affiliateLink: 'https://temu.to/k/e3ejwx2351', // تم تحديث الرابط هنا أيضاً لضمان الربح
     couponCode: 'OFFER20'
   },
   {
     id: 'temu-smartwatch-ultra-9',
-    title: 'ساعة Ultra 9 الذكية - النسخة الرياضية ⌚',
+    title: 'ساعة Ultra 9 الذكية - النسخة الرياضية من تيمو ⌚',
     name: 'ساعة Ultra 9 الرياضية',
     excerpt: 'أقوى شبيهة لساعة أبل ألترا متوفرة الآن بخصم 90%. تدعم المكالمات، الرياضة، ومراقبة الصحة.',
-    content: `احصل على الفخامة والأداء العالي مع ساعة Ultra 9 الذكية، الخيار الأول للشباب في المغرب حالياً.`,
+    content: `🚀 سجل الآن في برنامج تيمو عبر رابطنا واحصل على مكافآت فورية!
+    
+احصل على الفخامة والأداء العالي مع ساعة Ultra 9 الذكية، الخيار الأول للشباب في المغرب حالياً.`,
     image: 'https://images.unsplash.com/photo-1434493907317-a46b53b81846?auto=format&fit=crop&q=80&w=1200',
     category: Category.DEALS,
     date: 'أمس',
@@ -46,7 +48,7 @@ export const INITIAL_POSTS: Article[] = [
     isProduct: true,
     price: 149,
     marketPrice: 450,
-    affiliateLink: 'https://temu.to/k/eg6h0ltmwzi',
+    affiliateLink: 'https://temu.to/k/e3ejwx2351', // الرابط الجديد المطلوب
     couponCode: 'TEMU2025'
   },
   {
@@ -64,21 +66,6 @@ export const INITIAL_POSTS: Article[] = [
     isProduct: true,
     price: 399,
     marketPrice: 850
-  },
-  {
-    id: 'gaming-mouse-pro',
-    title: 'ماوس قيمنق Razer DeathAdder - عرض محدود',
-    name: 'Razer DeathAdder Essential',
-    excerpt: 'أداء احترافي بخصم خيالي. الماوس الأكثر طلباً من طرف اللاعبين في المغرب.',
-    content: `ارفع مستوى لعبك مع ماوس ريزر الاحترافي.`,
-    image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&q=80&w=1200',
-    category: Category.TECH_REVIEWS,
-    date: '05 أبريل 2025',
-    views: 8500,
-    author: 'عبدو ستور',
-    isProduct: true,
-    price: 189,
-    marketPrice: 350
   }
 ];
 
