@@ -38,21 +38,22 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
 
   if (!trendingPost) return <div className="text-center py-20 opacity-40 font-black">جاري جلب أفضل العروض...</div>;
 
-  // تقسيم المنتجات لوضع إعلانات بينها
   const chunkedPosts = [];
-  for (let i = 0; i < otherPosts.length; i += 4) {
-    chunkedPosts.push(otherPosts.slice(i, i + 4));
+  const chunkSize = 8; // زيادة عدد المنتجات قبل كل إعلان في الشاشات الكبيرة
+  for (let i = 0; i < otherPosts.length; i += chunkSize) {
+    chunkedPosts.push(otherPosts.slice(i, i + chunkSize));
   }
 
   return (
-    <div className="space-y-12 animate-fade" dir="rtl">
-      {/* Hero Section Premium */}
+    <div className="space-y-12 md:space-y-20 animate-fade" dir="rtl">
+      {/* Hero Section Premium - Fully Responsive */}
       <section 
-        className="relative group cursor-pointer overflow-hidden rounded-[40px] md:rounded-[60px] bg-white/5 border border-white/10 shadow-3xl"
+        className="relative group cursor-pointer overflow-hidden rounded-[40px] md:rounded-[60px] bg-white/5 border border-white/10 shadow-3xl transition-transform duration-500 hover:scale-[1.005]"
         onClick={() => onPostClick(trendingPost)}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch min-h-[500px] md:min-h-[600px]">
-           <div className="relative h-[300px] sm:h-[400px] lg:h-auto overflow-hidden bg-[#0d0d0e] flex items-center justify-center">
+        <div className="flex flex-col lg:flex-row items-stretch">
+           {/* Image Container */}
+           <div className="relative w-full lg:w-1/2 h-[350px] sm:h-[450px] lg:h-[650px] overflow-hidden bg-[#0d0d0e] flex items-center justify-center p-8 md:p-16">
               <div 
                 className="absolute inset-0 bg-cover bg-center blur-3xl opacity-20 scale-125" 
                 style={{ backgroundImage: `url("${trendingPost.image}")` }}
@@ -61,28 +62,29 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
                 src={trendingPost.image} 
                 referrerPolicy="no-referrer"
                 onError={handleImgError}
-                className="relative z-10 w-full h-full object-contain p-4 md:p-12 group-hover:scale-105 transition-transform duration-1000" 
+                className="relative z-10 w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-1000" 
                 alt={trendingPost.title} 
               />
-              <div className="absolute top-6 right-6 md:top-10 md:right-10 bg-orange-600 text-white px-5 py-2 rounded-2xl text-[10px] md:text-sm font-black shadow-2xl animate-pulse z-30 flex items-center gap-2">
+              <div className="absolute top-6 right-6 md:top-10 md:right-10 bg-orange-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-2xl text-[10px] md:text-sm font-black shadow-2xl animate-pulse z-30 flex items-center gap-2">
                 <span>⏱️</span>
                 <span>ينتهي العرض: {timeLeft.h}:{timeLeft.m}:{timeLeft.s}</span>
               </div>
            </div>
 
-           <div className="p-8 md:p-16 lg:p-20 flex flex-col justify-center bg-black/40 lg:bg-transparent relative z-30">
+           {/* Content Container */}
+           <div className="w-full lg:w-1/2 p-8 sm:p-12 md:p-16 lg:p-20 flex flex-col justify-center bg-black/40 lg:bg-transparent relative z-30">
               <div className="flex items-center gap-3 mb-6">
                 <span className="bg-emerald-600/20 text-emerald-500 px-4 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border border-emerald-500/20">همزة اليوم الحصرية 🔥</span>
               </div>
-              <h1 className="text-3xl md:text-6xl font-black mb-8 leading-[1.1] group-hover:text-emerald-500 transition-colors">{trendingPost.title}</h1>
-              <p className="text-slate-400 text-lg md:text-xl font-medium mb-12 line-clamp-3 leading-relaxed">{trendingPost.excerpt}</p>
+              <h1 className="text-3xl md:text-5xl xl:text-7xl font-black mb-6 md:mb-10 leading-[1.1] group-hover:text-emerald-500 transition-colors">{trendingPost.title}</h1>
+              <p className="text-slate-400 text-lg md:text-2xl font-medium mb-10 md:mb-14 line-clamp-3 leading-relaxed">{trendingPost.excerpt}</p>
               
               <div className="flex flex-col sm:flex-row items-center gap-6">
-                 <div className="w-full sm:w-auto bg-white text-black p-5 md:p-6 rounded-3xl font-black shadow-2xl flex flex-col items-center min-w-[140px]">
-                    <span className="text-[10px] opacity-40 mb-1 uppercase tracking-tighter">الثمن</span>
-                    <span className="text-xl md:text-4xl">{trendingPost.price && trendingPost.price > 0 ? `${trendingPost.price} د.م` : 'أفضل سعر'}</span>
+                 <div className="w-full sm:w-auto bg-white text-black p-5 md:p-8 rounded-[30px] font-black shadow-2xl flex flex-col items-center min-w-[160px]">
+                    <span className="text-[10px] md:text-xs opacity-40 mb-1 uppercase tracking-tighter">الثمن اليوم</span>
+                    <span className="text-2xl md:text-5xl">{trendingPost.price && trendingPost.price > 0 ? `${trendingPost.price} د.م` : 'أفضل سعر'}</span>
                  </div>
-                 <button className="w-full sm:flex-1 bg-emerald-600 text-white py-6 md:py-8 rounded-[30px] md:rounded-[40px] font-black text-xl md:text-3xl shadow-2xl shadow-emerald-600/30 hover:bg-emerald-500 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4">
+                 <button className="w-full sm:flex-1 bg-emerald-600 text-white py-6 md:py-9 rounded-[30px] md:rounded-[45px] font-black text-xl md:text-3xl shadow-2xl shadow-emerald-600/30 hover:bg-emerald-500 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4">
                      اكتشف العرض الآن 🛍️
                  </button>
               </div>
@@ -92,7 +94,8 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
 
       <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
 
-      <div className="space-y-12">
+      {/* Product Grid Section */}
+      <div className="space-y-8 md:space-y-12">
         <div className="flex items-center justify-between border-b border-white/5 pb-8">
            <h2 className="text-2xl md:text-4xl font-black flex items-center gap-4">
               <span className="w-3 h-10 bg-emerald-600 rounded-full"></span>
@@ -102,11 +105,11 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
 
         {chunkedPosts.map((chunk, index) => (
           <React.Fragment key={index}>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-8">
               {chunk.map(post => (
                 <div 
                   key={post.id} 
-                  className="group cursor-pointer glass-card p-4 md:p-6 overflow-hidden flex flex-col"
+                  className="group cursor-pointer glass-card p-4 md:p-6 overflow-hidden flex flex-col h-full"
                   onClick={() => onPostClick(post)}
                 >
                   <div className="relative aspect-square rounded-[25px] md:rounded-[40px] overflow-hidden bg-[#0d0d0e] mb-6 flex items-center justify-center img-loading">
@@ -119,17 +122,20 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
                         alt={post.title} 
                      />
                   </div>
-                  <h3 className="text-sm md:text-xl font-black mb-4 line-clamp-2 min-h-[3rem] group-hover:text-emerald-500 transition-colors leading-snug">
+                  <h3 className="text-sm md:text-lg font-black mb-4 line-clamp-2 min-h-[2.5rem] group-hover:text-emerald-500 transition-colors leading-snug">
                     {post.title}
                   </h3>
                   <div className="mt-auto flex items-center justify-between pt-4 border-t border-white/5">
-                      <span className="text-lg md:text-2xl font-black text-emerald-500">{post.price && post.price > 0 ? `${post.price} د.م` : 'انظر العرض'}</span>
-                      <button className="w-10 h-10 md:w-12 md:h-12 bg-emerald-600/10 text-emerald-500 rounded-xl flex items-center justify-center">🛍️</button>
+                      <div className="flex flex-col">
+                        <span className="text-xs opacity-40 font-bold">ثمن العرض</span>
+                        <span className="text-lg md:text-2xl font-black text-emerald-500">{post.price && post.price > 0 ? `${post.price} د.م` : 'انظر العرض'}</span>
+                      </div>
+                      <button className="w-10 h-10 md:w-12 md:h-12 bg-emerald-600/10 text-emerald-500 rounded-xl flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-colors">🛍️</button>
                   </div>
                 </div>
               ))}
             </div>
-            {/* إعلان بعد كل 4 منتجات */}
+            {/* إعلان بعد كل مجموعة منتجات */}
             <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
           </React.Fragment>
         ))}

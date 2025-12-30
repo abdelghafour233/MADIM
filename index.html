@@ -3,7 +3,7 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
@@ -35,21 +35,25 @@
         -webkit-backdrop-filter: blur(15px);
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 35px;
-        transition: all 0.4s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .glass-card:hover {
+        transform: translateY(-8px);
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(16, 185, 129, 0.3);
       }
       .hero-gradient {
-        background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.15), transparent 40%),
-                    radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.1), transparent 40%);
+        background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), transparent 50%),
+                    radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.08), transparent 50%);
       }
       .no-scrollbar::-webkit-scrollbar { display: none; }
       
       @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
+        from { opacity: 0; transform: translateY(15px); }
         to { opacity: 1; transform: translateY(0); }
       }
-      .animate-fade { animation: fadeIn 0.6s ease-out forwards; }
+      .animate-fade { animation: fadeIn 0.8s ease-out forwards; }
       
-      /* نظام الصور v1.9 */
       img {
         max-width: 100%;
         display: block;
@@ -59,6 +63,7 @@
       .img-loading {
         background: #1a1a1b;
         position: relative;
+        overflow: hidden;
       }
       .img-loading::after {
         content: "";
@@ -78,14 +83,14 @@
     "react": "https://esm.sh/react@18.2.0",
     "react-dom": "https://esm.sh/react-dom@18.2.0",
     "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "react/": "https://esm.sh/react@^19.2.3/"
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
   }
 }
 </script>
   </head>
   <body class="hero-gradient">
     <div id="root"></div>
-    <script data-cfasync="false" type="module" src="./index.tsx?v=1.9.0-FINAL-IMAGE-FIX"></script>
+    <script data-cfasync="false" type="module" src="./index.tsx?v=1.9.8-RESPONSIVE"></script>
   </body>
 </html>
