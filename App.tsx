@@ -13,7 +13,7 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '1.9.5-AD-MAX'; 
+const CURRENT_VERSION = '1.9.7-FIX-LINK'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v40_posts', 
   SETTINGS: 'abdou_v40_settings',
@@ -21,7 +21,6 @@ const STORAGE_KEYS = {
   VERSION: 'abdou_v40_version'
 };
 
-// أكواد أدستيرا المتنوعة لتعظيم الأرباح
 const ADSTERRA_SOCIAL_BAR = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
 const ADSTERRA_NATIVE_BANNER = `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`;
 const ADSTERRA_BANNER_300x250 = `<script type="text/javascript">
@@ -71,6 +70,7 @@ const App: React.FC = () => {
       currentSettings = { ...INITIAL_SETTINGS, ...JSON.parse(savedSettings) };
     }
 
+    // إذا تغير الإصدار، نقوم بتحديث المنتجات من INITIAL_POSTS لضمان وصول الروابط الجديدة
     if (lastVersion !== CURRENT_VERSION) {
       setPosts(INITIAL_POSTS);
       setSettings(currentSettings);
@@ -92,7 +92,6 @@ const App: React.FC = () => {
     setTimeout(() => setIsLoading(false), 1200);
   }, []);
 
-  // حقن كود السوشيال بار العالمي
   useEffect(() => {
     if (settings.globalAdsCode) {
       const scriptId = 'adsterra-v195-loader';
@@ -116,14 +115,16 @@ const App: React.FC = () => {
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    // فتح الرابط المباشر عند كل نقرة على المحتوى
     if (settings.directLinkCode) {
-      window.open(settings.directLinkCode, '_blank');
+      const adWindow = window.open(settings.directLinkCode, '_blank');
+      if (adWindow) {
+         adWindow.blur();
+         window.focus();
+      }
     }
   };
 
   const addToCart = (product: Article) => {
-    // إعلان إجباري عند الإضافة للسلة
     if (settings.directLinkCode) window.open(settings.directLinkCode, '_blank');
     
     setCart(prev => {
