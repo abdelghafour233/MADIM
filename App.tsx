@@ -16,7 +16,7 @@ import { INITIAL_POSTS, CITIES } from './constants.tsx';
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
 
 const INITIAL_SETTINGS: Settings = {
-  siteName: 'abdouweb affiliate',
+  siteName: 'abdouweb',
   adsenseCode: 'ca-pub-5578524966832192',
   alternativeAdsCode: `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`, 
   globalAdsCode: DEFAULT_GLOBAL_ADS,      
