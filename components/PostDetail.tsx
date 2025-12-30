@@ -57,18 +57,18 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         <img src={post.image} className="w-full h-[400px] md:h-[550px] object-cover" alt={post.title} />
       </div>
 
-      {/* Adsterra Native Banner (Before Content) */}
+      {/* إعلان أدستيرا العلوي (Native) */}
       <div className="mb-12">
         <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
       </div>
 
-      {/* كود الخصم - Floating Style */}
+      {/* كود الخصم */}
       {post.couponCode && (
         <div className="mb-16 bg-gradient-to-br from-emerald-600 to-teal-800 p-8 md:p-12 rounded-[50px] text-white flex flex-col md:flex-row items-center justify-between gap-8 shadow-[0_30px_60px_rgba(16,185,129,0.3)] relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-64 h-64 bg-white/5 rounded-full -translate-x-32 -translate-y-32 group-hover:scale-150 transition-transform duration-1000"></div>
           <div className="relative z-10 text-center md:text-right">
             <h3 className="text-3xl font-black mb-3">كود خصم تيمو حصري! 🎁</h3>
-            <p className="opacity-90 font-bold text-lg">استعمل هذا الكود للحصول على شحن مجاني للمغرب</p>
+            <p className="opacity-90 font-bold text-lg">استعمل هذا الكود للحصول على خصم إضافي وشحن مجاني</p>
           </div>
           <div className="relative z-10 flex flex-col items-center gap-4">
             <div className="bg-black/20 backdrop-blur-xl px-10 py-5 rounded-3xl border-2 border-dashed border-white/40">
@@ -91,7 +91,7 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         ))}
       </div>
 
-      {/* زر الأفلييت الثابت (Sticky Conversion) */}
+      {/* زر الأفلييت */}
       {post.affiliateLink && (
         <div className="sticky bottom-8 z-[150] px-4 md:px-0">
           <a 
@@ -104,6 +104,11 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
           </a>
         </div>
       )}
+      
+      {/* إعلان أدستيرا السفلي (اختياري) */}
+      <div className="mt-12">
+        <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
+      </div>
 
       {/* مشاركة المقال */}
       <div className="mt-20 p-10 bg-white/5 rounded-[40px] border border-white/10 text-center">
