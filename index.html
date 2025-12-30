@@ -49,33 +49,27 @@
       }
       .animate-fade { animation: fadeIn 0.6s ease-out forwards; }
       
-      /* نظام تحسين الصور الجديد */
-      .img-wrapper {
-        position: relative;
-        overflow: hidden;
-        background: #111;
+      /* نظام الصور v1.9 */
+      img {
+        max-width: 100%;
+        display: block;
+        backface-visibility: hidden;
+        -webkit-user-drag: none;
       }
-      .img-blur-bg {
+      .img-loading {
+        background: #1a1a1b;
+        position: relative;
+      }
+      .img-loading::after {
+        content: "";
         position: absolute;
         inset: 0;
-        background-size: cover;
-        background-position: center;
-        filter: blur(20px) brightness(0.5);
-        transform: scale(1.1);
-        z-index: 1;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+        animation: shimmer 1.5s infinite;
       }
-      .img-main {
-        position: relative;
-        z-index: 2;
-        width: 100%;
-        height: 100%;
-        object-fit: contain; /* للحفاظ على تفاصيل المنتج كاملة */
-      }
-      .img-cover {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        object-position: center;
+      @keyframes shimmer {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
       }
     </style>
     <script type="importmap">
@@ -92,6 +86,6 @@
   </head>
   <body class="hero-gradient">
     <div id="root"></div>
-    <script data-cfasync="false" type="module" src="./index.tsx?v=1.8.0-FIXED-IMAGES"></script>
+    <script data-cfasync="false" type="module" src="./index.tsx?v=1.9.0-FINAL-IMAGE-FIX"></script>
   </body>
 </html>

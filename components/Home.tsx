@@ -34,30 +34,31 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
 
   return (
     <div className="space-y-12 animate-fade" dir="rtl">
-      {/* Hero Section Premium - Optimized Image Container */}
+      {/* Hero Section Premium */}
       <section 
         className="relative group cursor-pointer overflow-hidden rounded-[40px] md:rounded-[60px] bg-white/5 border border-white/10 shadow-3xl"
         onClick={() => onPostClick(trendingPost)}
       >
         <div className="grid grid-cols-1 lg:grid-cols-2 items-stretch min-h-[500px] md:min-h-[600px]">
-           {/* Image Container with Blur Background Fix */}
-           <div className="relative h-[300px] sm:h-[400px] lg:h-auto overflow-hidden bg-black flex items-center justify-center">
+           {/* Image Container Fixed */}
+           <div className="relative h-[300px] sm:h-[400px] lg:h-auto overflow-hidden bg-[#111] flex items-center justify-center">
               <div 
-                className="absolute inset-0 bg-cover bg-center blur-2xl opacity-40 scale-110" 
+                className="absolute inset-0 bg-cover bg-center blur-2xl opacity-30 scale-110" 
                 style={{ backgroundImage: `url(${trendingPost.image})` }}
               ></div>
               <img 
                 src={trendingPost.image} 
-                className="relative z-10 w-full h-full object-contain md:object-cover group-hover:scale-105 transition-transform duration-1000" 
+                referrerPolicy="no-referrer"
+                className="relative z-10 w-full h-full object-contain md:object-cover group-hover:scale-105 transition-transform duration-1000 shadow-2xl" 
                 alt={trendingPost.title} 
               />
-              <div className="absolute inset-0 bg-gradient-to-t lg:hidden from-black/80 via-black/20 to-transparent z-20"></div>
+              <div className="absolute inset-0 bg-gradient-to-t lg:hidden from-black/90 via-black/20 to-transparent z-20"></div>
               <div className="absolute top-4 right-4 md:top-8 md:right-8 bg-red-600 text-white px-4 py-2 rounded-xl text-[10px] md:text-xs font-black shadow-xl animate-pulse z-30">
                 ينتهي في {timeLeft.h}:{timeLeft.m}:{timeLeft.s}
               </div>
            </div>
 
-           <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center bg-black/20 lg:bg-transparent relative z-30">
+           <div className="p-8 md:p-12 lg:p-16 flex flex-col justify-center bg-black/40 lg:bg-transparent relative z-30">
               <div className="flex items-center gap-3 mb-6">
                 <span className="bg-emerald-600/20 text-emerald-500 px-4 py-1.5 rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest border border-emerald-500/20">همزة اليوم 🔥</span>
               </div>
@@ -97,7 +98,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
 
       <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
 
-      {/* Grid Updates - Responsive Square Aspect Ratio */}
+      {/* Grid Updates */}
       <div className="space-y-10">
         <div className="flex items-center justify-between">
            <h2 className="text-xl md:text-3xl font-black flex items-center gap-3">
@@ -113,14 +114,15 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
               className="group cursor-pointer glass-card p-3 md:p-5 overflow-hidden"
               onClick={() => onPostClick(post)}
             >
-              <div className="relative aspect-square rounded-[20px] md:rounded-[30px] overflow-hidden bg-slate-900 mb-4 md:mb-6">
+              <div className="relative aspect-square rounded-[20px] md:rounded-[30px] overflow-hidden bg-slate-900 mb-4 md:mb-6 flex items-center justify-center">
                  <div 
-                    className="absolute inset-0 bg-cover bg-center blur-lg opacity-30" 
+                    className="absolute inset-0 bg-cover bg-center blur-lg opacity-20" 
                     style={{ backgroundImage: `url(${post.image})` }}
                  ></div>
                  <img 
                     src={post.image} 
                     loading="lazy" 
+                    referrerPolicy="no-referrer"
                     className="relative z-10 w-full h-full object-contain md:object-cover group-hover:scale-110 transition-transform duration-700" 
                     alt={post.title} 
                  />
