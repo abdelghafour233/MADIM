@@ -78,29 +78,24 @@ const App: React.FC = () => {
   const [showCart, setShowCart] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const DATA_VERSION = "v18.0_ads_update"; 
+  // تغيير النسخة إلى v19 لإجبار المتصفحات على تحديث الإعلانات والإعدادات
+  const DATA_VERSION = "v19.0_forced_ads_update"; 
 
   useEffect(() => {
-    const savedSettings = localStorage.getItem('abdou_settings_v18');
-    if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
-    } else {
-      // If no settings saved, use INITIAL_SETTINGS and save them
-      localStorage.setItem('abdou_settings_v18', JSON.stringify(INITIAL_SETTINGS));
-    }
-
-    const savedPostsRaw = localStorage.getItem('abdou_blog_v18');
-    const savedVersion = localStorage.getItem('abdou_data_version_v18');
+    const savedVersion = localStorage.getItem('abdou_data_version_v19');
     
     if (savedVersion !== DATA_VERSION) {
+      // إجبار التحديث وحذف البيانات القديمة
       setPosts(INITIAL_DATA);
-      localStorage.setItem('abdou_blog_v18', JSON.stringify(INITIAL_DATA));
-      localStorage.setItem('abdou_data_version_v18', DATA_VERSION);
-      // Reset settings to include the new ad code if version changes
       setSettings(INITIAL_SETTINGS);
-      localStorage.setItem('abdou_settings_v18', JSON.stringify(INITIAL_SETTINGS));
+      localStorage.setItem('abdou_blog_v19', JSON.stringify(INITIAL_DATA));
+      localStorage.setItem('abdou_settings_v19', JSON.stringify(INITIAL_SETTINGS));
+      localStorage.setItem('abdou_data_version_v19', DATA_VERSION);
     } else {
-      setPosts(savedPostsRaw ? JSON.parse(savedPostsRaw) : INITIAL_DATA);
+      const savedSettings = localStorage.getItem('abdou_settings_v19');
+      const savedPostsRaw = localStorage.getItem('abdou_blog_v19');
+      if (savedSettings) setSettings(JSON.parse(savedSettings));
+      if (savedPostsRaw) setPosts(JSON.parse(savedPostsRaw));
     }
   }, []);
 
@@ -167,8 +162,8 @@ const App: React.FC = () => {
           <AdminDashboard 
             posts={posts} 
             settings={settings}
-            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v18', JSON.stringify(newPosts));}}
-            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v18', JSON.stringify(s));}}
+            onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_blog_v19', JSON.stringify(newPosts));}}
+            onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_settings_v19', JSON.stringify(s));}}
             onLogout={() => setIsAuth(false)}
             darkMode={darkMode}
           />
