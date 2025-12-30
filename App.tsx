@@ -82,7 +82,6 @@ const App: React.FC = () => {
     return () => document.removeEventListener('mouseleave', handleMouseLeave);
   }, []);
 
-  // إشعارات المبيعات الحية المتطورة
   useEffect(() => {
     const names = ['سفيان', 'ياسين', 'فاطمة الزهراء', 'إدريس', 'خديجة', 'أمين', 'مريم', 'يوسف', 'حمزة', 'سارة', 'عبد الله', 'ليلى'];
     
@@ -101,11 +100,9 @@ const App: React.FC = () => {
         image: randomProduct.image 
       });
 
-      // إخفاء الإشعار بعد 6 ثوانٍ
       setTimeout(() => setNotification(null), 6000);
     };
 
-    // البدء بعد 10 ثوانٍ من دخول الموقع، ثم تكرار كل 25 ثانية
     const initialTimeout = setTimeout(() => {
       triggerNotification();
       const interval = setInterval(triggerNotification, 25000);
@@ -159,6 +156,13 @@ const App: React.FC = () => {
   const cartTotal = cart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
   const filteredPosts = posts.filter(p => (p.title || p.name || '').toLowerCase().includes(searchQuery.toLowerCase()));
 
+  const shareSite = (platform: string) => {
+    const url = window.location.origin;
+    const text = `دخل شوف هاد الموقع فيه هميزات واعرين في المغرب: ${settings.siteName}`;
+    if (platform === 'wa') window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`);
+    if (platform === 'fb') window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`);
+  };
+
   return (
     <div className={`min-h-screen flex flex-col transition-all duration-300 ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
       <Navbar 
@@ -198,6 +202,29 @@ const App: React.FC = () => {
         {view === 'admin' && (!isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : <AdminDashboard posts={posts} settings={settings} onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem('abdou_shop_posts_final_v1', JSON.stringify(newPosts));}} onUpdateSettings={(s) => {setSettings(s); localStorage.setItem('abdou_shop_settings_final_v1', JSON.stringify(s));}} onLogout={() => setIsAuth(false)} darkMode={darkMode} />)}
         {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={darkMode} siteName={settings.siteName} />}
       </main>
+
+      {/* شريط المشاركة العائم - الجانب (Desktop) */}
+      <div className="fixed left-0 top-1/2 -translate-y-1/2 z-[150] hidden md:flex flex-col gap-2 p-2 bg-white/10 backdrop-blur-md rounded-r-2xl border border-white/10 shadow-2xl">
+        <button onClick={() => shareSite('wa')} className="w-12 h-12 bg-[#25D366] text-white rounded-xl flex items-center justify-center text-xl hover:translate-x-2 transition-transform shadow-lg">W</button>
+        <button onClick={() => shareSite('fb')} className="w-12 h-12 bg-[#1877F2] text-white rounded-xl flex items-center justify-center text-xl hover:translate-x-2 transition-transform shadow-lg">F</button>
+      </div>
+
+      {/* شريط المشاركة العائم - الأسفل (Mobile) */}
+      <div className="fixed bottom-0 left-0 right-0 z-[150] md:hidden bg-white/10 backdrop-blur-2xl border-t border-white/10 flex items-center justify-around p-3 animate-slideUp">
+         <button onClick={() => shareSite('wa')} className="flex flex-col items-center gap-1">
+            <span className="w-10 h-10 bg-[#25D366] text-white rounded-full flex items-center justify-center text-lg shadow-lg">W</span>
+            <span className="text-[10px] font-black text-white/60">واتساب</span>
+         </button>
+         <button onClick={() => shareSite('fb')} className="flex flex-col items-center gap-1">
+            <span className="w-10 h-10 bg-[#1877F2] text-white rounded-full flex items-center justify-center text-lg shadow-lg">F</span>
+            <span className="text-[10px] font-black text-white/60">فيسبوك</span>
+         </button>
+         <div className="h-8 w-px bg-white/10"></div>
+         <button onClick={() => window.scrollTo({top: 0, behavior: 'smooth'})} className="flex flex-col items-center gap-1">
+            <span className="w-10 h-10 bg-white/10 text-white rounded-full flex items-center justify-center text-lg border border-white/20">↑</span>
+            <span className="text-[10px] font-black text-white/60">لأعلى</span>
+         </button>
+      </div>
 
       {/* نافذة الخروج */}
       {showExitPopup && (
@@ -243,9 +270,14 @@ const App: React.FC = () => {
 
       {isCartOpen && <Cart items={cart} onRemove={removeFromCart} onUpdateQuantity={updateQuantity} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} />}
 
-      <footer className="mt-20 py-12 border-t border-white/5 text-center opacity-40">
-        <h3 className="text-xl font-black mb-2 text-emerald-500">{settings.siteName}</h3>
-        <p className="text-[10px] font-bold">تسوق بذكاء.. واربح مع عبدو</p>
+      <footer className="mt-20 py-24 border-t border-white/5 text-center bg-black/20">
+        <h3 className="text-3xl font-black mb-4 text-emerald-500">{settings.siteName}</h3>
+        <p className="text-sm font-bold opacity-40 max-w-md mx-auto mb-8">متجر عبدو هو بوابتك الأولى لأقوى العروض والهميزات في المغرب. تسوق بذكاء ووفر مالك.</p>
+        <div className="flex justify-center gap-4 mb-10">
+           <button onClick={() => shareSite('wa')} className="p-4 bg-white/5 rounded-2xl hover:bg-emerald-600 transition-colors">واتساب</button>
+           <button onClick={() => shareSite('fb')} className="p-4 bg-white/5 rounded-2xl hover:bg-blue-600 transition-colors">فيسبوك</button>
+        </div>
+        <p className="text-[10px] font-bold opacity-20">© 2025 جميع الحقوق محفوظة لمتجر عبدو</p>
       </footer>
       <WhatsAppButton />
     </div>

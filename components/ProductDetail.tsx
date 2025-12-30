@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Article } from '../types';
 
 interface ProductDetailProps {
@@ -10,6 +10,17 @@ interface ProductDetailProps {
 }
 
 const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onBack, darkMode }) => {
+  const [copied, setCopied] = useState(false);
+
+  const shareUrl = window.location.href;
+  const shareText = `شوف هاد الهمزة اللي لقيت في متجر عبدو: ${product.name}`;
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="max-w-6xl mx-auto py-12 animate-fadeIn px-4" dir="rtl">
       <button onClick={onBack} className="mb-10 text-slate-500 font-black flex items-center gap-2 hover:text-emerald-600 transition-colors group">
@@ -77,6 +88,31 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
             >
               <span>💬</span> تواصل معنا واتساب
             </button>
+          </div>
+
+          {/* أزرار المشاركة تحت المنتج */}
+          <div className="pt-8 border-t border-slate-100 dark:border-slate-800">
+            <h4 className="text-lg font-black mb-6 text-slate-400">شارك هاد الهمزة مع صحابك 🚀</h4>
+            <div className="flex flex-wrap gap-4">
+              <button 
+                onClick={() => window.open(`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + shareUrl)}`)}
+                className="flex-1 min-w-[120px] bg-[#25D366] text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-lg shadow-green-500/20"
+              >
+                واتساب
+              </button>
+              <button 
+                onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`)}
+                className="flex-1 min-w-[120px] bg-[#1877F2] text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-lg shadow-blue-500/20"
+              >
+                فيسبوك
+              </button>
+              <button 
+                onClick={handleCopyLink}
+                className={`flex-1 min-w-[120px] py-4 rounded-2xl font-black flex items-center justify-center gap-2 transition-all shadow-lg ${copied ? 'bg-emerald-600 text-white' : 'bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300'}`}
+              >
+                {copied ? '✅ تم النسخ' : 'نسخ الرابط'}
+              </button>
+            </div>
           </div>
           
           <div className="grid grid-cols-3 gap-4 text-center py-8 border-t border-slate-100 dark:border-slate-800">
