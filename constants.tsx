@@ -19,7 +19,7 @@ export const INITIAL_POSTS: Article[] = [
 
 لماذا تشتريها من متجرنا؟
 نحن نوفر لك النسخة الأصلية مع ضمان الجودة وشحن سريع لجميع المدن المغربية، والدفع لا يتم إلا بعد معاينة المنتج واستلامه.`,
-    image: 'https://images.unsplash.com/photo-1508685096489-7aac29125346?auto=format&fit=crop&q=80&w=1200', // صورة تعبيرية عالية الجودة تشبه المنتج
+    image: 'https://m.media-amazon.com/images/I/71YJ4qC2tHL._AC_SL1500_.jpg', // صورة ساعة ألترا احترافية وموثوقة
     category: Category.DEALS,
     date: 'اليوم',
     views: 15600,
@@ -37,7 +37,7 @@ export const INITIAL_POSTS: Article[] = [
     name: 'ساعة Ultra 9 الرياضية',
     excerpt: 'أقوى شبيهة لساعة أبل ألترا متوفرة الآن بخصم 90%. تدعم المكالمات، الرياضة، ومراقبة الصحة.',
     content: `احصل على الفخامة والأداء العالي مع ساعة Ultra 9 الذكية، الخيار الأول للشباب في المغرب حالياً.`,
-    image: 'https://images.unsplash.com/photo-1544117518-30df57809b09?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1434493907317-a46b53b81846?auto=format&fit=crop&q=80&w=1200',
     category: Category.DEALS,
     date: 'أمس',
     views: 45800,
@@ -55,7 +55,7 @@ export const INITIAL_POSTS: Article[] = [
     name: 'جاكيت جلد إيطالي فاخر',
     excerpt: 'جاكيت جلدي بلمسة عصرية وجودة عالية تناسب جميع الأذواق والمناسبات.',
     content: `استمتع بالفخامة والدفء مع هذا الجاكيت الجلدي الإيطالي المصنوع بعناية.`,
-    image: 'https://images.unsplash.com/photo-1521223890158-f9f7c3d5d50d?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=1200',
     category: Category.DEALS,
     date: '06 أبريل 2025',
     views: 12400,
@@ -71,7 +71,7 @@ export const INITIAL_POSTS: Article[] = [
     name: 'Razer DeathAdder Essential',
     excerpt: 'أداء احترافي بخصم خيالي. الماوس الأكثر طلباً من طرف اللاعبين في المغرب.',
     content: `ارفع مستوى لعبك مع ماوس ريزر الاحترافي.`,
-    image: 'https://images.unsplash.com/photo-1527814050087-379371549a18?auto=format&fit=crop&q=80&w=1200',
+    image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&q=80&w=1200',
     category: Category.TECH_REVIEWS,
     date: '05 أبريل 2025',
     views: 8500,

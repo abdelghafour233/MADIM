@@ -3,7 +3,7 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>متجر عبدو | تسوق بذكاء</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,20 +12,26 @@
     <style>
       body {
         font-family: 'Tajawal', sans-serif;
-        background-color: #f8fafc;
+        background-color: #0a0a0b;
         scroll-behavior: smooth;
+        -webkit-tap-highlight-color: transparent;
       }
       .glass {
-        background: rgba(255, 255, 255, 0.8);
+        background: rgba(255, 255, 255, 0.03);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.05);
       }
       .product-card:hover .product-image {
         transform: scale(1.05);
       }
       /* إخفاء شريط التمرير */
       .no-scrollbar::-webkit-scrollbar { display: none; }
+      
+      /* تحسين عرض الصور على الموبايل */
+      @media (max-width: 640px) {
+        .mobile-h-60 { height: 15rem; }
+      }
     </style>
     <script type="importmap">
 {
