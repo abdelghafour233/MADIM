@@ -16,7 +16,7 @@ import { INITIAL_POSTS, CITIES } from './constants.tsx';
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
 
 const INITIAL_SETTINGS: Settings = {
-  siteName: 'متجر عبدو | عروض حصرية',
+  siteName: 'abdouweb affiliate',
   adsenseCode: 'ca-pub-5578524966832192',
   alternativeAdsCode: `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`, 
   globalAdsCode: DEFAULT_GLOBAL_ADS,      
@@ -245,43 +245,4 @@ const App: React.FC = () => {
       {/* إشعارات المبيعات الحية المتطورة */}
       {notification && (
         <div className="fixed bottom-24 right-4 md:bottom-32 md:right-8 z-[200] animate-slideLeft">
-          <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 rounded-3xl flex items-center gap-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)] min-w-[300px] max-w-sm">
-            <div className="relative shrink-0">
-              <img src={notification.image} className="w-16 h-16 rounded-2xl object-cover border border-white/10" alt="" />
-              <div className="absolute -top-2 -right-2 w-6 h-6 bg-emerald-500 rounded-full flex items-center justify-center text-white text-[10px] shadow-lg">✔</div>
-            </div>
-            <div className="flex-1 text-right" dir="rtl">
-              <p className="text-[10px] font-black text-emerald-500 uppercase tracking-widest mb-1">اشترى الآن! 🛍️</p>
-              <p className="text-xs font-black text-white leading-tight mb-1">
-                {notification.name} من <span className="text-emerald-400">{notification.city}</span>
-              </p>
-              <p className="text-[10px] text-white/60 font-bold truncate">
-                اشترى: {notification.product}
-              </p>
-              <p className="text-[8px] text-white/40 mt-1 font-bold">منذ دقيقتين • تأكيد الطلب ✅</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {settings.directLinkCode && (
-        <a href={settings.directLinkCode} target="_blank" className="fixed bottom-24 left-8 z-[90] w-14 h-14 bg-orange-600 text-white rounded-full shadow-2xl flex items-center justify-center text-2xl animate-bounce hover:scale-110 shadow-orange-600/50">🎁</a>
-      )}
-
-      {isCartOpen && <Cart items={cart} onRemove={removeFromCart} onUpdateQuantity={updateQuantity} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} />}
-
-      <footer className="mt-20 py-24 border-t border-white/5 text-center bg-black/20">
-        <h3 className="text-3xl font-black mb-4 text-emerald-500">{settings.siteName}</h3>
-        <p className="text-sm font-bold opacity-40 max-w-md mx-auto mb-8">متجر عبدو هو بوابتك الأولى لأقوى العروض والهميزات في المغرب. تسوق بذكاء ووفر مالك.</p>
-        <div className="flex justify-center gap-4 mb-10">
-           <button onClick={() => shareSite('wa')} className="p-4 bg-white/5 rounded-2xl hover:bg-emerald-600 transition-colors">واتساب</button>
-           <button onClick={() => shareSite('fb')} className="p-4 bg-white/5 rounded-2xl hover:bg-blue-600 transition-colors">فيسبوك</button>
-        </div>
-        <p className="text-[10px] font-bold opacity-20">© 2025 جميع الحقوق محفوظة لمتجر عبدو</p>
-      </footer>
-      <WhatsAppButton />
-    </div>
-  );
-};
-
-export default App;
+          <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 rounded-3xl flex items-center gap-4 shadow-[0_20px_50px_rgba(0,0,0
