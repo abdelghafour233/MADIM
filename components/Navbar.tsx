@@ -14,7 +14,6 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearch, darkMode, toggleDarkMode, cartCount, onOpenCart }) => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [query, setQuery] = useState('');
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +25,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
   const NavLink = ({ view, label }: { view: View, label: string }) => (
     <button 
       onClick={() => setView(view)}
-      className={`px-4 py-2 rounded-xl font-black transition-all ${currentView === view ? 'bg-emerald-600 text-white shadow-lg' : 'opacity-60 hover:opacity-100'}`}
+      className={`px-4 py-2 rounded-xl font-black transition-all ${currentView === view ? 'bg-indigo-600 text-white shadow-lg' : 'opacity-60 hover:opacity-100'}`}
     >
       {label}
     </button>
@@ -38,8 +37,9 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
         <div className="flex items-center gap-8">
           <div className="text-xl md:text-3xl font-black cursor-pointer tracking-tighter flex items-center gap-3" onClick={() => setView('home')}>
             <div className="relative">
-              <span className="bg-emerald-600 text-white w-10 h-10 flex items-center justify-center rounded-xl shadow-lg">A</span>
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-400 rounded-full border-2 border-black animate-pulse shadow-[0_0_10px_#34d399]"></span>
+              {/* تغيير الخلفية من emerald لـ indigo لتمييز النسخة v22 */}
+              <span className="bg-indigo-600 text-white w-10 h-10 flex items-center justify-center rounded-xl shadow-lg">A</span>
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-indigo-400 rounded-full border-2 border-black animate-pulse shadow-[0_0_10px_#818cf8]"></span>
             </div>
             <span className={darkMode ? 'text-white' : 'text-slate-900'}>{siteName.split(' | ')[0]}</span>
           </div>
@@ -64,7 +64,7 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
         </div>
 
         <div className="flex items-center gap-3">
-          <button onClick={onOpenCart} className="relative w-12 h-12 flex items-center justify-center rounded-2xl bg-emerald-600/10 text-emerald-500 hover:bg-emerald-600 hover:text-white transition-all">
+          <button onClick={onOpenCart} className="relative w-12 h-12 flex items-center justify-center rounded-2xl bg-indigo-600/10 text-indigo-500 hover:bg-indigo-600 hover:text-white transition-all">
             <span className="text-xl">🛒</span>
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black animate-bounce">
@@ -75,14 +75,14 @@ const Navbar: React.FC<NavbarProps> = ({ currentView, setView, siteName, onSearc
           <button onClick={toggleDarkMode} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-100 dark:bg-white/5 text-xl">
             {darkMode ? '☀️' : '🌙'}
           </button>
-          <button onClick={() => setView('admin')} className="p-3 bg-emerald-600 text-white rounded-2xl font-black shadow-lg shadow-emerald-600/20">⚙️</button>
+          <button onClick={() => setView('admin')} className="p-3 bg-indigo-600 text-white rounded-2xl font-black shadow-lg shadow-indigo-600/20">⚙️</button>
         </div>
       </div>
       
       {/* Mobile Nav Links */}
       <div className="lg:hidden flex gap-4 px-4 pb-4 overflow-x-auto no-scrollbar">
-         <button onClick={() => setView('home')} className={`text-xs font-black whitespace-nowrap px-4 py-2 rounded-lg ${currentView === 'home' ? 'bg-emerald-600 text-white' : 'opacity-40'}`}>الرئيسية</button>
-         <button onClick={() => setView('store')} className={`text-xs font-black whitespace-nowrap px-4 py-2 rounded-lg ${currentView === 'store' ? 'bg-emerald-600 text-white' : 'opacity-40'}`}>المتجر</button>
+         <button onClick={() => setView('home')} className={`text-xs font-black whitespace-nowrap px-4 py-2 rounded-lg ${currentView === 'home' ? 'bg-indigo-600 text-white' : 'opacity-40'}`}>الرئيسية</button>
+         <button onClick={() => setView('store')} className={`text-xs font-black whitespace-nowrap px-4 py-2 rounded-lg ${currentView === 'store' ? 'bg-indigo-600 text-white' : 'opacity-40'}`}>المتجر</button>
       </div>
     </nav>
   );

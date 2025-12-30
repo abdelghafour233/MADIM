@@ -23,10 +23,11 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
     excerpt: '', 
     content: '', 
     image: '', 
-    category: Category.TECH_REVIEWS, 
+    category: Category.TEMU, 
     author: 'عبدو التقني',
     affiliateLink: '',
-    couponCode: ''
+    couponCode: '',
+    isTrending: false
   });
 
   const handleSavePost = () => {
@@ -35,7 +36,7 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
       const updatedPosts = posts.map(p => p.id === editingPostId ? { ...p, ...form as Article } : p);
       onUpdate(updatedPosts);
     } else {
-      const p: Article = { ...form as Article, id: Date.now().toString(), date: new Date().toLocaleDateString('ar-MA'), views: 0 };
+      const p: Article = { ...form as Article, id: Date.now().toString(), date: new Date().toLocaleDateString('ar-MA'), views: 0 } as Article;
       onUpdate([p, ...posts]);
     }
     resetForm();
@@ -45,81 +46,77 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
   const handleEditClick = (p: Article) => {
     setEditingPostId(p.id);
     setForm({ 
-      title: p.title || p.name, 
+      title: p.title, 
       excerpt: p.excerpt, 
       content: p.content, 
       image: p.image, 
       category: p.category, 
       author: p.author,
       affiliateLink: p.affiliateLink || '',
-      couponCode: p.couponCode || ''
+      couponCode: p.couponCode || '',
+      isTrending: p.isTrending || false
     });
     setActiveTab('editor');
   };
 
   const resetForm = () => {
     setEditingPostId(null);
-    setForm({ title: '', excerpt: '', content: '', image: '', category: Category.TECH_REVIEWS, author: 'عبدو التقني', affiliateLink: '', couponCode: '' });
+    setForm({ title: '', excerpt: '', content: '', image: '', category: Category.TEMU, author: 'عبدو التقني', affiliateLink: '', couponCode: '', isTrending: false });
   };
 
   return (
     <div className="animate-fadeIn max-w-6xl mx-auto pb-20" dir="rtl">
       <div className={`p-8 rounded-[40px] mb-10 flex flex-col md:flex-row justify-between items-center gap-6 ${darkMode ? 'bg-white/5 border border-white/10' : 'bg-white shadow-xl'}`}>
-        <h2 className="text-3xl font-black">غرفة التحكم</h2>
-        <div className="flex gap-4">
-          <button onClick={() => setActiveTab('list')} className={`px-6 py-2 rounded-xl font-bold ${activeTab === 'list' ? 'bg-emerald-600 text-white' : 'bg-slate-100 dark:bg-white/5'}`}>المقالات</button>
-          <button onClick={() => setActiveTab('ads')} className={`px-6 py-2 rounded-xl font-bold ${activeTab === 'ads' ? 'bg-orange-600 text-white' : 'bg-slate-100 dark:bg-white/5'}`}>إعلانات Adsterra</button>
-          <button onClick={onLogout} className="px-6 py-2 bg-red-600 text-white rounded-xl font-bold">خروج</button>
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center text-2xl">⚙️</div>
+          <h2 className="text-2xl font-black">إدارة عبدو ويب</h2>
+        </div>
+        <div className="flex gap-3 flex-wrap justify-center">
+          <button onClick={() => setActiveTab('list')} className={`px-5 py-2 rounded-xl font-bold transition-all ${activeTab === 'list' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-white/5'}`}>العروض</button>
+          <button onClick={() => setActiveTab('ads')} className={`px-5 py-2 rounded-xl font-bold transition-all ${activeTab === 'ads' ? 'bg-orange-600 text-white shadow-lg' : 'bg-white/5'}`}>أرباح Adsterra</button>
+          <button onClick={() => setActiveTab('security')} className={`px-5 py-2 rounded-xl font-bold transition-all ${activeTab === 'security' ? 'bg-blue-600 text-white shadow-lg' : 'bg-white/5'}`}>الأمان</button>
+          <button onClick={onLogout} className="px-5 py-2 bg-red-600/20 text-red-500 rounded-xl font-bold border border-red-500/30">خروج</button>
         </div>
       </div>
 
       {activeTab === 'list' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <button onClick={() => {resetForm(); setActiveTab('editor');}} className="p-10 border-4 border-dashed border-white/10 rounded-[40px] font-black text-slate-500 hover:border-emerald-500/50 hover:text-emerald-500 transition-all group">
+             <span className="text-4xl block mb-2 group-hover:scale-110 transition-transform">➕</span>
+             إضافة عرض جديد
+          </button>
           {posts.map(p => (
-            <div key={p.id} className="p-4 bg-white/5 border border-white/5 rounded-3xl flex items-center justify-between">
-              <span className="font-bold truncate max-w-[200px]">{p.title || p.name}</span>
+            <div key={p.id} className="p-6 bg-white/5 border border-white/5 rounded-[40px] flex flex-col justify-between group hover:border-white/20 transition-all">
+              <div className="flex items-center gap-4 mb-4">
+                <img src={p.image} className="w-16 h-16 rounded-2xl object-cover" alt="" />
+                <div className="truncate">
+                  <h4 className="font-black truncate">{p.title}</h4>
+                  <span className="text-[10px] font-black uppercase text-emerald-500">{p.category}</span>
+                </div>
+              </div>
               <div className="flex gap-2">
-                 <button onClick={() => handleEditClick(p)} className="p-2 bg-blue-600 rounded-lg">✏️</button>
-                 <button onClick={() => onUpdate(posts.filter(i => i.id !== p.id))} className="p-2 bg-red-600 rounded-lg">🗑️</button>
+                 <button onClick={() => handleEditClick(p)} className="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-bold hover:bg-blue-500 transition-colors">تعديل ✏️</button>
+                 <button onClick={() => {if(confirm('هل أنت متأكد؟')) onUpdate(posts.filter(i => i.id !== p.id))}} className="p-3 bg-red-600/20 text-red-500 rounded-2xl hover:bg-red-600 hover:text-white transition-all">🗑️</button>
               </div>
             </div>
           ))}
-          <button onClick={() => {resetForm(); setActiveTab('editor');}} className="p-10 border-2 border-dashed border-white/20 rounded-3xl font-black opacity-40 hover:opacity-100 transition-all">➕ مقال جديد</button>
         </div>
       )}
 
       {activeTab === 'ads' && (
         <div className="max-w-4xl mx-auto space-y-12">
-          {/* شرح تعليمي لاستخراج الأكواد */}
           <div className="bg-emerald-600/10 border-2 border-emerald-500/20 p-8 rounded-[40px] space-y-4">
             <h3 className="text-2xl font-black text-emerald-500 flex items-center gap-3">
-              <span>💡</span> كيف تحصل على الأكواد الصحيحة من Adsterra؟
+              <span>💰</span> تفعيل إعلانات Adsterra للربح
             </h3>
-            <ul className="list-decimal list-inside space-y-3 font-bold opacity-80 leading-relaxed">
-              <li>سجل دخولك في <a href="https://adsterra.com/" target="_blank" className="underline text-emerald-500">Adsterra</a> كـ Publisher.</li>
-              <li>اذهب لـ <span className="text-orange-500">Websites</span> من القائمة اليسرى.</li>
-              <li>بجانب رابط موقعك، ستجد زر <span className="bg-emerald-500 px-2 py-0.5 rounded text-white text-xs font-black">All codes</span>، اضغط عليه.</li>
-              <li>ستظهر لك قائمة بالوحدات الإعلانية التي أنشأتها (مثلاً Social Bar أو Native Banner).</li>
-              <li>اضغط على زر <span className="text-emerald-500 font-black">Get Code</span> الموجود بجانب كل وحدة.</li>
-              <li>انسخ النص البرمجي الطويل (يبدأ بـ &lt;script...) والصقه في الخانات أدناه.</li>
-            </ul>
+            <p className="font-bold opacity-80 leading-relaxed">انسخ الأكواد البرمجية بالكامل من لوحة تحكم Adsterra والصقها هنا. الكود الأول (Global) مخصص للـ Social Bar، والكود الثاني (Alternative) مخصص للـ Native Banners داخل المقال.</p>
           </div>
 
-          <div className="p-10 bg-white/5 border border-white/10 rounded-[40px] space-y-12">
-            <div className="text-center">
-              <span className="text-6xl mb-4 block">📡</span>
-              <h3 className="text-2xl font-black text-orange-500">تفعيل أرباح Adsterra</h3>
-              <p className="text-slate-400 mt-2">لا تضع المعرف (ID) فقط، بل انسخ الكود البرمجي بالكامل</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          <div className="p-10 bg-white/5 border border-white/10 rounded-[40px] space-y-10">
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                   <label className="block text-sm font-black text-emerald-500">1. كود إعلانات الإشعارات (Social Bar)</label>
-                </div>
-                <p className="text-[11px] opacity-60 leading-relaxed">هذا هو الأهم للمغرب. يظهر كإشعار جذّاب. الصق الكود البرمجي بالكامل هنا.</p>
+                <label className="block text-sm font-black text-emerald-500">كود الإشعارات (Social Bar Script)</label>
                 <textarea 
-                  className="w-full h-48 p-5 bg-black/40 rounded-2xl border-2 border-transparent focus:border-orange-500 outline-none font-mono text-[10px] text-left"
+                  className="w-full h-40 p-5 bg-black/40 rounded-2xl border-2 border-transparent focus:border-emerald-500 outline-none font-mono text-[10px] text-left"
                   dir="ltr"
                   placeholder="<script type='text/javascript' src='//...'></script>"
                   value={localSettings.globalAdsCode}
@@ -128,36 +125,35 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
               </div>
 
               <div className="space-y-4">
-                <label className="block text-sm font-black text-blue-500">2. كود البنرات داخل المقال (Native Banner)</label>
-                <p className="text-[11px] opacity-60 leading-relaxed">يظهر وسط مقالات الأفلييت. انسخ كود الـ Banner أو Native Ads بالكامل هنا.</p>
+                <label className="block text-sm font-black text-orange-500">كود البنرات (Native Banner Code)</label>
                 <textarea 
-                  className="w-full h-48 p-5 bg-black/40 rounded-2xl border-2 border-transparent focus:border-blue-500 outline-none font-mono text-[10px] text-left"
+                  className="w-full h-40 p-5 bg-black/40 rounded-2xl border-2 border-transparent focus:border-orange-500 outline-none font-mono text-[10px] text-left"
                   dir="ltr"
                   placeholder="<div id='container-...'></div><script ...></script>"
                   value={localSettings.alternativeAdsCode}
                   onChange={e => setLocalSettings({...localSettings, alternativeAdsCode: e.target.value})}
                 />
               </div>
-            </div>
 
-            <button 
-              onClick={() => {onUpdateSettings(localSettings); alert('✅ تم حفظ الأكواد! الإعلانات ستظهر الآن لزوارك فوراً.');}} 
-              className="w-full py-6 bg-gradient-to-r from-orange-600 to-red-600 text-white rounded-3xl font-black text-2xl hover:scale-[1.01] transition-all shadow-2xl"
-            >حفظ وتفعيل الأرباح الآن 💰</button>
+              <button 
+                onClick={() => {onUpdateSettings(localSettings); alert('✅ تم حفظ أكواد الإعلانات!');}} 
+                className="w-full py-6 bg-emerald-600 text-white rounded-3xl font-black text-2xl shadow-xl hover:bg-emerald-500 transition-all"
+              >تثبيت أكواد الأرباح 💾</button>
           </div>
         </div>
       )}
 
       {activeTab === 'editor' && (
         <div className="p-10 bg-white/5 border border-white/10 rounded-[40px] space-y-10">
+           <h3 className="text-2xl font-black border-b border-white/10 pb-4">{editingPostId ? 'تعديل العرض' : 'إضافة عرض جديد'}</h3>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
-                <label className="text-xs font-black opacity-50 mr-2">عنوان المقال</label>
-                <input className="w-full p-5 bg-black/40 rounded-2xl font-black text-xl" placeholder="مثلاً: أفضل صفقات تيمو اليوم" value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
+                <label className="text-xs font-black opacity-50 mr-2">عنوان العرض</label>
+                <input className="w-full p-5 bg-black/40 rounded-2xl font-black text-xl outline-none focus:ring-2 focus:ring-emerald-500" placeholder="مثلاً: تخفيض تيمو الهائل..." value={form.title} onChange={e => setForm({...form, title: e.target.value})} />
               </div>
               <div className="space-y-4">
                 <label className="text-xs font-black opacity-50 mr-2">التصنيف</label>
-                <select className="w-full p-5 bg-black/40 rounded-2xl font-black" value={form.category} onChange={e => setForm({...form, category: e.target.value as Category})}>
+                <select className="w-full p-5 bg-black/40 rounded-2xl font-black outline-none focus:ring-2 focus:ring-emerald-500" value={form.category} onChange={e => setForm({...form, category: e.target.value as Category})}>
                    {Object.values(Category).map(c => <option key={c} value={c}>{c}</option>)}
                 </select>
               </div>
@@ -166,25 +162,48 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <label className="text-xs font-black text-emerald-500 mr-2">رابط الأفلييت (Affiliate Link)</label>
-                <input className="w-full p-5 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl font-bold" placeholder="رابط تيمو أو أمازون الخاص بك..." value={form.affiliateLink} onChange={e => setForm({...form, affiliateLink: e.target.value})} />
+                <input className="w-full p-5 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl font-bold outline-none" placeholder="رابط تيمو/أمازون..." value={form.affiliateLink} onChange={e => setForm({...form, affiliateLink: e.target.value})} />
               </div>
               <div className="space-y-4">
                 <label className="text-xs font-black text-orange-500 mr-2">كود الخصم (Coupon Code)</label>
-                <input className="w-full p-5 bg-orange-500/10 border border-orange-500/30 rounded-2xl font-bold" placeholder="مثلاً: EPM88" value={form.couponCode} onChange={e => setForm({...form, couponCode: e.target.value})} />
+                <input className="w-full p-5 bg-orange-500/10 border border-orange-500/30 rounded-2xl font-bold outline-none" placeholder="مثلاً: MAROC88" value={form.couponCode} onChange={e => setForm({...form, couponCode: e.target.value})} />
               </div>
            </div>
 
            <div className="space-y-4">
-              <label className="text-xs font-black opacity-50 mr-2">محتوى المقال (شرح العرض)</label>
-              <textarea className="w-full h-80 p-5 bg-black/40 rounded-2xl leading-relaxed" placeholder="اشرح للزائر لماذا هذا العرض رائع..." value={form.content} onChange={e => setForm({...form, content: e.target.value})} />
+              <label className="text-xs font-black opacity-50 mr-2">محتوى المراجعة (التفاصيل)</label>
+              <textarea className="w-full h-64 p-5 bg-black/40 rounded-2xl leading-relaxed outline-none focus:ring-2 focus:ring-emerald-500" placeholder="اشرح لماذا هذا المنتج يستحق الشراء..." value={form.content} onChange={e => setForm({...form, content: e.target.value})} />
            </div>
 
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <label className="text-xs font-black opacity-50 mr-2">رابط صورة العرض</label>
+                <input className="w-full p-5 bg-black/40 rounded-2xl outline-none" placeholder="https://..." value={form.image} onChange={e => setForm({...form, image: e.target.value})} />
+              </div>
+              <div className="flex items-end pb-5">
+                <label className="flex items-center gap-3 cursor-pointer p-4 bg-white/5 rounded-2xl w-full">
+                  <input type="checkbox" className="w-6 h-6 rounded-lg accent-emerald-500" checked={form.isTrending} onChange={e => setForm({...form, isTrending: e.target.checked})} />
+                  <span className="font-black text-orange-500">تمييز كـ "همزة اليوم" (Hero Section)</span>
+                </label>
+              </div>
+           </div>
+
+           <button onClick={handleSavePost} className="w-full py-6 bg-emerald-600 text-white rounded-3xl font-black text-2xl shadow-xl hover:bg-emerald-500 transition-all">نشر المراجعة فوراً 🚀</button>
+        </div>
+      )}
+
+      {activeTab === 'security' && (
+        <div className="max-w-md mx-auto p-10 bg-white/5 border border-white/10 rounded-[40px] space-y-8">
+           <h3 className="text-xl font-black text-center">تحديث إعدادات الأمان</h3>
            <div className="space-y-4">
-              <label className="text-xs font-black opacity-50 mr-2">رابط صورة المنتج</label>
-              <input className="w-full p-5 bg-black/40 rounded-2xl" placeholder="رابط الصورة المباشر من جوجل أو تيمو..." value={form.image} onChange={e => setForm({...form, image: e.target.value})} />
+              <label className="text-xs font-black opacity-50">اسم الموقع</label>
+              <input className="w-full p-4 bg-black/40 rounded-xl" value={localSettings.siteName} onChange={e => setLocalSettings({...localSettings, siteName: e.target.value})} />
            </div>
-
-           <button onClick={handleSavePost} className="w-full py-6 bg-emerald-600 text-white rounded-3xl font-black text-2xl shadow-xl hover:bg-emerald-500 transition-all">نشر العرض الآن 🚀</button>
+           <div className="space-y-4">
+              <label className="text-xs font-black opacity-50">كلمة مرور الإدارة</label>
+              <input type="password" placeholder="••••" className="w-full p-4 bg-black/40 rounded-xl" value={localSettings.dashboardPassword} onChange={e => setLocalSettings({...localSettings, dashboardPassword: e.target.value})} />
+           </div>
+           <button onClick={() => {onUpdateSettings(localSettings); alert('✅ تم التحديث!');}} className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black">حفظ البيانات 💾</button>
         </div>
       )}
     </div>

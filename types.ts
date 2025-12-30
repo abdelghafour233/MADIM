@@ -2,45 +2,44 @@
 export enum Category {
   TEMU = 'عروض تيمو',
   AMAZON = 'عروض أمازون',
-  ALIEXPRESS = 'علي إكسبريس',
   TECH_REVIEWS = 'مراجعات تقنية',
-  COUPONS = 'كوبونات خصم',
-  STORE = 'المتجر المباشر'
+  MOROCCO_NEWS = 'أخبار المغرب',
+  DEALS = 'هميزات اليوم'
 }
 
 export interface Article {
   id: string;
-  title?: string;
-  name?: string;
-  excerpt?: string;
+  title: string;
+  name?: string; // التوافق مع النسخ السابقة
+  excerpt: string;
   content: string;
   image: string;
   category: Category;
   date: string;
   views: number;
   author: string;
-  price?: number;
-  oldPrice?: number;
-  isProduct?: boolean;
-  rating?: number;
+  affiliateLink?: string;
+  couponCode?: string;
   isTrending?: boolean;
-  affiliateLink?: string; // رابط الأفلييت (تيمو، أمازون...)
-  couponCode?: string;    // كود الخصم المخصص
-  inStock?: boolean;
+  isProduct?: boolean; // للمحافظة على التوافق البرمجي
+  price?: number;
 }
 
-export interface Settings {
-  dashboardPassword?: string;
-  siteName: string;
-  adsenseCode: string;
-  alternativeAdsCode?: string;
-  globalAdsCode?: string;
-  totalVisits?: number;
-  whatsappNumber?: string;
-}
-
+/**
+ * Interface for items stored in the shopping cart, extending Article with quantity.
+ */
 export interface CartItem extends Article {
   quantity: number;
 }
 
-export type View = 'home' | 'store' | 'post' | 'product' | 'cart' | 'checkout' | 'admin' | 'about' | 'privacy' | 'contact' | 'terms';
+export interface Settings {
+  siteName: string;
+  adsenseCode: string;
+  alternativeAdsCode: string; // Adsterra Native Banner
+  globalAdsCode: string; // Adsterra Social Bar Script
+  dashboardPassword?: string;
+  totalVisits: number;
+  whatsappNumber: string;
+}
+
+export type View = 'home' | 'post' | 'admin' | 'privacy' | 'about' | 'contact' | 'terms' | 'checkout' | 'store' | 'product';

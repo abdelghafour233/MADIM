@@ -23,11 +23,15 @@ const Dashboard: React.FC<DashboardProps> = ({ articles, settings, onUpdateSetti
 
   const handlePublish = () => {
     if(!newItem.name || !newItem.content) return alert('يرجى ملء كافة البيانات!');
+    // Removed the 'rating' property to fix the TypeScript error as it's not in the Article interface.
+    // Also ensuring 'title' is set since it's a required field in the Article interface.
     const art: Article = {
       ...newItem as Article,
       id: Date.now().toString(),
-      rating: 5, views: 0, author: 'المدير',
-      date: new Date().toLocaleDateString('ar-MA')
+      views: 0, 
+      author: 'المدير',
+      date: new Date().toLocaleDateString('ar-MA'),
+      title: newItem.name || ''
     };
     onUpdateArticles([art, ...articles]);
     alert('🚀 تم النشر بنجاح على عبدو ويب!');
