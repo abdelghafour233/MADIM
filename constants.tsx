@@ -3,6 +3,32 @@ import { Article, Category } from './types';
 
 export const INITIAL_POSTS: Article[] = [
   {
+    id: 'sneaker-sport-premium-2025',
+    title: 'حذاء رياضي عصري - خفة وراحة لكل خطوة 👟',
+    name: 'حذاء رياضي Premium Sport',
+    excerpt: 'تصميم مريح وأنيق يناسب الجري والمشي والارتداء اليومي. جودة عالية وتقنية تهوية متطورة.',
+    content: `اكتشف المعنى الحقيقي للراحة مع هذا الحذاء الرياضي المصمم خصيصاً للأشخاص النشيطين.
+يجمع هذا الحذاء بين الأداء الرياضي العالي والمظهر العصري الذي يناسب جميع ملابسك.
+
+المميزات:
+- 💨 نسيج شبكي يسمح بمرور الهواء لمنع التعرق.
+- ☁️ نعل مرن ومبطن لامتصاص الصدمات وحماية المفاصل.
+- ⚖️ وزن خفيف جداً يجعلك تشعر وكأنك تطير.
+- 🏁 تصميم عصري يتناسب مع الجيم، العمل، أو الخروجات اليومية.
+
+متوفر بعدة ألوان ومقاسات. لا تفوت الفرصة واحصل عليه الآن مباشرة عبر الرابط بالأسفل بأفضل سعر.`,
+    image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800', 
+    category: Category.DEALS,
+    date: 'اليوم',
+    views: 182000,
+    author: 'عبدو ويب',
+    isTrending: true,
+    isProduct: true,
+    price: 0,
+    marketPrice: 650,
+    affiliateLink: 'https://temu.to/k/ezi0kpfjq9q'
+  },
+  {
     id: 'leather-jacket-premium-2025',
     title: 'جاكيت جلد فاخر للرجال - أناقة تدوم طويلاً 🧥',
     name: 'جاكيت جلد كلاسيكي Premium',
@@ -19,10 +45,10 @@ export const INITIAL_POSTS: Article[] = [
 متوفر الآن بمقاسات مختلفة لتناسب الجميع. اطلبه الآن مباشرة عبر الرابط بالأسفل قبل نفاذ الكمية.`,
     image: 'https://images.unsplash.com/photo-1520975916090-3105956dac55?auto=format&fit=crop&q=80&w=800', 
     category: Category.DEALS,
-    date: 'اليوم',
+    date: 'أمس',
     views: 154000,
     author: 'عبدو ويب',
-    isTrending: true,
+    isTrending: false,
     isProduct: true,
     price: 0,
     marketPrice: 1200,
@@ -69,7 +95,7 @@ export const INITIAL_POSTS: Article[] = [
 - 🔋 بطارية تدوم حتى 7 أيام.`,
     image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800', 
     category: Category.DEALS,
-    date: 'اليوم',
+    date: 'أمس',
     views: 89000,
     author: 'عبدو ويب',
     isTrending: false,
@@ -92,36 +118,13 @@ export const INITIAL_POSTS: Article[] = [
 - 🍎 تتصل فوراً مع جميع الهواتف.`,
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&q=80&w=800', 
     category: Category.DEALS,
-    date: 'أمس',
+    date: 'منذ يومين',
     views: 45600,
     author: 'عبدو ويب',
     isTrending: false,
     isProduct: true,
     price: 0,
     marketPrice: 320,
-    affiliateLink: 'https://temu.to/k/etuuox67wtr'
-  },
-  {
-    id: 'portable-mini-projector',
-    title: 'بروجيكتور منزلي محمول - سينما في بيتك بأقل ثمن 📽️',
-    name: 'Mini Projector HD 1080P',
-    excerpt: 'حول غرفتك إلى صالة سينما. يدعم Netflix و YouTube ويدعم التوصيل بالهاتف والـ Play.',
-    content: `شاهد مباريات كرة القدم وأفلامك المفضلة على شاشة عملاقة تصل إلى 120 بوصة.
-    
-المميزات:
-- 🍿 خفيف الوزن وقابل للحمل.
-- 🔌 يدعم HDMI و USB و AV.
-- 📱 عرض شاشة الهاتف لاسلكياً.
-- 🔊 مكبر صوت مدمج بجودة عالية.`,
-    image: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&q=80&w=800', 
-    category: Category.DEALS,
-    date: 'أمس',
-    views: 67000,
-    author: 'عبدو ويب',
-    isTrending: false,
-    isProduct: true,
-    price: 0,
-    marketPrice: 1200,
     affiliateLink: 'https://temu.to/k/etuuox67wtr'
   }
 ];
