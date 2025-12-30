@@ -3,6 +3,34 @@ import { Article, Category } from './types';
 
 export const INITIAL_POSTS: Article[] = [
   {
+    id: 'temu-smartwatch-ultra-9',
+    title: 'ساعة Ultra 9 الذكية - إصدار 2025 الحصري ⌚',
+    name: 'ساعة Ultra 9 الرياضية الذكية',
+    excerpt: 'أقوى شبيهة لساعة أبل ألترا متوفرة الآن على تيمو بخصم 90%. تدعم المكالمات، الرياضة، ومراقبة الصحة.',
+    content: `احصل على الفخامة والأداء العالي مع ساعة Ultra 9 الذكية، الخيار الأول للشباب في المغرب حالياً.
+
+المميزات الرهيبة:
+- شاشة AMOLED كبيرة وواضحة جداً تحت أشعة الشمس.
+- تدعم إجراء واستقبال المكالمات مباشرة من الساعة.
+- قياس نبضات القلب، الأكسجين في الدم، وجودة النوم.
+- بطارية تدوم حتى 7 أيام من الاستخدام المتواصل.
+- مقاومة للماء والغبار بمعيار IP68.
+- متوافقة مع جميع هواتف الأيفون والأندرويد.
+
+لماذا تطلبها عبر رابطنا؟
+بصفتنا شركاء مع تيمو، نضمن لك الحصول على "أقل سعر في السوق" مع شحن مجاني تماماً لباب منزلك في المغرب.`,
+    image: 'https://images.unsplash.com/photo-1544117518-30df57809b09?auto=format&fit=crop&q=80&w=1200',
+    category: Category.DEALS,
+    date: 'اليوم',
+    views: 45800,
+    author: 'عبدو التقني',
+    isTrending: true,
+    isProduct: true,
+    price: 149,
+    affiliateLink: 'https://temu.to/k/eg6h0ltmwzi',
+    couponCode: 'TEMU2025'
+  },
+  {
     id: 'premium-leather-jacket',
     title: 'جاكيت جلد أصلي - شتاء 2025',
     name: 'جاكيت جلد إيطالي فاخر',
@@ -22,7 +50,7 @@ export const INITIAL_POSTS: Article[] = [
     date: '06 أبريل 2025',
     views: 12400,
     author: 'عبدو ستور',
-    isTrending: true,
+    isTrending: false,
     isProduct: true,
     price: 399
   },

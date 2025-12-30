@@ -42,7 +42,7 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
               <span className="text-6xl font-black">{product.price?.toLocaleString()}</span>
               <span className="text-2xl font-black opacity-80">درهم مغربي</span>
             </div>
-            <p className="mt-4 text-sm font-bold bg-white/20 inline-block px-4 py-2 rounded-xl">🚚 التوصيل بالمجان لجميع المدن</p>
+            <p className="mt-4 text-sm font-bold bg-white/20 inline-block px-4 py-2 rounded-xl">🚚 شحن مجاني - عرض تيمو الأصلي</p>
           </div>
 
           <div className={`text-xl leading-[1.8] font-medium ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -52,33 +52,45 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
             <p className="whitespace-pre-line bg-white dark:bg-slate-900 p-8 rounded-[35px] border border-slate-100 dark:border-slate-800 shadow-sm">{product.content}</p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-6 pt-6">
+          <div className="flex flex-col gap-6 pt-6">
+            {product.affiliateLink ? (
+              <a 
+                href={product.affiliateLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-orange-600 text-white py-6 rounded-3xl font-black text-2xl shadow-2xl shadow-orange-600/30 hover:bg-orange-700 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-4"
+              >
+                <span>🛍️</span> اطلب الآن من تيمو
+              </a>
+            ) : (
+              <button 
+                onClick={() => onAddToCart(product)}
+                className="w-full bg-emerald-600 text-white py-6 rounded-3xl font-black text-2xl shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-4"
+              >
+                <span>🛒</span> أضف للسلة
+              </button>
+            )}
+            
             <button 
-              onClick={() => onAddToCart(product)}
-              className="flex-grow bg-emerald-600 text-white py-6 rounded-3xl font-black text-2xl shadow-2xl shadow-emerald-600/30 hover:bg-emerald-700 hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-4"
+              onClick={() => window.open(`https://wa.me/212649075664?text=${encodeURIComponent('أريد استفسار حول منتج: ' + product.name)}`)}
+              className="w-full bg-slate-900 text-white py-6 rounded-3xl font-black text-2xl shadow-2xl hover:bg-black hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-4"
             >
-              <span>🛒</span> أضف للسلة
-            </button>
-            <button 
-              onClick={() => window.open(`https://wa.me/212649075664?text=${encodeURIComponent('أريد طلب منتج: ' + product.name)}`)}
-              className="flex-grow bg-slate-900 text-white py-6 rounded-3xl font-black text-2xl shadow-2xl hover:bg-black hover:-translate-y-1 active:scale-95 transition-all flex items-center justify-center gap-4"
-            >
-              <span>💬</span> طلب مباشر
+              <span>💬</span> تواصل معنا واتساب
             </button>
           </div>
           
           <div className="grid grid-cols-3 gap-4 text-center py-8 border-t border-slate-100 dark:border-slate-800">
              <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl">
-                <span className="text-4xl block mb-2">🇲🇦</span>
-                <p className="text-[10px] font-black text-slate-500 uppercase">صنع بإتقان</p>
+                <span className="text-4xl block mb-2">🏷️</span>
+                <p className="text-[10px] font-black text-slate-500 uppercase">خصم حقيقي</p>
              </div>
              <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl">
-                <span className="text-4xl block mb-2">🤝</span>
-                <p className="text-[10px] font-black text-slate-500 uppercase">دفع آمن</p>
+                <span className="text-4xl block mb-2">✨</span>
+                <p className="text-[10px] font-black text-slate-500 uppercase">جودة عالية</p>
              </div>
              <div className="bg-slate-50 dark:bg-slate-800/50 p-6 rounded-3xl">
-                <span className="text-4xl block mb-2">🔄</span>
-                <p className="text-[10px] font-black text-slate-500 uppercase">إرجاع سهل</p>
+                <span className="text-4xl block mb-2">🚛</span>
+                <p className="text-[10px] font-black text-slate-500 uppercase">توصيل سريع</p>
              </div>
           </div>
         </div>
