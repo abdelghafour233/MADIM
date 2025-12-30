@@ -13,15 +13,16 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-// تحديث الإصدار والمفاتيح لضمان تحميل الأكواد الجديدة
-const CURRENT_VERSION = '1.2.4'; 
+// تم رفع الإصدار إلى 1.2.5 لكسر الكاش بشكل كامل
+const CURRENT_VERSION = '1.2.5'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_stable_posts_v8', 
-  SETTINGS: 'abdou_stable_settings_v8',
-  CART: 'abdou_stable_cart_v8',
-  VERSION: 'abdou_stable_version_v8'
+  POSTS: 'abdou_v9_posts', 
+  SETTINGS: 'abdou_v9_settings',
+  CART: 'abdou_v9_cart',
+  VERSION: 'abdou_v9_version'
 };
 
+// كود الإعلانات الافتراضي (Social Bar)
 const DEFAULT_GLOBAL_ADS = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
 
 const INITIAL_SETTINGS: Settings = {
@@ -31,7 +32,7 @@ const INITIAL_SETTINGS: Settings = {
   globalAdsCode: DEFAULT_GLOBAL_ADS,      
   directLinkCode: 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d',
   dashboardPassword: '1234',
-  totalVisits: 3500,
+  totalVisits: 3800,
   whatsappNumber: '212649075664'
 };
 
@@ -53,6 +54,7 @@ const App: React.FC = () => {
     const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
+    // إذا كان الإصدار جديداً، نقوم بتصفير الإعدادات لضمان وجود الأكواد الجديدة
     if (lastVersion !== CURRENT_VERSION) {
       setPosts(INITIAL_POSTS);
       setSettings(INITIAL_SETTINGS);
@@ -68,13 +70,13 @@ const App: React.FC = () => {
     }
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    setTimeout(() => setIsLoading(false), 700);
+    setTimeout(() => setIsLoading(false), 600);
   }, []);
 
-  // تشغيل أكواد Adsterra تلقائياً عند تحميل الموقع
+  // حقن كود Adsterra تلقائياً في الصفحة
   useEffect(() => {
     if (settings.globalAdsCode) {
-      const scriptId = 'adsterra-inject-v124';
+      const scriptId = 'adsterra-v9-injector';
       const old = document.getElementById(scriptId);
       if (old) old.remove();
       
@@ -97,8 +99,9 @@ const App: React.FC = () => {
   };
 
   const addToCart = (product: Article) => {
-    // تشغيل الـ Direct Link عند الضغط على إضافة للسلة
+    // فتح الرابط المباشر Adsterra Direct Link للربح عند الضغط
     if (settings.directLinkCode) window.open(settings.directLinkCode, '_blank');
+    
     setCart(prev => {
       const updated = prev.find(item => item.id === product.id)
         ? prev.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
