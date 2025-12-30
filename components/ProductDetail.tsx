@@ -28,7 +28,9 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
   const shareLinks = {
     whatsapp: `https://wa.me/?text=${encodeURIComponent(product.title + ' \n ' + window.location.href)}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
-    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(product.title)}`
+    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(product.title)}`,
+    // Instagram doesn't support direct URL sharing via link, but we provide a nice UI button
+    instagram: `https://www.instagram.com/` 
   };
 
   const copyToClipboard = () => {
@@ -37,14 +39,30 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product.title,
+          text: product.excerpt,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      copyToClipboard();
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto py-6 md:py-16 animate-fadeIn px-4" dir="rtl">
-      <button onClick={onBack} className="mb-8 md:mb-16 text-slate-500 font-black flex items-center gap-3 hover:text-emerald-600 transition-colors group text-sm md:text-xl">
+      <button onClick={onBack} className="mb-8 md:mb-16 text-slate-500 font-black flex items-center gap-3 hover:text-emerald-600 transition-all group text-sm md:text-xl">
         <span className="text-2xl group-hover:translate-x-1 transition-transform">→</span> العودة للتسوق
       </button>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
-        {/* Main Product Image Container - Desktop Optimized */}
+        {/* Main Product Image Container */}
         <div className="sticky top-32 space-y-8">
           <div className="relative rounded-[40px] md:rounded-[60px] overflow-hidden shadow-3xl border-2 md:border-4 border-white/5 group aspect-square lg:h-[750px] bg-[#0d0d0e] flex items-center justify-center img-loading">
             <div 
@@ -66,7 +84,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
               {product.category}
             </div>
           </div>
-          
           <div className="hidden lg:block">
              <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
           </div>
@@ -84,7 +101,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
             </div>
           </div>
 
-          {/* Pricing Card */}
           <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white p-10 md:p-14 rounded-[45px] md:rounded-[55px] shadow-3xl shadow-emerald-600/20 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
             <p className="text-emerald-100 font-black mb-3 text-sm md:text-2xl uppercase tracking-widest">تخفيض حصري اليوم:</p>
@@ -98,12 +114,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
                 <span className="text-4xl md:text-6xl font-black">أفضل سعر متاح</span>
               )}
             </div>
-            {product.marketPrice && product.price && product.price > 0 && (
-              <div className="mt-6 flex items-center gap-4">
-                <span className="text-lg md:text-2xl opacity-60 line-through">كان بـ {product.marketPrice} د.م</span>
-                <span className="bg-white/20 backdrop-blur-md px-4 py-2 rounded-xl text-xs md:text-lg font-black">وفر {product.marketPrice - product.price} د.م</span>
-              </div>
-            )}
           </div>
 
           <div className="flex flex-col gap-8">
@@ -114,18 +124,29 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
               اكتشف العرض واطلب الآن 🛍️
             </button>
             
-            {/* Social Share Section - Responsive Layout */}
-            <div className="space-y-6">
+            {/* Social Share Section Updated */}
+            <div className="space-y-6 bg-white/5 p-8 rounded-[40px] border border-white/10">
               <p className="text-center font-black text-xs md:text-lg opacity-60">توصيل لكل المدن.. شارك الهمزة مع أصدقائك:</p>
-              <div className="grid grid-cols-2 sm:flex sm:justify-center gap-4">
-                <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="flex-1 max-w-[200px] bg-[#25D366]/10 text-[#25D366] py-5 rounded-3xl flex items-center justify-center gap-3 border border-[#25D366]/20 hover:bg-[#25D366] hover:text-white transition-all font-black text-sm md:text-lg">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
+                <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="bg-[#25D366]/10 text-[#25D366] py-4 rounded-2xl flex flex-col items-center justify-center gap-2 border border-[#25D366]/20 hover:bg-[#25D366] hover:text-white transition-all font-black text-[10px] md:text-sm">
+                   <span className="text-xl">💬</span>
                    <span>واتساب</span>
                 </a>
-                <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="flex-1 max-w-[200px] bg-[#1877F2]/10 text-[#1877F2] py-5 rounded-3xl flex items-center justify-center gap-3 border border-[#1877F2]/20 hover:bg-[#1877F2] hover:text-white transition-all font-black text-sm md:text-lg">
-                   <span>فيسبوك</span>
+                <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="bg-[#1877F2]/10 text-[#1877F2] py-4 rounded-2xl flex flex-col items-center justify-center gap-2 border border-[#1877F2]/20 hover:bg-[#1877F2] hover:text-white transition-all font-black text-[10px] md:text-sm">
+                   <span className="text-xl">👥</span>
+                   <span>فايسبوك</span>
                 </a>
-                <button onClick={copyToClipboard} className={`col-span-2 sm:flex-1 sm:max-w-[200px] ${copied ? 'bg-emerald-600 text-white' : 'bg-white/5 text-slate-400'} py-5 rounded-3xl flex items-center justify-center gap-3 border border-white/10 hover:bg-white/10 transition-all font-black text-sm md:text-lg`}>
-                   <span>{copied ? 'تم النسخ ✅' : 'نسخ الرابط'}</span>
+                <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer" className="bg-white/5 text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 border border-white/10 hover:bg-white hover:text-black transition-all font-black text-[10px] md:text-sm">
+                   <span className="text-xl">𝕏</span>
+                   <span>تويتر</span>
+                </a>
+                <button onClick={handleNativeShare} className="bg-[#E4405F]/10 text-[#E4405F] py-4 rounded-2xl flex flex-col items-center justify-center gap-2 border border-[#E4405F]/20 hover:bg-[#E4405F] hover:text-white transition-all font-black text-[10px] md:text-sm">
+                   <span className="text-xl">📸</span>
+                   <span>انستغرام</span>
+                </button>
+                <button onClick={copyToClipboard} className={`col-span-2 sm:col-span-1 ${copied ? 'bg-emerald-600 text-white' : 'bg-white/5 text-slate-400'} py-4 rounded-2xl flex flex-col items-center justify-center gap-2 border border-white/10 hover:bg-white/10 transition-all font-black text-[10px] md:text-sm`}>
+                   <span className="text-xl">{copied ? '✅' : '🔗'}</span>
+                   <span>{copied ? 'تم النسخ' : 'نسخ الرابط'}</span>
                 </button>
               </div>
             </div>
@@ -140,7 +161,6 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onB
               {product.content}
             </div>
           </div>
-
           <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
         </div>
       </div>

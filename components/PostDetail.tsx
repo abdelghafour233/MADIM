@@ -30,10 +30,6 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
     if (post.affiliateLink) window.open(post.affiliateLink, '_blank');
   };
 
-  const handleImgError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    e.currentTarget.src = fallbackImage;
-  };
-
   const shareLinks = {
     whatsapp: `https://wa.me/?text=${encodeURIComponent(post.title + ' \n ' + window.location.href)}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
@@ -44,6 +40,22 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: post.title,
+          text: post.excerpt,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      copyToClipboard();
+    }
   };
 
   return (
@@ -66,39 +78,9 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
         </div>
       </div>
 
-      {/* Main Post Image */}
       <div className="relative rounded-[30px] md:rounded-[50px] overflow-hidden shadow-2xl mb-12 border-2 border-white/5 bg-slate-900 h-[250px] sm:h-[400px] md:h-[550px] flex items-center justify-center">
-        <div 
-          className="absolute inset-0 bg-cover bg-center blur-3xl opacity-30 scale-110" 
-          style={{ backgroundImage: `url("${post.image}")` }}
-        ></div>
-        <img 
-          src={post.image} 
-          onError={handleImgError}
-          className="relative z-10 w-full h-full object-contain md:object-cover" 
-          alt={post.title} 
-        />
+        <img src={post.image} className="relative z-10 w-full h-full object-contain md:object-cover" alt={post.title} />
       </div>
-
-      <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
-
-      {post.marketPrice && post.price && post.price > 0 && (
-        <div className="mb-12 overflow-hidden rounded-[30px] md:rounded-[40px] border border-white/10 bg-white/5">
-          <div className="bg-emerald-600 p-4 md:p-6 text-center">
-             <h3 className="text-white font-black text-sm md:text-xl">تحليل السعر وتوفيرك اليوم 💸</h3>
-          </div>
-          <div className="grid grid-cols-2 divide-x divide-x-reverse divide-white/10">
-             <div className="p-6 md:p-8 text-center bg-red-500/5">
-                <span className="block text-slate-400 text-[10px] font-black mb-1 uppercase">ثمن السوق</span>
-                <span className="text-xl md:text-3xl font-black text-slate-500 line-through">{post.marketPrice} د.م</span>
-             </div>
-             <div className="p-6 md:p-8 text-center bg-emerald-500/10">
-                <span className="block text-emerald-500 text-[10px] font-black mb-1 uppercase">ثمن العرض</span>
-                <span className="text-2xl md:text-4xl font-black text-emerald-500">{post.price} د.م</span>
-             </div>
-          </div>
-        </div>
-      )}
 
       <div className={`text-right leading-[1.8] md:leading-[2.2] font-medium text-sm md:text-2xl space-y-8 mb-16 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
         {post.content.split('\n').map((para, i) => (
@@ -116,14 +98,29 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
           </button>
         )}
 
-        {/* Share Section for Post */}
+        {/* Share Section Updated */}
         <div className="bg-white/5 p-8 rounded-[35px] border border-white/5">
           <h3 className="text-center font-black text-lg mb-6">هل أعجبك هذا المقال؟ شاركه مع الآخرين 🚀</h3>
-          <div className="flex flex-wrap justify-center gap-4">
-             <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-[120px] bg-[#25D366] text-white py-5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-[#25D366]/20 font-black">واتساب</a>
-             <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="flex-1 min-w-[120px] bg-[#1877F2] text-white py-5 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-[#1877F2]/20 font-black">فيسبوك</a>
-             <button onClick={copyToClipboard} className={`flex-1 min-w-[120px] ${copied ? 'bg-emerald-600 text-white' : 'bg-white/10 text-slate-300'} py-5 rounded-2xl flex items-center justify-center gap-2 font-black transition-all`}>
-               {copied ? 'تم النسخ!' : 'نسخ الرابط'}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+             <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="bg-[#25D366] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-xs">
+                <span>💬</span>
+                <span>واتساب</span>
+             </a>
+             <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-xs">
+                <span>👥</span>
+                <span>فايسبوك</span>
+             </a>
+             <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer" className="bg-black text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-xs border border-white/10">
+                <span>𝕏</span>
+                <span>تويتر</span>
+             </a>
+             <button onClick={handleNativeShare} className="bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-xs">
+                <span>📸</span>
+                <span>انستغرام</span>
+             </button>
+             <button onClick={copyToClipboard} className={`col-span-2 sm:col-span-1 ${copied ? 'bg-emerald-600 text-white' : 'bg-white/10 text-slate-300'} py-4 rounded-2xl flex flex-col items-center justify-center gap-2 font-black transition-all text-xs`}>
+               <span>{copied ? '✅' : '🔗'}</span>
+               <span>{copied ? 'تم النسخ!' : 'نسخ الرابط'}</span>
              </button>
           </div>
         </div>
