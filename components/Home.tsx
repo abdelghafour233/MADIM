@@ -12,115 +12,120 @@ interface HomeProps {
 const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, directLink }) => {
   const trendingPost = posts.find(p => p.isTrending) || posts[0];
   const otherPosts = posts.filter(p => p.id !== trendingPost?.id);
-  const [timeLeft, setTimeLeft] = useState({ h: 2, m: 45, s: 10 });
+  const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
 
   useEffect(() => {
+    const end = new Date().setHours(23, 59, 59);
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev.s > 0) return { ...prev, s: prev.s - 1 };
-        if (prev.m > 0) return { ...prev, m: prev.m - 1, s: 59 };
-        if (prev.h > 0) return { h: prev.h - 1, m: 59, s: 59 };
-        return prev;
+      const now = new Date().getTime();
+      const diff = end - now;
+      setTimeLeft({
+        h: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        m: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+        s: Math.floor((diff % (1000 * 60)) / 1000)
       });
     }, 1000);
     return () => clearInterval(timer);
   }, []);
 
-  const handleQuickShare = (e: React.MouseEvent, post: Article) => {
-    e.stopPropagation();
-    const text = `شوف هاد الهمزة الواعرة: ${post.title}`;
-    const url = window.location.origin + '?id=' + post.id;
-    window.open(`https://wa.me/?text=${encodeURIComponent(text + ' ' + url)}`);
-  };
-
-  if (!trendingPost) return <div className="text-center py-20 font-black opacity-50">لا توجد عروض حالياً..</div>;
+  if (!trendingPost) return <div className="text-center py-20 opacity-40 font-black">جاري جلب العروض...</div>;
 
   return (
-    <div className="space-y-12 md:space-y-16 animate-fadeIn" dir="rtl">
-      {/* Hero Section - ارتفاع ديناميكي */}
-      <section className="relative group cursor-pointer" onClick={() => onPostClick(trendingPost)}>
-        <div className="relative h-[400px] sm:h-[500px] md:h-[650px] rounded-[30px] md:rounded-[60px] overflow-hidden shadow-2xl border border-white/5">
-          <img src={trendingPost.image} className="w-full h-full object-cover group-hover:scale-105 transition-all duration-1000" alt={trendingPost.title} />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-          
-          <div className="absolute top-4 right-4 md:top-8 md:right-8">
-            <div className="bg-red-600 text-white px-3 py-1.5 md:px-4 md:py-2 rounded-xl text-[10px] md:text-xs font-black shadow-lg animate-pulse flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-white rounded-full animate-ping"></span>
-              ينتهي في: {timeLeft.h}:{timeLeft.m}:{timeLeft.s}
-            </div>
-          </div>
-
-          <div className="absolute bottom-6 right-6 left-6 md:bottom-16 md:right-16 md:left-16 text-white">
-            <div className="flex flex-wrap items-center gap-2 mb-3 md:mb-4">
-              <span className="bg-orange-600 px-3 py-1 md:px-5 md:py-2 rounded-xl text-[10px] md:text-xs font-black uppercase shadow-xl tracking-wider">همزة اليوم 🔥</span>
-              {trendingPost.marketPrice && (
-                 <span className="bg-emerald-600 px-3 py-1 md:px-4 md:py-2 rounded-xl text-[9px] md:text-[10px] font-black">وفر {trendingPost.marketPrice - (trendingPost.price || 0)} د.م</span>
-              )}
-            </div>
-            <h1 className="text-2xl sm:text-4xl md:text-6xl font-black mb-4 md:mb-6 leading-tight group-hover:text-emerald-400 transition-colors line-clamp-2">{trendingPost.title}</h1>
-            <div className="flex items-center gap-4 md:gap-6">
-              <div className="shrink-0 bg-white text-black p-3 md:p-4 rounded-2xl md:rounded-3xl font-black text-center shadow-2xl scale-100 md:scale-110">
-                <span className="text-[10px] block opacity-50 uppercase mb-0.5">السعر الآن</span>
-                <span className="text-lg md:text-2xl">{trendingPost.price} د.م</span>
+    <div className="space-y-12 animate-fade" dir="rtl">
+      {/* Hero Section Premium */}
+      <section 
+        className="relative group cursor-pointer overflow-hidden rounded-[45px] md:rounded-[65px] bg-white/5 border border-white/10 shadow-3xl"
+        onClick={() => onPostClick(trendingPost)}
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 items-center">
+           <div className="relative h-[350px] md:h-[600px] overflow-hidden">
+              <img src={trendingPost.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" alt="" />
+              <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-l from-black via-black/20 to-transparent"></div>
+              <div className="absolute top-6 left-6 bg-red-600 text-white px-5 py-2 rounded-2xl text-[11px] font-black shadow-xl animate-pulse">
+                ينتهي في {timeLeft.h}:{timeLeft.m}:{timeLeft.s}
               </div>
-              <button 
-                onClick={(e) => handleQuickShare(e, trendingPost)}
-                className="bg-emerald-600 px-4 py-3 md:p-4 rounded-xl md:rounded-2xl text-white font-black hover:scale-105 transition-transform flex items-center gap-2 text-sm md:text-base shadow-lg"
-              >
-                <span>📤</span> <span className="hidden sm:inline">مشاركة</span>
-              </button>
-            </div>
-          </div>
+           </div>
+           <div className="p-8 md:p-16 lg:pr-10">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="bg-emerald-600/20 text-emerald-500 px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest border border-emerald-500/20">همزة اليوم 🔥</span>
+                <span className="bg-orange-600/20 text-orange-500 px-5 py-2 rounded-xl text-xs font-black border border-orange-500/20">الأكثر طلباً</span>
+              </div>
+              <h1 className="text-3xl md:text-6xl font-black mb-6 leading-tight group-hover:text-emerald-500 transition-colors">{trendingPost.title}</h1>
+              <p className="text-slate-400 text-lg md:text-xl font-medium mb-10 line-clamp-2">{trendingPost.excerpt}</p>
+              
+              <div className="flex items-center gap-6">
+                 <div className="bg-white text-black p-5 md:p-6 rounded-3xl font-black shadow-2xl flex flex-col items-center min-w-[120px]">
+                    <span className="text-[10px] opacity-40 mb-1">الثمن الآن</span>
+                    <span className="text-2xl md:text-3xl">{trendingPost.price} د.م</span>
+                 </div>
+                 <button className="flex-1 bg-emerald-600 text-white py-6 md:py-8 rounded-[30px] font-black text-xl md:text-2xl shadow-xl shadow-emerald-600/20 hover:bg-emerald-500 transition-all flex items-center justify-center gap-3">
+                    <span>🛒</span> اطلب الآن
+                 </button>
+              </div>
+           </div>
         </div>
       </section>
 
-      {/* Trust Badges - 2 في كل صف على الموبايل */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+      {/* Trust Section */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { t: 'شحن سريع بالمغرب', d: '24-48 ساعة', i: '🚚' },
-          { t: 'أقل سعر مضمون', d: 'تيمو أصلي', i: '💎' },
-          { t: 'دفع عند الاستلام', d: 'آمن 100%', i: '🤝' },
-          { t: 'دعم فني 24/7', i: '📞', d: 'عبر الواتساب' }
+          { t: 'توصيل مجاني', d: 'فوق 300 درهم', i: '📦', c: 'bg-blue-500' },
+          { t: 'دفع عند الاستلام', d: 'آمن 100%', i: '🤝', c: 'bg-emerald-500' },
+          { t: 'ضمان الجودة', d: 'أصلي 100%', i: '💎', c: 'bg-purple-500' },
+          { t: 'دعم واتساب', d: 'متاح 24/7', i: '💬', c: 'bg-green-500' }
         ].map((item, idx) => (
-          <div key={idx} className="bg-white/5 border border-white/5 p-4 md:p-6 rounded-2xl md:rounded-[30px] text-center hover:bg-white/10 transition-all">
-            <span className="text-2xl md:text-3xl block mb-2">{item.i}</span>
-            <h4 className="font-black text-[11px] md:text-sm">{item.t}</h4>
-            <p className="text-[9px] md:text-[10px] opacity-40 font-bold">{item.d}</p>
+          <div key={idx} className="glass-card p-6 text-center group">
+             <div className={`w-14 h-14 ${item.c}/10 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4 group-hover:scale-110 transition-transform`}>
+               {item.i}
+             </div>
+             <h4 className="font-black text-sm md:text-lg mb-1">{item.t}</h4>
+             <p className="text-[10px] md:text-xs opacity-40 font-bold">{item.d}</p>
           </div>
         ))}
       </div>
 
-      {/* قائمة العروض - شبكة مرنة */}
-      <div className="space-y-8 md:space-y-10">
-        <h2 className="text-2xl md:text-3xl font-black flex items-center gap-3">
-          <span className="w-2 h-8 md:w-3 md:h-10 bg-emerald-500 rounded-full"></span> أقوى الهميزات
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+      {/* العروض المميزة Grid */}
+      <div className="space-y-10">
+        <div className="flex items-center justify-between">
+           <h2 className="text-2xl md:text-4xl font-black flex items-center gap-4">
+              <span className="w-3 h-10 bg-emerald-600 rounded-full"></span>
+              أحدث الهميزات
+           </h2>
+           <div className="hidden md:flex gap-2">
+              <span className="w-12 h-1 bg-emerald-600 rounded-full"></span>
+              <span className="w-4 h-1 bg-white/10 rounded-full"></span>
+           </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {otherPosts.map(post => (
-            <div key={post.id} className="group cursor-pointer bg-white/5 rounded-[30px] md:rounded-[45px] overflow-hidden border border-white/5 hover:border-emerald-500/30 hover:shadow-2xl transition-all duration-500" onClick={() => onPostClick(post)}>
-              <div className="relative h-56 sm:h-64 overflow-hidden">
-                <img src={post.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt={post.title} />
-                <button 
-                  onClick={(e) => handleQuickShare(e, post)}
-                  className="absolute top-4 right-4 w-9 h-9 md:w-10 md:h-10 bg-black/40 backdrop-blur-md rounded-xl flex items-center justify-center text-white md:opacity-0 md:group-hover:opacity-100 transition-opacity z-10 hover:bg-emerald-600"
-                >
-                  📤
-                </button>
-                {post.marketPrice && post.price && (
-                  <div className="absolute top-4 left-4 bg-red-600 text-white px-2 py-1 rounded-lg text-[9px] md:text-[10px] font-black">
-                    -{Math.round((1 - post.price / post.marketPrice) * 100)}%
-                  </div>
-                )}
-                <div className="absolute bottom-4 right-4 md:bottom-6 md:right-6 bg-emerald-600 px-3 py-1.5 md:px-4 md:py-2 rounded-xl font-black text-white shadow-xl text-sm md:text-base">
-                  {post.price} د.م
-                </div>
+            <div 
+              key={post.id} 
+              className="group cursor-pointer glass-card p-4 md:p-6"
+              onClick={() => onPostClick(post)}
+            >
+              <div className="img-container mb-6 shadow-xl">
+                 <img src={post.image} loading="lazy" alt={post.title} />
+                 <div className="absolute top-4 right-4 bg-emerald-600 text-white px-4 py-2 rounded-xl text-[10px] font-black shadow-lg">
+                    وفر {post.marketPrice ? post.marketPrice - (post.price || 0) : 0} د.م
+                 </div>
+                 {post.isTrending && (
+                   <div className="absolute top-4 left-4 bg-orange-600 text-white px-3 py-1.5 rounded-lg text-[9px] font-black animate-pulse">
+                     جديد 🔥
+                   </div>
+                 )}
               </div>
-              <div className="p-6 md:p-8">
-                <h3 className="text-lg md:text-xl font-black mb-4 group-hover:text-emerald-500 transition-colors line-clamp-2 min-h-[3.5rem]">{post.title}</h3>
-                <div className="flex items-center justify-between mt-auto">
-                  <div className="flex text-yellow-500 text-[10px]">{'★'.repeat(5)}</div>
-                  <span className="text-[10px] opacity-40 font-bold">👁️ {post.views}</span>
-                </div>
+              <h3 className="text-lg md:text-xl font-black mb-4 line-clamp-2 min-h-[3.5rem] group-hover:text-emerald-500 transition-colors">
+                {post.title}
+              </h3>
+              <div className="flex items-center justify-between mt-auto">
+                 <div>
+                    <span className="text-[10px] font-black text-slate-500 block mb-1">ثمن الهمزة:</span>
+                    <span className="text-xl md:text-2xl font-black text-emerald-500">{post.price} د.م</span>
+                 </div>
+                 <button className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-xl hover:bg-emerald-600 hover:text-white transition-all shadow-inner">
+                    ➕
+                 </button>
               </div>
             </div>
           ))}
