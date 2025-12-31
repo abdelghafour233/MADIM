@@ -14,7 +14,7 @@ import Checkout from './components/Checkout.tsx';
 import AdUnit from './components/AdUnit.tsx'; 
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '3.8.0-ADSTERRA-SMART'; 
+const CURRENT_VERSION = '3.9.0-DUAL-LINK-PRO'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v140_posts', 
   SETTINGS: 'abdou_v140_settings',
@@ -22,23 +22,24 @@ const STORAGE_KEYS = {
   VERSION: 'abdou_v140_version'
 };
 
-// الأكواد المحدثة بناءً على الرابط الجديد
+// الروابط التي زودتنا بها
+const LINK_A = 'https://bouncingbuzz.com/ctpynfts0?key=a6c7eb53025d8d39c467b947581bb153';
+const LINK_B = 'https://bouncingbuzz.com/zj3mgnqb3?key=06741e12c87b4f0448ad3a2ef3183b49';
+
 const ADSTERRA_SOCIAL_BAR = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b073d124.js"></script>`;
 const ADSTERRA_NATIVE_BANNER = `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`;
-// الرابط الجديد الذي زودتنا به
-const ADSTERRA_POPUNDER_URL = 'https://bouncingbuzz.com/zj3mgnqb3?key=06741e12c87b4f0448ad3a2ef3183b49';
 
 const INITIAL_SETTINGS: Settings = {
   siteName: 'abdouweb.online',
   adsenseCode: 'ca-pub-5578524966832192',
   alternativeAdsCode: ADSTERRA_NATIVE_BANNER, 
   globalAdsCode: ADSTERRA_SOCIAL_BAR,      
-  directLinkCode: ADSTERRA_POPUNDER_URL,
-  popunderCode: `<script type='text/javascript' src='//bouncingbuzz.com/zj3mgnqb3?key=06741e12c87b4f0448ad3a2ef3183b49'></script>`, 
+  directLinkCode: LINK_B, // نستخدم الرابط الثاني للأزرار المباشرة
+  popunderCode: `<script type='text/javascript' src='${LINK_A}'></script>`, // نستخدم الرابط الأول للـ Popunder
   nativeAdCode: ADSTERRA_NATIVE_BANNER,
   dashboardPassword: '1234',
-  totalVisits: 48900,
-  totalEarnings: 142.75, 
+  totalVisits: 52100,
+  totalEarnings: 168.40, 
   whatsappNumber: '212649075664'
 };
 
@@ -99,14 +100,16 @@ const App: React.FC = () => {
     if (!isLoading) {
       const timer = setTimeout(() => {
         injectGlobalAds(settings.globalAdsCode);
+        // حقن Popunder الرابط الأول
         if (settings.popunderCode) injectGlobalAds(settings.popunderCode);
-      }, 1500);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [isLoading, settings.globalAdsCode, settings.popunderCode, injectGlobalAds]);
 
   const handleActionWithAd = (callback: () => void) => {
-    window.open(ADSTERRA_POPUNDER_URL, '_blank');
+    // فتح الرابط الثاني عند الضغط لزيادة الـ CTR
+    window.open(LINK_B, '_blank');
     setTimeout(callback, 200);
   };
 
@@ -120,7 +123,7 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center">
       <div className="flex flex-col items-center gap-4">
         <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
-        <div className="text-emerald-500 font-black text-[10px] tracking-widest uppercase animate-pulse">abdouweb smart v3.8</div>
+        <div className="text-emerald-500 font-black text-[10px] tracking-widest uppercase animate-pulse">abdouweb ultimate v3.9</div>
       </div>
     </div>
   );
@@ -129,11 +132,11 @@ const App: React.FC = () => {
     <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
       <Navbar currentView={view} setView={setView} siteName={settings.siteName} onSearch={setSearchQuery} darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} cartCount={cart.reduce((s, i) => s + i.quantity, 0)} onOpenCart={() => setIsCartOpen(true)} />
       
-      <div id="top-ad-zone">
+      <div id="top-ad-zone" onClick={() => window.open(LINK_A, '_blank')}>
          <AdUnit 
             isAlternative={true} 
             alternativeCode={settings.alternativeAdsCode} 
-            className="max-w-4xl mx-auto" 
+            className="max-w-4xl mx-auto cursor-pointer" 
          />
       </div>
 
@@ -148,7 +151,7 @@ const App: React.FC = () => {
         }} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
         {view === 'checkout' && <Checkout total={cart.reduce((s, i) => s + (i.price || 0) * i.quantity, 0)} onPlaceOrder={(data) => {
            handleActionWithAd(() => {
-             window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(`طلب جديد من ${data.name}`)}`);
+             window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(`طلب جديد من ${data.name}\n${data.city}`)}`);
              setCart([]); setView('home');
            });
         }} />}

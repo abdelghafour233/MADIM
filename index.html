@@ -30,6 +30,12 @@
         justify-content: center;
         align-items: center;
       }
+      
+      /* تحسين مظهر السكرول بار */
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: var(--dark); }
+      ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+      ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
     </style>
     
     <script type="importmap">
@@ -46,6 +52,6 @@
   </head>
   <body class="hero-gradient">
     <div id="root"></div>
-    <script type="module" src="./index.tsx?v=3.8.0"></script>
+    <script type="module" src="./index.tsx?v=3.9.0"></script>
   </body>
 </html>
