@@ -33,7 +33,9 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
   const shareLinks = {
     whatsapp: `https://wa.me/?text=${encodeURIComponent(post.title + ' \n ' + window.location.href)}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
-    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`
+    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`,
+    telegram: `https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(post.title)}`,
+    pinterest: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.href)}&description=${encodeURIComponent(post.title)}`
   };
 
   const copyToClipboard = () => {
@@ -98,27 +100,35 @@ const PostDetail: React.FC<PostDetailProps> = ({ post, onBack, darkMode = true, 
           </button>
         )}
 
-        {/* Share Section Updated */}
+        {/* Share Section Updated with all requested social platforms */}
         <div className="bg-white/5 p-8 rounded-[35px] border border-white/5">
           <h3 className="text-center font-black text-lg mb-6">هل أعجبك هذا المقال؟ شاركه مع الآخرين 🚀</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-             <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="bg-[#25D366] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3">
+             <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="bg-[#25D366] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-[10px] hover:scale-105 transition-transform">
                 <span>💬</span>
                 <span>واتساب</span>
              </a>
-             <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-xs">
+             <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="bg-[#1877F2] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-[10px] hover:scale-105 transition-transform">
                 <span>👥</span>
                 <span>فايسبوك</span>
              </a>
-             <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer" className="bg-black text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-xs border border-white/10">
+             <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer" className="bg-[#0088cc] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-[10px] hover:scale-105 transition-transform">
+                <span>✈️</span>
+                <span>تيليجرام</span>
+             </a>
+             <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer" className="bg-black text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-[10px] border border-white/10 hover:scale-105 transition-transform">
                 <span>𝕏</span>
                 <span>تويتر</span>
              </a>
-             <button onClick={handleNativeShare} className="bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-xs">
+             <a href={shareLinks.pinterest} target="_blank" rel="noopener noreferrer" className="bg-[#E60023] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-[10px] hover:scale-105 transition-transform">
+                <span>📌</span>
+                <span>بنتريست</span>
+             </a>
+             <button onClick={handleNativeShare} className="bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white py-4 rounded-2xl flex flex-col items-center justify-center gap-2 shadow-lg font-black text-[10px] hover:scale-105 transition-transform">
                 <span>📸</span>
                 <span>انستغرام</span>
              </button>
-             <button onClick={copyToClipboard} className={`col-span-2 sm:col-span-1 ${copied ? 'bg-emerald-600 text-white' : 'bg-white/10 text-slate-300'} py-4 rounded-2xl flex flex-col items-center justify-center gap-2 font-black transition-all text-xs`}>
+             <button onClick={copyToClipboard} className={`col-span-2 sm:col-span-1 ${copied ? 'bg-emerald-600 text-white' : 'bg-white/10 text-slate-300'} py-4 rounded-2xl flex flex-col items-center justify-center gap-2 font-black transition-all text-[10px]`}>
                <span>{copied ? '✅' : '🔗'}</span>
                <span>{copied ? 'تم النسخ!' : 'نسخ الرابط'}</span>
              </button>

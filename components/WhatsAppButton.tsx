@@ -14,6 +14,8 @@ const WhatsAppButton: React.FC<SocialButtonsProps> = ({ settings }) => {
     { name: 'WhatsApp', icon: '💬', url: `https://wa.me/${settings.whatsappNumber}`, color: 'bg-[#25D366]' },
     { name: 'Telegram', icon: '✈️', url: settings.telegramLink, color: 'bg-[#0088cc]' },
     { name: 'Facebook', icon: '👥', url: settings.facebookLink, color: 'bg-[#1877F2]' },
+    { name: 'Twitter', icon: '𝕏', url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.origin)}`, color: 'bg-black' },
+    { name: 'Pinterest', icon: '📌', url: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(window.location.origin)}`, color: 'bg-[#E60023]' },
   ];
 
   const handleCopyLink = () => {
@@ -45,26 +47,4 @@ const WhatsAppButton: React.FC<SocialButtonsProps> = ({ settings }) => {
           className={`w-12 h-12 md:w-14 md:h-14 ${copied ? 'bg-emerald-600' : 'bg-white/10'} text-white rounded-full shadow-2xl flex items-center justify-center text-xl md:text-2xl hover:scale-110 active:scale-95 transition-all border border-white/10`}
           title="نسخ رابط الموقع"
         >
-          {copied ? '✅' : '🔗'}
-        </button>
-      </div>
-
-      {/* Main Toggle Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`w-14 h-14 md:w-16 md:h-16 ${isOpen ? 'bg-red-500 rotate-90 shadow-red-900/40' : 'bg-emerald-600 shadow-emerald-900/40'} text-white rounded-full shadow-[0_15px_45px_rgba(0,0,0,0.6)] flex items-center justify-center text-2xl md:text-3xl transition-all duration-300 hover:scale-110 active:scale-90 border-2 border-white/20`}
-      >
-        {isOpen ? '✕' : '💬'}
-      </button>
-      
-      {/* Label for Tooltip (Mobile) */}
-      {!isOpen && (
-        <span className="absolute -top-10 left-0 bg-emerald-600 text-white text-[9px] font-black px-3 py-1 rounded-lg animate-bounce whitespace-nowrap shadow-lg uppercase">
-          شارك الهمزة 🚀
-        </span>
-      )}
-    </div>
-  );
-};
-
-export default WhatsAppButton;
+          
