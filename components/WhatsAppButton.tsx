@@ -47,4 +47,20 @@ const WhatsAppButton: React.FC<SocialButtonsProps> = ({ settings }) => {
           className={`w-12 h-12 md:w-14 md:h-14 ${copied ? 'bg-emerald-600' : 'bg-white/10'} text-white rounded-full shadow-2xl flex items-center justify-center text-xl md:text-2xl hover:scale-110 active:scale-95 transition-all border border-white/10`}
           title="نسخ رابط الموقع"
         >
-          
+          {copied ? '✅' : '🔗'}
+        </button>
+      </div>
+
+      {/* Main Toggle Button */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-14 h-14 md:w-18 md:h-18 bg-emerald-600 text-white rounded-full shadow-[0_10px_30px_rgba(16,185,129,0.4)] flex items-center justify-center text-2xl md:text-3xl hover:scale-110 active:scale-90 transition-all z-10 border-4 border-white/10`}
+      >
+        {isOpen ? '✕' : '💬'}
+      </button>
+    </div>
+  );
+};
+
+// Fixing the missing default export that caused the error in App.tsx
+export default WhatsAppButton;

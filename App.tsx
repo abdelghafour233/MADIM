@@ -11,6 +11,7 @@ import WhatsAppButton from './components/WhatsAppButton.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
+import AdUnit from './components/AdUnit.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
 const STORAGE_KEYS = {
@@ -20,7 +21,7 @@ const STORAGE_KEYS = {
   VERSION: 'abdou_v4_version'
 };
 
-const CURRENT_VERSION = '4.0.6-STABLE';
+const CURRENT_VERSION = '4.1.0-ADS';
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
@@ -30,14 +31,14 @@ const App: React.FC = () => {
     adsenseCode: 'ca-pub-5578524966832192',
     alternativeAdsCode: '', 
     globalAdsCode: '',      
-    directLinkCode: 'https://temu.to/k/u6zpr84k5n5', 
+    directLinkCode: 'https://bouncingbuzz.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d', 
     whatsappNumber: '212649075664',
     facebookLink: 'https://facebook.com/abdouweb',
     telegramLink: 'https://t.me/abdouweb',
     instagramLink: 'https://instagram.com/abdouweb',
     pinterestLink: 'https://pinterest.com/abdouweb',
-    totalVisits: 68000,
-    totalEarnings: 285.00
+    totalVisits: 72400,
+    totalEarnings: 312.50
   });
   const [selectedPost, setSelectedPost] = useState<Article | null>(null);
   const [isAuth, setIsAuth] = useState(false);
@@ -151,6 +152,11 @@ const App: React.FC = () => {
           <LegalPage type={view as any} darkMode={true} settings={settings} />
         )}
       </main>
+
+      {/* Global Ads Injection Container */}
+      {settings.globalAdsCode && (
+        <AdUnit isAlternative={true} alternativeCode={settings.globalAdsCode} className="hidden" />
+      )}
 
       {isCartOpen && (
         <Cart 
