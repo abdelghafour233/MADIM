@@ -47,7 +47,7 @@ export const INITIAL_POSTS: Article[] = [
 - 🛠️ سحابات متينة وجيوب عملية متعددة.
 
 متوفر الآن بمقاسات مختلفة لتناسب الجميع. اطلبه الآن مباشرة عبر الرابط بالأسفل قبل نفاذ الكمية.`,
-    image: 'https://images.unsplash.com/photo-1520975916090-3105956dac55?auto=format&fit=crop&q=80&w=800', 
+    image: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&q=80&w=800', 
     category: Category.DEALS,
     date: 'اليوم',
     views: 245000,
