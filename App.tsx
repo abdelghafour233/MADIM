@@ -14,7 +14,7 @@ import Checkout from './components/Checkout.tsx';
 import AdUnit from './components/AdUnit.tsx'; 
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '4.0.1-CLOUDFLARE-FIX'; 
+const CURRENT_VERSION = '4.0.2-STABLE-PREMIUM'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v140_posts', 
   SETTINGS: 'abdou_v140_settings',
@@ -22,9 +22,7 @@ const STORAGE_KEYS = {
   VERSION: 'abdou_v140_version'
 };
 
-const LINK_A = 'https://bouncingbuzz.com/ctpynfts0?key=a6c7eb53025d8d39c467b947581bb153';
 const LINK_B = 'https://bouncingbuzz.com/zj3mgnqb3?key=06741e12c87b4f0448ad3a2ef3183b49';
-
 const ADSTERRA_SOCIAL_BAR = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b073d124.js"></script>`;
 const ADSTERRA_NATIVE_BANNER = `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`;
 
@@ -34,11 +32,11 @@ const INITIAL_SETTINGS: Settings = {
   alternativeAdsCode: ADSTERRA_NATIVE_BANNER, 
   globalAdsCode: ADSTERRA_SOCIAL_BAR,      
   directLinkCode: LINK_B, 
-  popunderCode: `<script type='text/javascript' src='${LINK_A}'></script>`,
+  popunderCode: '',
   nativeAdCode: ADSTERRA_NATIVE_BANNER,
   dashboardPassword: '1234',
-  totalVisits: 60100,
-  totalEarnings: 204.50, 
+  totalVisits: 62400,
+  totalEarnings: 215.80, 
   whatsappNumber: '212649075664'
 };
 
@@ -53,24 +51,20 @@ const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const injectGlobalAds = useCallback((code: string) => {
+  const injectAds = useCallback((code: string) => {
     if (!code) return;
     try {
-      const scripts = code.match(/<script\b[^>]*>([\s\S]*?)<\/script>/gim);
-      if (scripts) {
-        scripts.forEach(tag => {
-          const s = document.createElement('script');
-          const srcMatch = tag.match(/src=["'](.+?)["']/);
-          if (srcMatch) s.src = srcMatch[1];
-          else {
-            const innerMatch = tag.match(/>([\s\S]*?)<\/script>/);
-            if (innerMatch && innerMatch[1].trim()) s.innerHTML = innerMatch[1];
-          }
-          s.setAttribute('data-cfasync', 'false');
-          document.head.appendChild(s);
-        });
-      }
-    } catch (e) { console.error("Ad Engine Failure", e); }
+      const container = document.createElement('div');
+      container.innerHTML = code;
+      const scripts = container.querySelectorAll('script');
+      scripts.forEach(oldScript => {
+        const newScript = document.createElement('script');
+        if (oldScript.src) newScript.src = oldScript.src;
+        else newScript.textContent = oldScript.textContent;
+        Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+        document.head.appendChild(newScript);
+      });
+    } catch (e) { console.error("Ad Error", e); }
   }, []);
 
   useEffect(() => {
@@ -86,15 +80,12 @@ const App: React.FC = () => {
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    setTimeout(() => setIsLoading(false), 500);
+    setTimeout(() => setIsLoading(false), 300);
   }, []);
 
   useEffect(() => {
-    if (!isLoading) {
-      injectGlobalAds(settings.globalAdsCode);
-      if (settings.popunderCode) injectGlobalAds(settings.popunderCode);
-    }
-  }, [isLoading, settings.globalAdsCode, settings.popunderCode, injectGlobalAds]);
+    if (!isLoading && settings.globalAdsCode) injectAds(settings.globalAdsCode);
+  }, [isLoading, settings.globalAdsCode, injectAds]);
 
   const handlePostClick = (p: Article) => {
     setSelectedPost(p);
@@ -103,16 +94,13 @@ const App: React.FC = () => {
   };
 
   if (isLoading) return (
-    <div className="min-h-screen bg-[#030303] flex items-center justify-center">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin"></div>
-        <div className="text-emerald-500 font-black text-[8px] tracking-[0.5em] uppercase">abdouweb v4.0.1</div>
-      </div>
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin"></div>
     </div>
   );
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white">
       <Navbar currentView={view} setView={setView} siteName={settings.siteName} onSearch={setSearchQuery} darkMode={true} toggleDarkMode={() => {}} cartCount={cart.reduce((s, i) => s + i.quantity, 0)} onOpenCart={() => setIsCartOpen(true)} />
       
       <main className="container mx-auto px-4 flex-grow max-w-6xl">
@@ -125,9 +113,9 @@ const App: React.FC = () => {
           setIsCartOpen(true);
         }} onBack={() => setView('home')} darkMode={true} settings={settings} />}
         {view === 'checkout' && <Checkout total={cart.reduce((s, i) => s + (i.price || 0) * i.quantity, 0)} onPlaceOrder={(data) => {
-             window.open(LINK_B, '_blank');
+             window.open(settings.directLinkCode || LINK_B, '_blank');
              setTimeout(() => {
-               window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(`طلب جديد من ${data.name}\nالمدينة: ${data.city}`)}`);
+               window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(`طلب جديد: ${data.name}\nالمدينة: ${data.city}`)}`);
                setCart([]); setView('home');
              }, 300);
         }} />}
@@ -137,13 +125,13 @@ const App: React.FC = () => {
 
       {isCartOpen && <Cart items={cart} onRemove={(id) => setCart(c => c.filter(i => i.id !== id))} onUpdateQuantity={(id, q) => setCart(c => c.map(i => i.id === id ? {...i, quantity: q} : i))} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={true} adCode={settings.alternativeAdsCode} />}
       
-      <footer className="mt-20 py-16 text-center border-t border-white/5 opacity-50">
-        <div className="text-2xl font-black mb-4">abdouweb</div>
-        <p className="text-xs mb-8">عالم الهميزات في جيبك</p>
-        <div className="flex justify-center gap-6 text-[10px] font-black uppercase tracking-widest">
-           <button onClick={() => setView('privacy')}>الخصوصية</button>
-           <button onClick={() => setView('terms')}>الشروط</button>
-           <button onClick={() => setView('contact')}>اتصل</button>
+      <footer className="mt-24 py-20 text-center border-t border-white/5 opacity-40">
+        <div className="text-3xl font-black mb-4 tracking-tighter italic">abdouweb</div>
+        <p className="text-xs mb-10 font-bold opacity-60">جميع الحقوق محفوظة © 2025</p>
+        <div className="flex justify-center gap-8 text-[9px] font-black uppercase tracking-[0.3em]">
+           <button onClick={() => setView('privacy')} className="hover:text-emerald-500">Privacy</button>
+           <button onClick={() => setView('terms')} className="hover:text-emerald-500">Terms</button>
+           <button onClick={() => setView('contact')} className="hover:text-emerald-500">Contact</button>
         </div>
       </footer>
       <WhatsAppButton />

@@ -15,61 +15,86 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
   const trendingPost = posts.find(p => p.isTrending) || posts[0];
   const otherPosts = posts.filter(p => p.id !== trendingPost?.id);
 
+  if (!posts || posts.length === 0) return null;
+
   return (
-    <div className="pt-24 md:pt-32 space-y-12 md:space-y-20 animate-slide-up">
-      {/* Hero Banner */}
+    <div className="pt-24 md:pt-40 space-y-16 md:space-y-32 animate-fade-in">
+      {/* Hero Highlight */}
       <section 
-        className="relative glass-card rounded-[35px] md:rounded-[50px] overflow-hidden cursor-pointer group"
+        className="relative premium-glass rounded-[40px] md:rounded-[60px] overflow-hidden cursor-pointer group shadow-2xl transition-all hover:shadow-emerald-500/5"
         onClick={() => onPostClick(trendingPost)}
       >
-        <div className="flex flex-col md:flex-row items-center">
-           <div className="w-full md:w-1/2 p-8 md:p-16 space-y-6">
-              <span className="inline-block bg-orange-600 text-white text-[10px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest animate-pulse">همزة اليوم 🔥</span>
-              <h1 className="text-3xl md:text-6xl font-black leading-tight">{trendingPost.title}</h1>
-              <p className="text-slate-400 text-lg line-clamp-2">{trendingPost.excerpt}</p>
-              <div className="flex items-center gap-4 pt-4">
-                 <div className="bg-emerald-500 text-white px-8 py-4 rounded-2xl font-black text-xl shadow-xl shadow-emerald-500/20 group-hover:scale-105 transition-transform">
-                    اكتشف الآن 🛒
+        <div className="flex flex-col lg:flex-row items-stretch">
+           <div className="w-full lg:w-1/2 p-10 md:p-20 space-y-8 flex flex-col justify-center">
+              <div className="flex gap-2">
+                 <span className="bg-orange-600 text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest animate-pulse">همزة اليوم 🔥</span>
+                 <span className="bg-emerald-600/10 text-emerald-500 text-[9px] font-black px-4 py-1.5 rounded-full uppercase border border-emerald-500/20">حصرية</span>
+              </div>
+              <h1 className="text-4xl md:text-7xl font-black leading-[1.1] tracking-tight">{trendingPost.title}</h1>
+              <p className="text-slate-400 text-lg md:text-xl line-clamp-2 leading-relaxed opacity-70">{trendingPost.excerpt}</p>
+              
+              <div className="flex flex-col sm:flex-row items-center gap-6 pt-6">
+                 <div className="w-full sm:w-auto bg-emerald-600 text-white px-10 py-5 rounded-3xl font-black text-2xl shadow-xl shadow-emerald-500/20 group-hover:bg-emerald-500 transition-all active:scale-95 text-center">
+                    اكتشف الهمزة 🛒
                  </div>
                  {trendingPost.marketPrice && (
-                    <span className="text-slate-500 line-through font-bold">{trendingPost.marketPrice} د.م</span>
+                    <div className="flex flex-col items-center sm:items-start">
+                       <span className="text-slate-500 line-through font-bold text-sm">ثمن السوق: {trendingPost.marketPrice} د.م</span>
+                       <span className="text-emerald-500 font-black text-lg">أفضل ثمن مضمون ✅</span>
+                    </div>
                  )}
               </div>
            </div>
-           <div className="w-full md:w-1/2 p-8 flex justify-center bg-white/5">
-              <img src={trendingPost.image} className="max-h-[300px] md:max-h-[450px] object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-700" alt="" />
+           
+           <div className="w-full lg:w-1/2 p-10 flex items-center justify-center bg-gradient-to-br from-white/5 to-transparent relative min-h-[350px]">
+              <div className="absolute inset-0 opacity-10 flex items-center justify-center overflow-hidden">
+                <span className="text-[200px] font-black opacity-10 select-none">ABDOU</span>
+              </div>
+              <img 
+                src={trendingPost.image} 
+                className="max-h-[350px] md:max-h-[500px] object-contain drop-shadow-[0_35px_35px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-1000 relative z-10" 
+                alt={trendingPost.title} 
+              />
            </div>
         </div>
       </section>
 
-      {/* Rewards Section */}
+      {/* Rewards Center - Integrated */}
       <RewardsCenter rewards={INITIAL_REWARDS} settings={settings} darkMode={true} />
 
-      {/* Grid Section */}
-      <div className="space-y-8 px-2">
-        <h2 className="text-2xl md:text-4xl font-black flex items-center gap-3">
-          <span className="w-2 h-8 bg-emerald-500 rounded-full"></span>
-          أحدث الهميزات المكتشفة
-        </h2>
+      {/* Featured Grid */}
+      <div className="space-y-10 px-2">
+        <div className="flex items-center justify-between">
+          <h2 className="text-3xl md:text-5xl font-black flex items-center gap-4">
+            <span className="w-2.5 h-12 bg-emerald-600 rounded-full"></span>
+            أقوى العروض الحالية
+          </h2>
+          <span className="text-[10px] font-black opacity-30 hidden sm:block">تحديث: منذ 5 دقائق</span>
+        </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8">
           {otherPosts.map(post => (
             <div 
               key={post.id} 
-              className="glass-card p-3 md:p-5 flex flex-col cursor-pointer rounded-[30px] group" 
+              className="premium-glass p-4 md:p-6 flex flex-col cursor-pointer rounded-[35px] neo-card group border-white/5" 
               onClick={() => onPostClick(post)}
             >
-              <div className="relative aspect-square rounded-[22px] overflow-hidden bg-white/5 mb-4 flex items-center justify-center">
-                 <img src={post.image} className="w-[80%] h-[80%] object-contain group-hover:scale-110 transition-transform duration-500" alt="" />
-                 <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-3 py-1 rounded-xl text-[8px] font-black text-emerald-500 uppercase">
+              <div className="relative aspect-square rounded-[25px] overflow-hidden bg-[#0d0d0e] mb-5 flex items-center justify-center border border-white/5">
+                 <img src={post.image} className="w-[85%] h-[85%] object-contain p-2 group-hover:scale-110 transition-transform duration-700" alt={post.title} />
+                 <div className="absolute bottom-3 right-3 bg-emerald-600 text-white px-3 py-1 rounded-xl text-[8px] font-black uppercase tracking-widest shadow-lg">
                    {post.category}
                  </div>
               </div>
-              <h3 className="text-sm md:text-lg font-black mb-4 line-clamp-2 h-10 md:h-14">{post.title}</h3>
-              <div className="mt-auto flex items-center justify-between pt-2 border-t border-white/5">
-                 <span className="text-lg md:text-2xl font-black text-white">{post.price || 'همزة'} <small className="text-[10px] opacity-40">د.م</small></span>
-                 <div className="w-10 h-10 bg-white text-black rounded-xl flex items-center justify-center group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                   🛒
+              
+              <h3 className="text-sm md:text-lg font-black mb-6 line-clamp-2 leading-tight group-hover:text-emerald-500 transition-colors h-10 md:h-14">{post.title}</h3>
+              
+              <div className="mt-auto flex items-center justify-between pt-4 border-t border-white/5">
+                 <div className="flex flex-col">
+                   {post.marketPrice && <span className="text-[9px] opacity-30 line-through font-bold">{post.marketPrice} د.م</span>}
+                   <span className="text-xl md:text-2xl font-black text-white">{post.price || 'همزة'} <small className="text-[10px] opacity-40">د.م</small></span>
+                 </div>
+                 <div className="w-11 h-11 md:w-13 md:h-13 bg-white text-black rounded-2xl flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all shadow-md active:scale-90">
+                   <span className="text-xl">🛒</span>
                  </div>
               </div>
             </div>
@@ -77,7 +102,9 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
         </div>
       </div>
 
-      <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
+      <div className="py-10">
+        <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
+      </div>
     </div>
   );
 };
