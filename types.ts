@@ -47,12 +47,15 @@ export interface Settings {
   alternativeAdsCode: string; 
   globalAdsCode: string; 
   directLinkCode: string; 
-  popunderCode?: string; // جديد لزيادة الأرباح
-  nativeAdCode?: string; // جديد لإعلانات وسط المحتوى
+  popunderCode?: string;
+  nativeAdCode?: string;
   dashboardPassword?: string;
   totalVisits: number;
   totalEarnings: number;
   whatsappNumber: string;
+  facebookLink?: string;
+  instagramLink?: string;
+  telegramLink?: string;
 }
 
 export type View = 'home' | 'post' | 'admin' | 'privacy' | 'about' | 'contact' | 'terms' | 'checkout' | 'store' | 'product';

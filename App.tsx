@@ -20,7 +20,7 @@ const STORAGE_KEYS = {
   VERSION: 'abdou_v4_version'
 };
 
-const CURRENT_VERSION = '4.0.3-STABLE';
+const CURRENT_VERSION = '4.0.4-STABLE';
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
@@ -32,8 +32,11 @@ const App: React.FC = () => {
     globalAdsCode: '',      
     directLinkCode: 'https://bouncingbuzz.com/zj3mgnqb3?key=06741e12c87b4f0448ad3a2ef3183b49', 
     whatsappNumber: '212649075664',
-    totalVisits: 65000,
-    totalEarnings: 240.00
+    facebookLink: 'https://facebook.com/abdouweb',
+    telegramLink: 'https://t.me/abdouweb',
+    instagramLink: 'https://instagram.com/abdouweb',
+    totalVisits: 68000,
+    totalEarnings: 285.00
   });
   const [selectedPost, setSelectedPost] = useState<Article | null>(null);
   const [isAuth, setIsAuth] = useState(false);
@@ -43,10 +46,9 @@ const App: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // التحقق من الإصدار ومسح الكاش إذا لزم الأمر
     const savedVersion = localStorage.getItem(STORAGE_KEYS.VERSION);
     if (savedVersion !== CURRENT_VERSION) {
-      localStorage.clear();
+      localStorage.removeItem(STORAGE_KEYS.SETTINGS); // Force update settings
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
     }
 
@@ -54,7 +56,7 @@ const App: React.FC = () => {
     const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
 
-    if (savedSettings) setSettings(JSON.parse(savedSettings));
+    if (savedSettings) setSettings(prev => ({...prev, ...JSON.parse(savedSettings)}));
     if (savedPosts) setPosts(JSON.parse(savedPosts));
     if (savedCart) setCart(JSON.parse(savedCart));
     
@@ -142,7 +144,7 @@ const App: React.FC = () => {
         )}
 
         {(['privacy', 'about', 'contact', 'terms'].includes(view)) && (
-          <LegalPage type={view as any} darkMode={true} siteName={settings.siteName} />
+          <LegalPage type={view as any} darkMode={true} settings={settings} />
         )}
       </main>
 
@@ -167,7 +169,7 @@ const App: React.FC = () => {
            <button onClick={() => setView('contact')} className="hover:text-emerald-500">اتصل بنا</button>
         </div>
       </footer>
-      <WhatsAppButton />
+      <WhatsAppButton settings={settings} />
     </div>
   );
 };

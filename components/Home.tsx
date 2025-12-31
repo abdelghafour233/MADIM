@@ -36,7 +36,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
         onClick={() => onPostClick(trendingPost)}
       >
         <div className="flex flex-col lg:flex-row items-stretch">
-           <div className="w-full lg:w-1/2 p-8 md:p-16 space-y-6 md:space-y-8 flex flex-col justify-center">
+           <div className="w-full lg:w-1/2 p-8 md:p-16 space-y-6 md:space-y-8 flex flex-col justify-center order-2 lg:order-1">
               <div className="flex gap-2">
                  <span className="bg-orange-600 text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest animate-pulse">عرض محدود 🔥</span>
                  <span className="bg-emerald-600/10 text-emerald-500 text-[9px] font-black px-4 py-1.5 rounded-full uppercase border border-emerald-500/20">همزة ممتازة</span>
@@ -57,14 +57,15 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
               </div>
            </div>
            
-           <div className="w-full lg:w-1/2 p-8 flex items-center justify-center bg-gradient-to-br from-white/5 to-transparent relative min-h-[300px] md:min-h-[450px]">
+           <div className="w-full lg:w-1/2 p-6 md:p-8 flex items-center justify-center bg-gradient-to-br from-white/5 to-transparent relative min-h-[280px] md:min-h-[450px] order-1 lg:order-2">
               <div className="absolute inset-0 opacity-5 flex items-center justify-center overflow-hidden pointer-events-none">
-                <span className="text-[150px] md:text-[250px] font-black opacity-10 select-none">HOT</span>
+                <span className="text-[120px] md:text-[250px] font-black opacity-10 select-none">HOT</span>
               </div>
               <img 
                 src={trendingPost.image} 
-                className="max-h-[250px] md:max-h-[450px] object-contain drop-shadow-[0_25px_25px_rgba(0,0,0,0.5)] group-hover:scale-105 transition-transform duration-1000 relative z-10" 
+                className="w-full h-full max-h-[220px] md:max-h-[450px] object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.5)] group-hover:scale-105 transition-transform duration-1000 relative z-10" 
                 alt={trendingPost.title} 
+                loading="eager"
               />
            </div>
         </div>
@@ -91,7 +92,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
               onClick={() => onPostClick(post)}
             >
               <div className="relative aspect-square rounded-[20px] md:rounded-[25px] overflow-hidden bg-[#0d0d0e] mb-4 flex items-center justify-center border border-white/5">
-                 <img src={post.image} className="w-[80%] h-[80%] object-contain group-hover:scale-110 transition-transform duration-700" alt={post.title} />
+                 <img src={post.image} className="w-[85%] h-[85%] object-contain group-hover:scale-110 transition-transform duration-700" alt={post.title} />
                  <div className="absolute top-2 right-2 md:top-3 md:right-3 bg-emerald-600 text-white px-2 py-0.5 md:px-3 md:py-1 rounded-lg md:rounded-xl text-[7px] md:text-[8px] font-black uppercase tracking-widest shadow-lg">
                    {post.category}
                  </div>
