@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
-    <title>abdouweb | أقوى الهميزات والعروض 🇲🇦</title>
+    <title>abdouweb | عالم الهميزات والعروض 🇲🇦</title>
     <meta name="description" content="منصة عبدو ويب لأقوى هميزات تيمو وأمازون والمنتجات التقنية في المغرب." />
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -46,13 +46,14 @@
         border: 1px solid rgba(255, 255, 255, 0.05);
       }
 
-      .card-hover {
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      @keyframes marquee {
+        0% { transform: translateX(100%); }
+        100% { transform: translateX(-100%); }
       }
-      .card-hover:hover {
-        transform: translateY(-8px);
-        background: rgba(255, 255, 255, 0.04);
-        border-color: rgba(16, 185, 129, 0.3);
+      .animate-marquee {
+        display: inline-block;
+        white-space: nowrap;
+        animation: marquee 20s linear infinite;
       }
 
       @keyframes slideIn {

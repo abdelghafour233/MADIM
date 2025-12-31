@@ -17,8 +17,8 @@ const Navbar: React.FC<NavbarProps> = ({ setView, onSearch, cartCount, onOpenCar
   const [query, setQuery] = useState('');
 
   return (
-    <div className="fixed top-0 left-0 right-0 z-[1000] p-4 md:p-6 pointer-events-none">
-      <nav className="max-w-6xl mx-auto premium-glass h-16 md:h-22 px-6 md:px-10 rounded-[28px] md:rounded-[40px] flex items-center justify-between gap-4 pointer-events-auto shadow-[0_15px_35px_rgba(0,0,0,0.5)] border-white/10">
+    <div className="fixed top-8 md:top-10 left-0 right-0 z-[1000] p-3 md:p-6 pointer-events-none">
+      <nav className="max-w-6xl mx-auto premium-glass h-16 md:h-22 px-5 md:px-10 rounded-[24px] md:rounded-[40px] flex items-center justify-between gap-4 pointer-events-auto shadow-[0_15px_35px_rgba(0,0,0,0.5)] border-white/10">
         {/* Logo Section */}
         <div 
           onClick={() => setView('home')} 
@@ -31,13 +31,13 @@ const Navbar: React.FC<NavbarProps> = ({ setView, onSearch, cartCount, onOpenCar
           </div>
         </div>
 
-        {/* Search Bar - Optimized */}
+        {/* Search Bar */}
         <div className="flex-1 max-w-md hidden md:block">
            <div className="relative group">
               <input 
                 type="text" 
                 placeholder="ابحث عن أقوى العروض..." 
-                className="w-full bg-white/5 border border-white/10 h-12 px-6 pr-12 rounded-2xl outline-none focus:border-emerald-500 focus:bg-white/10 transition-all font-bold text-sm"
+                className="w-full bg-white/5 border border-white/10 h-12 px-6 pr-12 rounded-2xl outline-none focus:border-emerald-500 focus:bg-white/10 transition-all font-bold text-sm text-white"
                 value={query}
                 onChange={(e) => { setQuery(e.target.value); onSearch(e.target.value); }}
               />
@@ -49,11 +49,11 @@ const Navbar: React.FC<NavbarProps> = ({ setView, onSearch, cartCount, onOpenCar
         <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
           <button 
             onClick={onOpenCart}
-            className="w-11 h-11 md:w-15 md:h-15 bg-white/5 text-white rounded-2xl border border-white/5 flex items-center justify-center text-xl relative hover:bg-emerald-600 transition-all shadow-lg active:scale-90"
+            className="w-10 h-10 md:w-15 md:h-15 bg-white/5 text-white rounded-xl md:rounded-2xl border border-white/5 flex items-center justify-center text-xl md:text-2xl relative hover:bg-emerald-600 transition-all shadow-lg active:scale-90"
           >
             🛒
             {cartCount > 0 && (
-              <span className="absolute -top-1 -left-1 w-5 h-5 bg-orange-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-[#050505] animate-bounce">
+              <span className="absolute -top-1 -left-1 w-5 h-5 bg-orange-600 text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-[#030303] animate-bounce">
                 {cartCount}
               </span>
             )}
@@ -61,7 +61,7 @@ const Navbar: React.FC<NavbarProps> = ({ setView, onSearch, cartCount, onOpenCar
           
           <button 
             onClick={() => setView('admin')}
-            className="w-11 h-11 md:w-15 md:h-15 bg-white/5 rounded-2xl border border-white/5 flex items-center justify-center text-xl hover:bg-white/10 transition-all active:scale-90"
+            className="w-10 h-10 md:w-15 md:h-15 bg-white/5 rounded-xl md:rounded-2xl border border-white/5 flex items-center justify-center text-xl md:text-2xl hover:bg-white/10 transition-all active:scale-90 text-white"
           >
             ⚙️
           </button>
