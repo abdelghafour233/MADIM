@@ -16,10 +16,10 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
   const [localSettings, setLocalSettings] = useState<Settings>(settings);
 
   const handleClearCache = () => {
-    if (confirm("سيتم مسح كاش المتصفح وإعادة تحميل الموقع بشكل إجباري. هل أنت متأكد؟")) {
+    if (confirm("سيتم تطهير متصفحات الزوار وإجبارهم على رؤية التحديثات الجديدة. هل أنت متأكد؟")) {
       localStorage.clear();
-      // إضافة بارامتر عشوائي للرابط عند إعادة التحميل لكسر كاش السيرفر/CDN
-      window.location.href = window.location.pathname + '?reload=' + Date.now();
+      // إضافة وسم clear_all لإجبار سكربت index.html على المسح الشامل
+      window.location.href = window.location.pathname + '?clear_all=true&v=' + Date.now();
     }
   };
 
@@ -28,12 +28,12 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
       <div className="p-6 md:p-10 rounded-[40px] mb-10 bg-white/5 border border-white/10 flex flex-wrap gap-4 justify-between items-center">
         <div>
            <h2 className="text-2xl font-black">لوحة التحكم</h2>
-           <p className="text-[10px] opacity-40 font-bold uppercase tracking-widest mt-1">Admin Panel v2.5</p>
+           <p className="text-[10px] opacity-40 font-bold uppercase tracking-widest mt-1">Admin Panel v2.6</p>
         </div>
         <div className="flex gap-2">
           <button onClick={() => setActiveTab('list')} className={`px-4 py-2 rounded-xl text-xs font-black ${activeTab === 'list' ? 'bg-emerald-600' : 'bg-white/5'}`}>العروض</button>
           <button onClick={() => setActiveTab('ads')} className={`px-4 py-2 rounded-xl text-xs font-black ${activeTab === 'ads' ? 'bg-orange-600' : 'bg-white/5'}`}>الإعلانات 💰</button>
-          <button onClick={handleClearCache} className="px-4 py-2 bg-blue-600/20 text-blue-400 rounded-xl text-xs font-black border border-blue-500/20">تحديث إجباري 🧹</button>
+          <button onClick={handleClearCache} className="px-4 py-2 bg-blue-600/20 text-blue-400 rounded-xl text-xs font-black border border-blue-500/20">مزامنة قسرية 🧹</button>
           <button onClick={onLogout} className="px-4 py-2 bg-red-600/10 text-red-500 rounded-xl text-xs font-black">خروج</button>
         </div>
       </div>
@@ -66,7 +66,7 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
                     <textarea className="w-full h-24 p-4 bg-black/40 rounded-2xl font-mono text-[10px]" value={localSettings.alternativeAdsCode} onChange={e => setLocalSettings({...localSettings, alternativeAdsCode: e.target.value})} />
                  </div>
               </div>
-              <button onClick={() => {onUpdateSettings(localSettings); alert('تم التحديث! سيتم تطبيق التغييرات فوراً.');}} className="w-full py-4 bg-emerald-600 rounded-2xl font-black">حفظ الإعدادات 💾</button>
+              <button onClick={() => {onUpdateSettings(localSettings); alert('تم التحديث والمزامنة بنجاح!');}} className="w-full py-4 bg-emerald-600 rounded-2xl font-black">حفظ الإعدادات 💾</button>
            </div>
         </div>
       )}

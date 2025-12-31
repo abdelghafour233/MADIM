@@ -13,8 +13,8 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-// رفع الإصدار لضمان مسح الكاش القديم عند المستخدمين
-const CURRENT_VERSION = '2.5.0-ULTRA'; 
+// إصدار مستقر ونهائي
+const CURRENT_VERSION = '2.7.0-STABLE'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v40_posts', 
   SETTINGS: 'abdou_v40_settings',
@@ -22,7 +22,7 @@ const STORAGE_KEYS = {
   VERSION: 'abdou_v40_version'
 };
 
-const ADSTERRA_SOCIAL_BAR = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b0dd073d124.js"></script>`;
+const ADSTERRA_SOCIAL_BAR = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b073d124.js"></script>`;
 const ADSTERRA_NATIVE_BANNER = `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`;
 const ADSTERRA_DIRECT_LINK = 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d';
 
@@ -73,13 +73,19 @@ const App: React.FC = () => {
     const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
-    // إذا اكتشف المتصفح إصداراً قديماً، يمسح الـ localStorage فوراً
+    // فحص النسخة وتحديث البيانات
     if (lastVersion !== CURRENT_VERSION) {
-      console.log("Forcing update to v" + CURRENT_VERSION);
+      console.log("New version detected. Clearing old data...");
       localStorage.clear(); 
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
       setSettings(INITIAL_SETTINGS);
       setPosts(INITIAL_POSTS);
+      
+      // إذا كان هناك بارامتر في الرابط للمسح الإجباري، نزيله بعد المزامنة
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('clear_all')) {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
     } else {
       if (savedSettings) setSettings(JSON.parse(savedSettings));
       if (savedPosts) setPosts(JSON.parse(savedPosts));
@@ -91,7 +97,6 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!isLoading) {
-      // محاولة حقن الإعلانات مع تأخير بسيط لضمان استقرار الصفحة
       setTimeout(() => {
         forceInjectAd('top-ad-fixed-container', settings.alternativeAdsCode);
         forceInjectAd('social-bar-internal', settings.globalAdsCode);
@@ -106,7 +111,7 @@ const App: React.FC = () => {
     if (settings.directLinkCode && Math.random() > 0.4) window.open(settings.directLinkCode, '_blank');
   };
 
-  if (isLoading) return null;
+  if (isLoading) return <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center text-emerald-500 font-black">جاري التحميل...</div>;
 
   return (
     <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
