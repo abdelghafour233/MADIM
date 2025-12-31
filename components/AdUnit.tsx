@@ -11,60 +11,59 @@ interface AdUnitProps {
 
 const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alternativeCode, className = "" }) => {
   const adRef = useRef<HTMLDivElement>(null);
-  const uniqueId = useId().replace(/:/g, ""); // توليد معرف فريد لكل نسخة من المكون
+  const uniqueId = useId().replace(/:/g, ""); 
 
   useEffect(() => {
     if (isAlternative && alternativeCode && adRef.current) {
       const container = adRef.current;
-      container.innerHTML = ''; // تنظيف الحاوية
+      container.innerHTML = ''; // تنظيف الحاوية لضمان عدم التكرار
       
       try {
-        // 1. استخراج الـ HTML وإيجاد أي ID موجود
+        // 1. استخراج الـ HTML (الديفات)
         let htmlContent = alternativeCode.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "").trim();
         
-        // إذا كان هناك ID في الكود (مثل container-f877...)، سنقوم بتغييره ليصبح فريداً
+        // 2. معالجة الـ ID لتجنب التصادم
         const originalIdMatch = htmlContent.match(/id=["'](container-[^"']+)["']/);
         let targetId = "";
         
         if (originalIdMatch) {
           const originalId = originalIdMatch[1];
           targetId = `${originalId}-${uniqueId}`;
-          htmlContent = htmlContent.replace(originalId, targetId);
+          htmlContent = htmlContent.replace(new RegExp(originalId, 'g'), targetId);
         }
 
         container.innerHTML = htmlContent;
 
-        // 2. معالجة السكربتات وتعديلها لتبحث عن الـ ID الجديد
+        // 3. حقن السكربتات يدوياً لضمان التنفيذ
         const scriptTags = alternativeCode.match(/<script\b[^>]*>([\s\S]*?)<\/script>/gim);
         if (scriptTags) {
           scriptTags.forEach((tag, idx) => {
             const scriptEl = document.createElement('script');
             
-            // استخراج الخصائص
             const srcMatch = tag.match(/src=["'](.+?)["']/);
             if (srcMatch) scriptEl.src = srcMatch[1];
+            
             if (tag.includes('async')) scriptEl.async = true;
             scriptEl.setAttribute('data-cfasync', 'false');
 
-            // استخراج الكود وتعديل الـ ID إذا لزم الأمر
             const innerCodeMatch = tag.match(/>([\s\S]*?)<\/script>/);
             if (innerCodeMatch && innerCodeMatch[1].trim()) {
               let code = innerCodeMatch[1];
               if (originalIdMatch && targetId) {
-                // استبدال الـ ID القديم بالجديد داخل السكربت أيضاً
+                // توجيه السكربت للـ ID الجديد
                 code = code.split(originalIdMatch[1]).join(targetId);
               }
               scriptEl.innerHTML = code;
             }
 
-            // إضافة السكربت بتأخير بسيط لضمان وجود الـ DOM
+            // تأخير بسيط جداً لضمان أن المتصفح قد رسم الـ HTML
             setTimeout(() => {
-              container.appendChild(scriptEl);
-            }, (idx + 1) * 300);
+              if (container) container.appendChild(scriptEl);
+            }, (idx + 1) * 200);
           });
         }
       } catch (err) {
-        console.error("Ad Injection Error:", err);
+        console.error("AdUnit Error:", err);
       }
     } else if (publisherId && !isAlternative) {
       try {
@@ -77,8 +76,8 @@ const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alt
   return (
     <div className={`ad-unit-wrapper ${className}`}>
       <div className="flex items-center justify-center gap-2 mb-1 opacity-20">
-        <span className="h-[1px] w-4 bg-slate-500"></span>
-        <span className="text-[7px] text-slate-500 font-black tracking-[0.3em] uppercase">ADVERTISEMENT</span>
+        <span className="h-[px] w-4 bg-slate-500"></span>
+        <span className="text-[6px] text-slate-500 font-black tracking-[0.4em] uppercase">Promotion</span>
         <span className="h-[1px] w-4 bg-slate-500"></span>
       </div>
       <div 
