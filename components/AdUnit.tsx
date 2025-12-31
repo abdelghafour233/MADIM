@@ -13,58 +13,58 @@ const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alt
 
   useEffect(() => {
     if (isAlternative && alternativeCode && adRef.current) {
-      // تفريغ الحاوية أولاً
-      adRef.current.innerHTML = '';
+      const container = adRef.current;
+      container.innerHTML = '';
       
-      // إنشاء حاوية مؤقتة لتحليل الكود
+      // 1. استخراج الـ HTML (بدون السكربتات) ووضعه أولاً
+      const htmlContent = alternativeCode.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "");
       const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = alternativeCode.trim();
-      
-      // استخراج السكربتات وتنفيذها يدوياً
-      const scripts = tempDiv.getElementsByTagName('script');
-      const nonScriptHtml = alternativeCode.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "");
-      
-      // وضع الـ HTML العادي (مثل الديفات)
-      adRef.current.innerHTML = nonScriptHtml;
+      tempDiv.innerHTML = htmlContent;
+      // نقل العناصر (مثل <div id="container-...">) إلى الحاوية الحقيقية
+      while (tempDiv.firstChild) {
+        container.appendChild(tempDiv.firstChild);
+      }
 
-      // حقن السكربتات واحداً تلو الآخر لضمان التنفيذ
-      Array.from(scripts).forEach(oldScript => {
-        const newScript = document.createElement('script');
-        
-        // نقل كافة الخصائص (src, async, type, الخ)
-        Array.from(oldScript.attributes).forEach(attr => {
-          newScript.setAttribute(attr.name, attr.value);
+      // 2. استخراج السكربتات وحقنها بعد التأكد من وجود الـ HTML
+      const scriptMatches = alternativeCode.match(/<script\b[^>]*>([\s\S]*?)<\/script>/gim);
+      if (scriptMatches) {
+        scriptMatches.forEach(scriptTag => {
+          const scriptEl = document.createElement('script');
+          
+          // استخراج الـ SRC إذا وجد
+          const srcMatch = scriptTag.match(/src=["'](.+?)["']/);
+          if (srcMatch) scriptEl.src = srcMatch[1];
+
+          // استخراج الخصائص الأخرى
+          if (scriptTag.includes('async')) scriptEl.async = true;
+          if (scriptTag.includes('data-cfasync="false"')) scriptEl.setAttribute('data-cfasync', 'false');
+
+          // استخراج الكود الداخلي إذا وجد
+          const contentMatch = scriptTag.match(/>([\s\S]*?)<\/script>/);
+          if (contentMatch && contentMatch[1].trim()) {
+            scriptEl.innerHTML = contentMatch[1];
+          }
+
+          // إضافة السكربت
+          container.appendChild(scriptEl);
         });
-        
-        // نقل الكود الداخلي إذا وجد
-        if (oldScript.innerHTML) {
-          newScript.innerHTML = oldScript.innerHTML;
-        }
-        
-        // إضافة السكربت للجسم لضمان العمل العالمي أو للحاوية
-        if (newScript.src) {
-           document.head.appendChild(newScript);
-        } else {
-           adRef.current?.appendChild(newScript);
-        }
-      });
+      }
     } else if (publisherId && !isAlternative) {
-      // التعامل مع AdSense
       try {
         // @ts-ignore
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch (e) {
-        console.error("AdSense Error", e);
+        console.warn("AdSense pending...");
       }
     }
   }, [alternativeCode, isAlternative, publisherId]);
 
   return (
-    <div className="ad-unit-wrapper my-6 w-full flex flex-col items-center">
-      <span className="text-[7px] text-slate-500 font-black mb-1 opacity-20 tracking-[0.4em] uppercase">إعلان</span>
+    <div className="ad-unit-wrapper my-4 w-full flex flex-col items-center overflow-hidden">
+      <span className="text-[6px] text-slate-500 font-black mb-1 opacity-20 tracking-[0.5em] uppercase">إعلان مدفوع</span>
       <div 
         ref={adRef}
-        className="w-full min-h-[50px] flex justify-center items-center overflow-hidden rounded-xl"
+        className="w-full flex justify-center items-center min-h-[50px]"
       >
         {!isAlternative && publisherId && (
           <ins

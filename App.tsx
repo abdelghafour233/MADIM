@@ -13,15 +13,14 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '3.2.0-ADS-FIX'; 
+const CURRENT_VERSION = '3.3.0-PRO-ADS'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_v105_posts', 
-  SETTINGS: 'abdou_v105_settings',
-  CART: 'abdou_v105_cart',
-  VERSION: 'abdou_v105_version'
+  POSTS: 'abdou_v110_posts', 
+  SETTINGS: 'abdou_v110_settings',
+  CART: 'abdou_v110_cart',
+  VERSION: 'abdou_v110_version'
 };
 
-// أكواد أدستيرا الافتراضية - تأكد من صحتها
 const ADSTERRA_SOCIAL_BAR = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b073d124.js"></script>`;
 const ADSTERRA_NATIVE_BANNER = `<script async="async" data-cfasync="false" src="//pl25832770.highperformanceformat.com/f8/77/f1/f877f1523497b7b37060472658827918.js"></script><div id="container-f877f1523497b7b37060472658827918"></div>`;
 const ADSTERRA_DIRECT_LINK = 'https://www.effectivegatecpm.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d';
@@ -35,8 +34,8 @@ const INITIAL_SETTINGS: Settings = {
   popunderCode: '', 
   nativeAdCode: ADSTERRA_NATIVE_BANNER,
   dashboardPassword: '1234',
-  totalVisits: 25600,
-  totalEarnings: 72.10, 
+  totalVisits: 31200,
+  totalEarnings: 84.50, 
   whatsappNumber: '212649075664'
 };
 
@@ -52,18 +51,33 @@ const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // دالة حقن السكربتات العالمية (Social Bar / Popunder)
-  const injectGlobalAds = useCallback((code: string) => {
+  // دالة حقن ذكية تستهدف حاوية محددة أو الـ body
+  const forceInject = useCallback((targetId: string | null, code: string) => {
     if (!code) return;
-    const temp = document.createElement('div');
-    temp.innerHTML = code.trim();
-    const scripts = temp.getElementsByTagName('script');
-    Array.from(scripts).forEach(s => {
-      const newS = document.createElement('script');
-      Array.from(s.attributes).forEach(a => newS.setAttribute(a.name, a.value));
-      newS.innerHTML = s.innerHTML;
-      document.body.appendChild(newS);
-    });
+    try {
+      const container = targetId ? document.getElementById(targetId) : document.body;
+      if (!container) return;
+
+      // حقن الـ HTML أولاً
+      const htmlOnly = code.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "");
+      if (targetId) container.innerHTML = htmlOnly; 
+
+      // حقن السكربتات
+      const scriptMatches = code.match(/<script\b[^>]*>([\s\S]*?)<\/script>/gim);
+      if (scriptMatches) {
+        scriptMatches.forEach(scriptTag => {
+          const s = document.createElement('script');
+          const src = scriptTag.match(/src=["'](.+?)["']/);
+          if (src) s.src = src[1];
+          const content = scriptTag.match(/>([\s\S]*?)<\/script>/);
+          if (content && content[1].trim()) s.innerHTML = content[1];
+          s.setAttribute('data-cfasync', 'false');
+          container.appendChild(s);
+        });
+      }
+    } catch (e) {
+      console.error("Injection error", e);
+    }
   }, []);
 
   useEffect(() => {
@@ -86,13 +100,16 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!isLoading) {
-      // حقن الإعلانات العالمية فور انتهاء التحميل
+      // 1. حقن الإعلان العلوي فوراً في مكانه المخصص بـ index.html
+      forceInject('top-ad-fixed-container', settings.alternativeAdsCode);
+      
+      // 2. حقن الإعلانات العالمية (Social Bar) بعد ثانية
       setTimeout(() => {
-        injectGlobalAds(settings.globalAdsCode);
-        if (settings.popunderCode) injectGlobalAds(settings.popunderCode);
-      }, 1500);
+        forceInject(null, settings.globalAdsCode);
+        if (settings.popunderCode) forceInject(null, settings.popunderCode);
+      }, 1000);
     }
-  }, [isLoading, settings, injectGlobalAds]);
+  }, [isLoading, settings, forceInject]);
 
   const handlePostClick = (p: Article) => {
     setSelectedPost(p);
@@ -102,8 +119,8 @@ const App: React.FC = () => {
 
   if (isLoading) return (
     <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center text-emerald-500 font-black">
-      <div className="w-10 h-10 border-2 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
-      جاري تفعيل الهميزات...
+      <div className="w-8 h-8 border-2 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
+      مزامنة النظام...
     </div>
   );
 
@@ -130,8 +147,8 @@ const App: React.FC = () => {
 
       {isCartOpen && <Cart items={cart} onRemove={(id) => setCart(c => c.filter(i => i.id !== id))} onUpdateQuantity={(id, q) => setCart(c => c.map(i => i.id === id ? {...i, quantity: q} : i))} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} adCode={settings.alternativeAdsCode} />}
       
-      <footer className="mt-10 py-10 border-t border-white/5 text-center opacity-40 text-[9px] font-bold tracking-[0.2em]">
-        © 2025 {settings.siteName} • SYSTEM {CURRENT_VERSION}
+      <footer className="mt-10 py-10 border-t border-white/5 text-center opacity-40 text-[8px] font-bold tracking-[0.3em]">
+        © 2025 {settings.siteName} • RELOADED {CURRENT_VERSION}
       </footer>
       <WhatsAppButton />
     </div>

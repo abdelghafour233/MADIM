@@ -17,9 +17,20 @@
       :root { --primary: #10b981; --secondary: #f59e0b; --dark: #0a0a0b; }
       body { font-family: 'Tajawal', sans-serif; background-color: var(--dark); scroll-behavior: smooth; overflow-x: hidden; margin: 0; padding: 0; }
       .hero-gradient { background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), transparent 50%), radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.08), transparent 50%); }
-      #top-ad-fixed-container { width: 100%; min-height: 20px; background: transparent; display: flex; justify-content: center; align-items: center; position: relative; z-index: 2000; }
+      
+      /* تحسين حاوية الإعلان العلوي */
+      #top-ad-fixed-container { 
+        width: 100%; 
+        min-height: 50px; 
+        background: rgba(0,0,0,0.2); 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        position: relative; 
+        z-index: 2000;
+        overflow: hidden;
+      }
       #root { min-height: 100vh; }
-      /* إخفاء أي مساحات فارغة ناتجة عن فشل الإعلانات */
       ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
     </style>
     
@@ -36,11 +47,8 @@
 </script>
   </head>
   <body class="hero-gradient">
-    <!-- حاوية لإعلانات البانر العلوي -->
     <div id="top-ad-fixed-container"></div>
     <div id="root"></div>
-    
-    <!-- كود لكسر كاش Cloudflare وخدمات الكاش -->
-    <script type="module" src="./index.tsx?v=3.2.0-ADS-FIX"></script>
+    <script type="module" src="./index.tsx?v=3.3.0-PRO-ADS"></script>
   </body>
 </html>
