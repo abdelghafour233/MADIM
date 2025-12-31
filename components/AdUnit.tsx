@@ -13,59 +13,69 @@ const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alt
 
   useEffect(() => {
     if (isAlternative && alternativeCode && adRef.current) {
-      try {
-        const range = document.createRange();
-        const documentFragment = range.createContextualFragment(alternativeCode);
-        adRef.current.innerHTML = '';
-        adRef.current.appendChild(documentFragment);
+      // تفريغ الحاوية أولاً
+      adRef.current.innerHTML = '';
+      
+      // إنشاء حاوية مؤقتة لتحليل الكود
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = alternativeCode.trim();
+      
+      // استخراج السكربتات وتنفيذها يدوياً
+      const scripts = tempDiv.getElementsByTagName('script');
+      const nonScriptHtml = alternativeCode.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "");
+      
+      // وضع الـ HTML العادي (مثل الديفات)
+      adRef.current.innerHTML = nonScriptHtml;
+
+      // حقن السكربتات واحداً تلو الآخر لضمان التنفيذ
+      Array.from(scripts).forEach(oldScript => {
+        const newScript = document.createElement('script');
         
-        // محاولة تشغيل أي سكربتات تم حقنها يدوياً لضمان العمل على الهواتف
-        const scripts = adRef.current.getElementsByTagName('script');
-        for (let i = 0; i < scripts.length; i++) {
-          const s = document.createElement('script');
-          if (scripts[i].src) {
-             s.src = scripts[i].src;
-             s.async = true;
-          } else {
-             s.textContent = scripts[i].textContent;
-          }
-          document.body.appendChild(s);
+        // نقل كافة الخصائص (src, async, type, الخ)
+        Array.from(oldScript.attributes).forEach(attr => {
+          newScript.setAttribute(attr.name, attr.value);
+        });
+        
+        // نقل الكود الداخلي إذا وجد
+        if (oldScript.innerHTML) {
+          newScript.innerHTML = oldScript.innerHTML;
         }
+        
+        // إضافة السكربت للجسم لضمان العمل العالمي أو للحاوية
+        if (newScript.src) {
+           document.head.appendChild(newScript);
+        } else {
+           adRef.current?.appendChild(newScript);
+        }
+      });
+    } else if (publisherId && !isAlternative) {
+      // التعامل مع AdSense
+      try {
+        // @ts-ignore
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch (e) {
-        console.warn('Ad injection warning:', e);
+        console.error("AdSense Error", e);
       }
     }
-  }, [alternativeCode, isAlternative]);
-
-  if (isAlternative) {
-    return (
-      <div className="ad-container my-6 w-full flex flex-col items-center overflow-hidden">
-        <span className="text-[8px] text-slate-500 font-black mb-1 opacity-30 tracking-[0.3em]">RECLAME</span>
-        <div 
-          ref={adRef}
-          className="w-full min-h-[100px] flex justify-center items-center overflow-hidden rounded-2xl bg-white/5 border border-dashed border-white/10"
-        >
-          {!alternativeCode && (
-            <div className="text-center p-4">
-               <p className="font-black text-emerald-500 text-[10px]">مساحة إعلانية (Adsterra Native)</p>
-            </div>
-          )}
-        </div>
-      </div>
-    );
-  }
+  }, [alternativeCode, isAlternative, publisherId]);
 
   return (
-    <div className="ad-container my-8 w-full flex flex-col items-center">
-      <div className="w-full min-h-[100px] bg-white/5 rounded-2xl flex items-center justify-center relative border border-white/5">
-        <ins
-          className="adsbygoogle"
-          style={{ display: 'block', width: '100%', minHeight: '100px' }}
-          data-ad-client={publisherId}
-          data-ad-slot={slotId || 'default_slot'}
-          data-ad-format="auto"
-          data-full-width-responsive="true"
-        ></ins>
+    <div className="ad-unit-wrapper my-6 w-full flex flex-col items-center">
+      <span className="text-[7px] text-slate-500 font-black mb-1 opacity-20 tracking-[0.4em] uppercase">إعلان</span>
+      <div 
+        ref={adRef}
+        className="w-full min-h-[50px] flex justify-center items-center overflow-hidden rounded-xl"
+      >
+        {!isAlternative && publisherId && (
+          <ins
+            className="adsbygoogle"
+            style={{ display: 'block', width: '100%' }}
+            data-ad-client={publisherId}
+            data-ad-slot={slotId || 'default'}
+            data-ad-format="auto"
+            data-full-width-responsive="true"
+          ></ins>
+        )}
       </div>
     </div>
   );
