@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Article, Settings, Category, CartItem } from './types.ts';
+import { View, Article, Settings, CartItem } from './types.ts';
 import Navbar from './components/Navbar.tsx';
 import Home from './components/Home.tsx';
 import PostDetail from './components/PostDetail.tsx';
@@ -14,7 +14,7 @@ import Checkout from './components/Checkout.tsx';
 import AdUnit from './components/AdUnit.tsx'; 
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '4.0.0-PREMIUM-UI'; 
+const CURRENT_VERSION = '4.0.1-CLOUDFLARE-FIX'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v140_posts', 
   SETTINGS: 'abdou_v140_settings',
@@ -37,8 +37,8 @@ const INITIAL_SETTINGS: Settings = {
   popunderCode: `<script type='text/javascript' src='${LINK_A}'></script>`,
   nativeAdCode: ADSTERRA_NATIVE_BANNER,
   dashboardPassword: '1234',
-  totalVisits: 58200,
-  totalEarnings: 194.20, 
+  totalVisits: 60100,
+  totalEarnings: 204.50, 
   whatsappNumber: '212649075664'
 };
 
@@ -48,7 +48,6 @@ const App: React.FC = () => {
   const [settings, setSettings] = useState<Settings>(INITIAL_SETTINGS);
   const [selectedPost, setSelectedPost] = useState<Article | null>(null);
   const [isAuth, setIsAuth] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -62,9 +61,8 @@ const App: React.FC = () => {
         scripts.forEach(tag => {
           const s = document.createElement('script');
           const srcMatch = tag.match(/src=["'](.+?)["']/);
-          if (srcMatch) {
-            s.src = srcMatch[1];
-          } else {
+          if (srcMatch) s.src = srcMatch[1];
+          else {
             const innerMatch = tag.match(/>([\s\S]*?)<\/script>/);
             if (innerMatch && innerMatch[1].trim()) s.innerHTML = innerMatch[1];
           }
@@ -72,9 +70,7 @@ const App: React.FC = () => {
           document.head.appendChild(s);
         });
       }
-    } catch (e) {
-      console.error("Adsterra Error", e);
-    }
+    } catch (e) { console.error("Ad Engine Failure", e); }
   }, []);
 
   useEffect(() => {
@@ -90,7 +86,7 @@ const App: React.FC = () => {
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     if (savedCart) setCart(JSON.parse(savedCart));
     
-    setTimeout(() => setIsLoading(false), 800);
+    setTimeout(() => setIsLoading(false), 500);
   }, []);
 
   useEffect(() => {
@@ -107,19 +103,19 @@ const App: React.FC = () => {
   };
 
   if (isLoading) return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-      <div className="flex flex-col items-center gap-6">
-        <div className="w-16 h-16 border-4 border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin"></div>
-        <div className="text-emerald-500 font-black text-xs tracking-[0.5em] uppercase animate-pulse">abdouweb premium</div>
+    <div className="min-h-screen bg-[#030303] flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-12 h-12 border-4 border-emerald-500/10 border-t-emerald-500 rounded-full animate-spin"></div>
+        <div className="text-emerald-500 font-black text-[8px] tracking-[0.5em] uppercase">abdouweb v4.0.1</div>
       </div>
     </div>
   );
 
   return (
-    <div className={`min-h-screen flex flex-col selection:bg-emerald-500 selection:text-white`}>
-      <Navbar currentView={view} setView={setView} siteName={settings.siteName} onSearch={setSearchQuery} darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} cartCount={cart.reduce((s, i) => s + i.quantity, 0)} onOpenCart={() => setIsCartOpen(true)} />
+    <div className="min-h-screen flex flex-col">
+      <Navbar currentView={view} setView={setView} siteName={settings.siteName} onSearch={setSearchQuery} darkMode={true} toggleDarkMode={() => {}} cartCount={cart.reduce((s, i) => s + i.quantity, 0)} onOpenCart={() => setIsCartOpen(true)} />
       
-      <main className="container mx-auto px-4 py-8 flex-grow max-w-7xl">
+      <main className="container mx-auto px-4 flex-grow max-w-6xl">
         {view === 'home' && <Home posts={posts.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase()))} onPostClick={handlePostClick} settings={settings} />}
         {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} settings={settings} />}
         {view === 'product' && selectedPost && <ProductDetail product={selectedPost} onAddToCart={(p) => {
@@ -127,7 +123,7 @@ const App: React.FC = () => {
           setCart(up);
           localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(up));
           setIsCartOpen(true);
-        }} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
+        }} onBack={() => setView('home')} darkMode={true} settings={settings} />}
         {view === 'checkout' && <Checkout total={cart.reduce((s, i) => s + (i.price || 0) * i.quantity, 0)} onPlaceOrder={(data) => {
              window.open(LINK_B, '_blank');
              setTimeout(() => {
@@ -135,22 +131,19 @@ const App: React.FC = () => {
                setCart([]); setView('home');
              }, 300);
         }} />}
-        {view === 'admin' && (!isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : <AdminDashboard posts={posts} settings={settings} onUpdate={(n) => {setPosts(n); localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(n));}} onUpdateSettings={(s) => {setSettings(s); localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(s));}} onLogout={() => setIsAuth(false)} darkMode={darkMode} />)}
-        {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={darkMode} siteName={settings.siteName} />}
+        {view === 'admin' && (!isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : <AdminDashboard posts={posts} settings={settings} onUpdate={(n) => {setPosts(n); localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(n));}} onUpdateSettings={(s) => {setSettings(s); localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(s));}} onLogout={() => setIsAuth(false)} darkMode={true} />)}
+        {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={true} siteName={settings.siteName} />}
       </main>
 
-      {isCartOpen && <Cart items={cart} onRemove={(id) => setCart(c => c.filter(i => i.id !== id))} onUpdateQuantity={(id, q) => setCart(c => c.map(i => i.id === id ? {...i, quantity: q} : i))} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} adCode={settings.alternativeAdsCode} />}
+      {isCartOpen && <Cart items={cart} onRemove={(id) => setCart(c => c.filter(i => i.id !== id))} onUpdateQuantity={(id, q) => setCart(c => c.map(i => i.id === id ? {...i, quantity: q} : i))} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={true} adCode={settings.alternativeAdsCode} />}
       
-      <footer className="mt-20 py-16 glass border-t-0 rounded-t-[60px] text-center border-white/5">
-        <div className="text-4xl font-black mb-4">abdouweb</div>
-        <p className="text-slate-500 font-bold mb-8">وجهتك الأولى لأقوى العروض في المغرب</p>
-        <div className="flex justify-center gap-8 mb-8 text-xs font-black opacity-30">
+      <footer className="mt-20 py-16 text-center border-t border-white/5 opacity-50">
+        <div className="text-2xl font-black mb-4">abdouweb</div>
+        <p className="text-xs mb-8">عالم الهميزات في جيبك</p>
+        <div className="flex justify-center gap-6 text-[10px] font-black uppercase tracking-widest">
            <button onClick={() => setView('privacy')}>الخصوصية</button>
            <button onClick={() => setView('terms')}>الشروط</button>
-           <button onClick={() => setView('contact')}>اتصل بنا</button>
-        </div>
-        <div className="opacity-10 text-[8px] font-black uppercase tracking-[1em]">
-          © 2025 ALL RIGHTS RESERVED • V{CURRENT_VERSION}
+           <button onClick={() => setView('contact')}>اتصل</button>
         </div>
       </footer>
       <WhatsAppButton />
