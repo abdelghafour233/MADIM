@@ -11,75 +11,85 @@ interface ProductDetailProps {
   settings: Settings;
 }
 
-const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onBack, darkMode, settings }) => {
+const ProductDetail: React.FC<ProductDetailProps> = ({ product, onAddToCart, onBack, settings }) => {
   const [imgError, setImgError] = useState(false);
   const fallbackImage = 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop';
 
   const handleOrderClick = () => {
-    // نفتح الرابط الإعلاني المباشر (الرابط الثاني) قبل الانتقال للطلب
-    if (settings.directLinkCode) {
-      window.open(settings.directLinkCode, '_blank');
-    }
-    
+    if (settings.directLinkCode) window.open(settings.directLinkCode, '_blank');
     if (product.affiliateLink) {
-      setTimeout(() => {
-        window.open(product.affiliateLink, '_blank');
-      }, 300);
+      setTimeout(() => window.open(product.affiliateLink, '_blank'), 300);
       return;
     }
     onAddToCart(product);
   };
 
   return (
-    <div className="max-w-7xl mx-auto py-6 md:py-16 animate-fadeIn px-4" dir="rtl">
-      <button onClick={onBack} className="mb-8 text-slate-500 font-black hover:text-emerald-600 transition-all flex items-center gap-2">
-        <span>←</span> العودة للرئيسية
+    <div className="max-w-7xl mx-auto py-10 md:py-20 animate-fadeIn px-4" dir="rtl">
+      <button onClick={onBack} className="mb-12 text-slate-500 font-black hover:text-emerald-500 transition-all flex items-center gap-3 text-lg">
+        <span className="w-10 h-10 glass rounded-full flex items-center justify-center">→</span> العودة للعروض
       </button>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-        <div className="sticky top-32">
-          <div className="relative rounded-[40px] overflow-hidden shadow-3xl aspect-square bg-[#0d0d0e] flex items-center justify-center">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-24 items-start">
+        <div className="sticky top-40 space-y-8">
+          <div className="relative rounded-[50px] overflow-hidden glass aspect-square flex items-center justify-center p-12">
+             <div className="absolute inset-0 bg-mesh opacity-30"></div>
              <img 
                 src={imgError ? fallbackImage : product.image} 
-                className="max-w-[80%] max-h-[80%] object-contain drop-shadow-2xl transition-transform duration-700 hover:scale-110" 
+                className="relative z-10 max-w-full max-h-full object-contain drop-shadow-[0_45px_45px_rgba(0,0,0,0.6)] animate-float" 
                 onError={() => setImgError(true)} 
                 alt={product.title}
              />
           </div>
-          <div className="mt-8">
-             <AdUnit isAlternative={true} alternativeCode={settings.nativeAdCode} />
+          <div className="hidden lg:block">
+            <AdUnit isAlternative={true} alternativeCode={settings.nativeAdCode} />
           </div>
         </div>
 
-        <div className="space-y-8">
-          <div className="flex items-center gap-3">
-            <span className="bg-orange-600/20 text-orange-500 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase">عرض حصري</span>
-            <span className="bg-emerald-600/20 text-emerald-500 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase">{product.category}</span>
+        <div className="space-y-10">
+          <div className="space-y-4">
+             <div className="flex items-center gap-3">
+               <span className="bg-orange-600/20 text-orange-500 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest border border-orange-500/20">همزة نادرة</span>
+               <span className="bg-emerald-600/20 text-emerald-500 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase border border-emerald-500/20">{product.category}</span>
+             </div>
+             <h1 className="text-4xl md:text-7xl font-black leading-[1.1] tracking-tighter text-white">{product.title}</h1>
           </div>
-
-          <h1 className="text-3xl md:text-6xl font-black leading-tight">{product.title}</h1>
           
-          <div className="bg-emerald-600 text-white p-10 rounded-[40px] shadow-2xl relative overflow-hidden group">
-            <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <p className="font-black opacity-80 mb-2 uppercase text-xs">سعر العرض المحدود:</p>
-            <div className="text-5xl md:text-7xl font-black">
-               {product.price && product.price > 0 ? `${product.price} د.م` : 'أفضل سعر حالياً'}
+          <div className="glass p-10 rounded-[45px] relative overflow-hidden group border-white/10">
+            <div className="absolute top-0 left-0 w-2 h-full bg-emerald-600"></div>
+            <div className="flex items-center justify-between">
+              <div>
+                 <p className="font-black opacity-30 mb-2 uppercase text-[10px] tracking-widest">السعر الحالي:</p>
+                 <div className="text-5xl md:text-8xl font-black text-white flex items-baseline gap-2">
+                    {product.price && product.price > 0 ? product.price : 'أفضل عرض'}
+                    <span className="text-xl md:text-2xl opacity-40 font-bold">د.م</span>
+                 </div>
+              </div>
+              {product.marketPrice && (
+                <div className="text-right">
+                   <p className="text-slate-500 line-through font-black text-xl md:text-2xl opacity-40">{product.marketPrice} د.م</p>
+                   <span className="text-emerald-500 font-black text-sm">توفير {((product.marketPrice - (product.price || 0)) / product.marketPrice * 100).toFixed(0)}%</span>
+                </div>
+              )}
             </div>
-            {product.marketPrice && (
-              <p className="mt-2 opacity-50 line-through font-bold">بدلاً من {product.marketPrice} د.م</p>
-            )}
           </div>
 
-          <button 
-            onClick={handleOrderClick}
-            className="w-full bg-orange-600 py-8 rounded-[30px] font-black text-2xl shadow-2xl shadow-orange-600/30 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4"
-          >
-            اكتشف العرض واطلب الآن 🔥
-          </button>
+          <div className="flex flex-col gap-4">
+            <button 
+              onClick={handleOrderClick}
+              className="w-full bg-white text-black py-8 rounded-[35px] font-black text-2xl md:text-3xl shadow-[0_20px_40px_rgba(255,255,255,0.1)] hover:bg-emerald-500 hover:text-white hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4"
+            >
+              اطلب الآن مباشرة 🔥
+            </button>
+            <p className="text-center text-[10px] font-bold opacity-30">تنبيه: الكمية محدودة جداً وقد تنتهي في أي لحظة</p>
+          </div>
 
-          <div className="p-8 bg-white/5 border border-white/10 rounded-[40px]">
-             <h3 className="font-black text-xl mb-4 text-emerald-500">تفاصيل الهمزة:</h3>
-             <p className="text-slate-400 leading-relaxed whitespace-pre-line text-lg">{product.content}</p>
+          <div className="p-10 glass rounded-[45px] border-white/5">
+             <h3 className="font-black text-2xl mb-6 text-emerald-500 flex items-center gap-3">
+               <span className="w-8 h-8 bg-emerald-500/10 rounded-xl flex items-center justify-center text-sm">📄</span>
+               وصف الهمزة:
+             </h3>
+             <div className="text-slate-300 leading-relaxed whitespace-pre-line text-lg md:text-xl font-medium opacity-80">{product.content}</div>
           </div>
 
           <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
