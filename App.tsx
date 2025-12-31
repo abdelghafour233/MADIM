@@ -13,13 +13,13 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-// إصدار مستقر ونهائي
-const CURRENT_VERSION = '2.7.0-STABLE'; 
+// إصدار جديد وآمن تماماً
+const CURRENT_VERSION = '3.1.0-FIX'; 
 const STORAGE_KEYS = {
-  POSTS: 'abdou_v40_posts', 
-  SETTINGS: 'abdou_v40_settings',
-  CART: 'abdou_v40_cart',
-  VERSION: 'abdou_v40_version'
+  POSTS: 'abdou_v100_posts', 
+  SETTINGS: 'abdou_v100_settings',
+  CART: 'abdou_v100_cart',
+  VERSION: 'abdou_v100_version'
 };
 
 const ADSTERRA_SOCIAL_BAR = `<script src="https://pl28365246.effectivegatecpm.com/3d/40/12/3d4012bf393d5dde160f3b073d124.js"></script>`;
@@ -35,8 +35,8 @@ const INITIAL_SETTINGS: Settings = {
   popunderCode: '', 
   nativeAdCode: ADSTERRA_NATIVE_BANNER,
   dashboardPassword: '1234',
-  totalVisits: 18920,
-  totalEarnings: 42.15, 
+  totalVisits: 21450,
+  totalEarnings: 58.40, 
   whatsappNumber: '212649075664'
 };
 
@@ -69,29 +69,28 @@ const App: React.FC = () => {
 
   useEffect(() => {
     const lastVersion = localStorage.getItem(STORAGE_KEYS.VERSION);
-    const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-    const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
-    const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
-    // فحص النسخة وتحديث البيانات
+    // إذا تغير الإصدار، نقوم بمسح LocalStorage بهدوء وتطبيق الإعدادات الجديدة
     if (lastVersion !== CURRENT_VERSION) {
-      console.log("New version detected. Clearing old data...");
-      localStorage.clear(); 
-      localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
-      setSettings(INITIAL_SETTINGS);
-      setPosts(INITIAL_POSTS);
+      console.log("New system version detected. Syncing...");
+      // مسح كافة المفاتيح القديمة
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('abdou_')) localStorage.removeItem(key);
+      });
       
-      // إذا كان هناك بارامتر في الرابط للمسح الإجباري، نزيله بعد المزامنة
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.has('clear_all')) {
-        window.history.replaceState({}, document.title, window.location.pathname);
-      }
+      localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
+      setPosts(INITIAL_POSTS);
+      setSettings(INITIAL_SETTINGS);
     } else {
+      const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+      const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
       if (savedSettings) setSettings(JSON.parse(savedSettings));
       if (savedPosts) setPosts(JSON.parse(savedPosts));
     }
     
+    const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     if (savedCart) setCart(JSON.parse(savedCart));
+    
     setIsLoading(false);
   }, []);
 
@@ -100,7 +99,7 @@ const App: React.FC = () => {
       setTimeout(() => {
         forceInjectAd('top-ad-fixed-container', settings.alternativeAdsCode);
         forceInjectAd('social-bar-internal', settings.globalAdsCode);
-      }, 500);
+      }, 800);
     }
   }, [isLoading, settings, forceInjectAd]);
 
@@ -108,19 +107,20 @@ const App: React.FC = () => {
     setSelectedPost(p);
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo(0, 0);
-    if (settings.directLinkCode && Math.random() > 0.4) window.open(settings.directLinkCode, '_blank');
   };
 
-  if (isLoading) return <div className="min-h-screen bg-[#0a0a0b] flex items-center justify-center text-emerald-500 font-black">جاري التحميل...</div>;
+  if (isLoading) return (
+    <div className="min-h-screen bg-[#0a0a0b] flex flex-col items-center justify-center text-emerald-500 font-black">
+      <div className="w-12 h-12 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin mb-4"></div>
+      جاري مزامنة العروض...
+    </div>
+  );
 
   return (
     <div className={`min-h-screen flex flex-col ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
       <div id="social-bar-internal" style={{display:'none'}}></div>
-
-      <Navbar 
-        currentView={view} setView={setView} siteName={settings.siteName} onSearch={setSearchQuery} darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} cartCount={cart.reduce((s, i) => s + i.quantity, 0)} onOpenCart={() => setIsCartOpen(true)}
-      />
-
+      <Navbar currentView={view} setView={setView} siteName={settings.siteName} onSearch={setSearchQuery} darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} cartCount={cart.reduce((s, i) => s + i.quantity, 0)} onOpenCart={() => setIsCartOpen(true)} />
+      
       <main className="container mx-auto px-4 py-4 flex-grow max-w-7xl">
         {view === 'home' && <Home posts={posts.filter(p => p.title.toLowerCase().includes(searchQuery.toLowerCase()))} onPostClick={handlePostClick} darkMode={darkMode} settings={settings} />}
         {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
@@ -139,9 +139,9 @@ const App: React.FC = () => {
       </main>
 
       {isCartOpen && <Cart items={cart} onRemove={(id) => setCart(c => c.filter(i => i.id !== id))} onUpdateQuantity={(id, q) => setCart(c => c.map(i => i.id === id ? {...i, quantity: q} : i))} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} adCode={settings.alternativeAdsCode} />}
-
-      <footer className="mt-10 py-10 border-t border-white/5 text-center opacity-40 text-[10px] font-bold">
-        © 2025 {settings.siteName} (v{CURRENT_VERSION})
+      
+      <footer className="mt-10 py-10 border-t border-white/5 text-center opacity-40 text-[10px] font-bold tracking-widest">
+        © 2025 {settings.siteName} • V{CURRENT_VERSION}
       </footer>
       <WhatsAppButton />
     </div>
