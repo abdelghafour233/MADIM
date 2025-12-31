@@ -13,7 +13,8 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '2.3.0-FIX-ADS'; 
+// نسخة جديدة لكسر الكاش القديم
+const CURRENT_VERSION = '2.4.0-FORCE-REFRESH'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v40_posts', 
   SETTINGS: 'abdou_v40_settings',
@@ -51,75 +52,70 @@ const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // نظام حقن الإعلانات المتطور (Force Injection)
+  // نظام حقن الإعلانات الإجباري (Force Injection System)
   const forceInjectAd = useCallback((containerId: string, code: string) => {
     if (!code) return;
     try {
       const target = document.getElementById(containerId);
       if (target) {
+        // تفريغ الحاوية تماماً
+        target.innerHTML = '';
         const range = document.createRange();
         const fragment = range.createContextualFragment(code);
-        target.innerHTML = '';
         target.appendChild(fragment);
-      }
-      
-      // حقن نسخة في الـ Header أيضاً لضمان عمل الـ Social Bar
-      if (containerId.includes('social')) {
-         const headAdId = 'head-social-ad';
-         let headAd = document.getElementById(headAdId);
-         if (headAd) headAd.remove();
-         headAd = document.createElement('div');
-         headAd.id = headAdId;
-         headAd.style.display = 'none';
-         const headFragment = document.createRange().createContextualFragment(code);
-         headAd.appendChild(headFragment);
-         document.head.appendChild(headAd);
+        console.log(`Force Injected: ${containerId}`);
       }
     } catch (e) {
-      console.error(`Failed to inject ad into ${containerId}`, e);
+      console.warn(`Injection failed for ${containerId}`, e);
     }
   }, []);
 
   useEffect(() => {
     const lastVersion = localStorage.getItem(STORAGE_KEYS.VERSION);
-    const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
     const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+    const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
-    let currentSettings = INITIAL_SETTINGS;
-    if (savedSettings) {
-      currentSettings = { ...INITIAL_SETTINGS, ...JSON.parse(savedSettings) };
-    }
-
+    // إذا تغيرت النسخة، نقوم بمسح الكاش المحلي لضمان رؤية التحديثات
     if (lastVersion !== CURRENT_VERSION) {
-      setPosts(INITIAL_POSTS);
-      setSettings(currentSettings);
+      console.log("New Version Detected: Clearing local cache...");
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
-      localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(INITIAL_POSTS));
+      // تحديث الإعدادات والبوستات للقيم الجديدة
+      setSettings(INITIAL_SETTINGS);
+      setPosts(INITIAL_POSTS);
     } else {
-      setPosts(savedPosts ? JSON.parse(savedPosts) : INITIAL_POSTS);
-      setSettings(currentSettings);
+      if (savedSettings) setSettings({ ...INITIAL_SETTINGS, ...JSON.parse(savedSettings) });
+      if (savedPosts) setPosts(JSON.parse(savedPosts));
+      else setPosts(INITIAL_POSTS);
     }
-    if (savedCart) setCart(JSON.parse(savedCart));
     
-    setTimeout(() => setIsLoading(false), 500);
+    if (savedCart) setCart(JSON.parse(savedCart));
+    setTimeout(() => setIsLoading(false), 300);
   }, []);
 
-  // تنفيذ الحقن عند الجاهزية
+  // الحقن الفوري عند انتهاء التحميل
   useEffect(() => {
     if (!isLoading) {
-      // حقن الإعلان العلوي الثابت
+      // حقن الإعلان العلوي في الحاوية الثابتة في index.html
       forceInjectAd('top-ad-fixed-container', settings.alternativeAdsCode);
       
-      // حقن الـ Social Bar
-      forceInjectAd('social-bar-container', settings.globalAdsCode);
+      // حقن السوشيال بار في حاوية داخلية مخفية
+      forceInjectAd('social-bar-internal', settings.globalAdsCode);
       
-      // حقن Popunder عند التفاعل
-      const handleTouch = () => {
-        if (settings.popunderCode) forceInjectAd('pop-container', settings.popunderCode);
-        window.removeEventListener('touchstart', handleTouch);
+      // نظام Popunder عند أول لمسة
+      const runPopunder = () => {
+        if (settings.popunderCode) {
+           const popDiv = document.createElement('div');
+           popDiv.style.display = 'none';
+           document.body.appendChild(popDiv);
+           const frag = document.createRange().createContextualFragment(settings.popunderCode);
+           popDiv.appendChild(frag);
+        }
+        window.removeEventListener('touchstart', runPopunder);
+        window.removeEventListener('click', runPopunder);
       };
-      window.addEventListener('touchstart', handleTouch);
+      window.addEventListener('touchstart', runPopunder);
+      window.addEventListener('click', runPopunder);
     }
   }, [isLoading, settings, forceInjectAd]);
 
@@ -128,52 +124,49 @@ const App: React.FC = () => {
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo({ top: 0, behavior: 'smooth' });
     
-    if (settings.directLinkCode && Math.random() > 0.4) {
+    // تفعيل الرابط المباشر عند الضغط
+    if (settings.directLinkCode && Math.random() > 0.3) {
       window.open(settings.directLinkCode, '_blank');
     }
   };
 
-  if (isLoading) return <div className="fixed inset-0 bg-[#0a0a0b] flex items-center justify-center z-[2000]"><div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>;
-
-  const cartTotal = cart.reduce((sum, item) => sum + (item.price || 0) * item.quantity, 0);
-  const filteredPosts = posts.filter(p => (p.title || '').toLowerCase().includes(searchQuery.toLowerCase()));
+  if (isLoading) return <div className="fixed inset-0 bg-[#0a0a0b] flex items-center justify-center z-[3000]"><div className="w-10 h-10 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div></div>;
 
   return (
     <div className={`min-h-screen flex flex-col transition-all duration-500 ${darkMode ? 'bg-[#0a0a0b] text-white' : 'bg-[#f8fafc] text-slate-900'}`}>
-      {/* حاويات الإعلانات المخفية للحقن */}
-      <div id="social-bar-container" style={{display:'none'}}></div>
-      <div id="pop-container" style={{display:'none'}}></div>
+      {/* حاوية مخفية للسوشيال بار */}
+      <div id="social-bar-internal" style={{display:'none'}}></div>
 
       <Navbar 
         currentView={view} setView={setView} siteName={settings.siteName} onSearch={setSearchQuery} darkMode={darkMode} toggleDarkMode={() => setDarkMode(!darkMode)} cartCount={cart.reduce((s, i) => s + i.quantity, 0)} onOpenCart={() => setIsCartOpen(true)}
       />
 
-      <main className="container mx-auto px-4 md:px-6 py-4 flex-grow max-w-7xl">
+      <main className="container mx-auto px-4 py-4 flex-grow max-w-7xl">
         {view === 'home' && (
-          <Home posts={filteredPosts} onPostClick={handlePostClick} darkMode={darkMode} directLink={settings.directLinkCode} settings={settings} />
+          <Home posts={posts.filter(p => (p.title || '').toLowerCase().includes(searchQuery.toLowerCase()))} onPostClick={handlePostClick} darkMode={darkMode} settings={settings} />
         )}
         
         {view === 'post' && selectedPost && <PostDetail post={selectedPost} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
         {view === 'product' && selectedPost && <ProductDetail product={selectedPost} onAddToCart={(p) => {
-          setCart(prev => {
-            const up = prev.find(i => i.id === p.id) ? prev.map(i => i.id === p.id ? {...i, quantity: i.quantity + 1} : i) : [...prev, {...p, quantity: 1}];
-            localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(up));
-            return up;
-          });
+          const up = [...cart, {...p, quantity: 1}];
+          setCart(up);
+          localStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(up));
           setIsCartOpen(true);
         }} onBack={() => setView('home')} darkMode={darkMode} settings={settings} />}
-        {view === 'checkout' && <Checkout total={cartTotal} onPlaceOrder={(data) => {
+        
+        {view === 'checkout' && <Checkout total={cart.reduce((s, i) => s + (i.price || 0) * i.quantity, 0)} onPlaceOrder={(data) => {
            window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(`طلب جديد من ${data.name}`)}`);
            setCart([]); setView('home');
         }} />}
-        {view === 'admin' && (!isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : <AdminDashboard posts={posts} settings={settings} onUpdate={(newPosts) => {setPosts(newPosts); localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(newPosts));}} onUpdateSettings={(s) => {setSettings(s); localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(s));}} onLogout={() => setIsAuth(false)} darkMode={darkMode} />)}
+
+        {view === 'admin' && (!isAuth ? <Login correctPassword={settings.dashboardPassword || '1234'} onSuccess={() => setIsAuth(true)} /> : <AdminDashboard posts={posts} settings={settings} onUpdate={(n) => {setPosts(n); localStorage.setItem(STORAGE_KEYS.POSTS, JSON.stringify(n));}} onUpdateSettings={(s) => {setSettings(s); localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(s));}} onLogout={() => setIsAuth(false)} darkMode={darkMode} />)}
         {(['privacy', 'about', 'contact', 'terms'].includes(view)) && <LegalPage type={view as any} darkMode={darkMode} siteName={settings.siteName} />}
       </main>
 
       {isCartOpen && <Cart items={cart} onRemove={(id) => setCart(c => c.filter(i => i.id !== id))} onUpdateQuantity={(id, q) => setCart(c => c.map(i => i.id === id ? {...i, quantity: q} : i))} onCheckout={() => {setIsCartOpen(false); setView('checkout');}} onClose={() => setIsCartOpen(false)} darkMode={darkMode} adCode={settings.alternativeAdsCode} />}
 
       <footer className="mt-10 py-10 border-t border-white/5 text-center opacity-40 text-[10px] font-bold">
-        © 2025 {settings.siteName} - جميع الحقوق محفوظة
+        © 2025 {settings.siteName} - جميع الحقوق محفوظة (v{CURRENT_VERSION})
       </footer>
       <WhatsAppButton />
     </div>

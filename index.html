@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
-    <!-- منع التخزين المؤقت بشكل صارم للمتصفحات -->
+    <!-- تعليمات صارمة للمتصفح وكلاود فلير بعدم التخزين المؤقت للنسخة الحالية -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -56,17 +56,19 @@
         backface-visibility: hidden;
         -webkit-user-drag: none;
       }
-      /* تنسيق خاص بمنطقة الإعلان العلوي */
+      
+      /* منطقة الإعلان العلوي المحسنة */
       #top-ad-fixed-container {
         width: 100%;
-        min-height: 50px;
-        background: rgba(0,0,0,0.3);
+        min-height: 60px;
+        background: #000;
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
-        z-index: 1000;
+        z-index: 2000;
         overflow: hidden;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
       }
     </style>
     <script type="importmap">
@@ -82,10 +84,18 @@
 </script>
   </head>
   <body class="hero-gradient">
-    <!-- حاوية الإعلان العلوي المباشر -->
+    <!-- حاوية الإعلان العلوي المباشر - ستظهر فوق كل شيء -->
     <div id="top-ad-fixed-container"></div>
     <div id="root"></div>
-    <!-- تحديث الإصدار v=2.3.0-FIX-ADS -->
-    <script data-cfasync="false" type="module" src="./index.tsx?v=2.3.0-FIX-ADS"></script>
+    
+    <!-- استخدام التوقيت الحالي لكسر التخزين (Cache Busting) -->
+    <script type="text/javascript">
+      const versionBuster = Date.now();
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = `./index.tsx?v=${versionBuster}`;
+      script.setAttribute('data-cfasync', 'false');
+      document.body.appendChild(script);
+    </script>
   </body>
 </html>
