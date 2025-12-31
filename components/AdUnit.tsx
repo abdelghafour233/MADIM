@@ -16,54 +16,54 @@ const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alt
   useEffect(() => {
     if (isAlternative && alternativeCode && adRef.current) {
       const container = adRef.current;
-      container.innerHTML = ''; // تنظيف الحاوية لضمان عدم التكرار
+      container.innerHTML = ''; 
       
       try {
-        // 1. استخراج الـ HTML (الديفات)
-        let htmlContent = alternativeCode.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "").trim();
+        // 1. حقن الـ HTML
+        let htmlPart = alternativeCode.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "").trim();
         
-        // 2. معالجة الـ ID لتجنب التصادم
-        const originalIdMatch = htmlContent.match(/id=["'](container-[^"']+)["']/);
-        let targetId = "";
-        
-        if (originalIdMatch) {
-          const originalId = originalIdMatch[1];
-          targetId = `${originalId}-${uniqueId}`;
-          htmlContent = htmlContent.replace(new RegExp(originalId, 'g'), targetId);
+        // تعديل الـ ID ليكون فريداً
+        const idMatch = htmlPart.match(/id=["'](container-[^"']+)["']/);
+        let currentId = "";
+        if (idMatch) {
+          currentId = idMatch[1];
+          const newId = `${currentId}-${uniqueId}`;
+          htmlPart = htmlPart.replace(new RegExp(currentId, 'g'), newId);
+          currentId = newId;
         }
+        
+        container.innerHTML = htmlPart;
 
-        container.innerHTML = htmlContent;
-
-        // 3. حقن السكربتات يدوياً لضمان التنفيذ
+        // 2. معالجة وحقن السكربتات
         const scriptTags = alternativeCode.match(/<script\b[^>]*>([\s\S]*?)<\/script>/gim);
         if (scriptTags) {
           scriptTags.forEach((tag, idx) => {
             const scriptEl = document.createElement('script');
             
-            const srcMatch = tag.match(/src=["'](.+?)["']/);
-            if (srcMatch) scriptEl.src = srcMatch[1];
-            
+            // خصائص السكربت
+            const src = tag.match(/src=["'](.+?)["']/);
+            if (src) scriptEl.src = src[1];
             if (tag.includes('async')) scriptEl.async = true;
             scriptEl.setAttribute('data-cfasync', 'false');
 
-            const innerCodeMatch = tag.match(/>([\s\S]*?)<\/script>/);
-            if (innerCodeMatch && innerCodeMatch[1].trim()) {
-              let code = innerCodeMatch[1];
-              if (originalIdMatch && targetId) {
-                // توجيه السكربت للـ ID الجديد
-                code = code.split(originalIdMatch[1]).join(targetId);
+            // محتوى السكربت
+            const inner = tag.match(/>([\s\S]*?)<\/script>/);
+            if (inner && inner[1].trim()) {
+              let code = inner[1];
+              if (idMatch && currentId) {
+                code = code.split(idMatch[1]).join(currentId);
               }
               scriptEl.innerHTML = code;
             }
 
-            // تأخير بسيط جداً لضمان أن المتصفح قد رسم الـ HTML
+            // إضافة السكربت للحاوية
             setTimeout(() => {
               if (container) container.appendChild(scriptEl);
-            }, (idx + 1) * 200);
+            }, (idx + 1) * 250);
           });
         }
       } catch (err) {
-        console.error("AdUnit Error:", err);
+        console.error("AdUnit Exception:", err);
       }
     } else if (publisherId && !isAlternative) {
       try {
@@ -76,9 +76,9 @@ const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alt
   return (
     <div className={`ad-unit-wrapper ${className}`}>
       <div className="flex items-center justify-center gap-2 mb-1 opacity-20">
-        <span className="h-[px] w-4 bg-slate-500"></span>
-        <span className="text-[6px] text-slate-500 font-black tracking-[0.4em] uppercase">Promotion</span>
-        <span className="h-[1px] w-4 bg-slate-500"></span>
+        <span className="h-[1px] w-3 bg-slate-500"></span>
+        <span className="text-[6px] text-slate-500 font-bold uppercase tracking-widest">Ad Service</span>
+        <span className="h-[1px] w-3 bg-slate-500"></span>
       </div>
       <div 
         ref={adRef}
