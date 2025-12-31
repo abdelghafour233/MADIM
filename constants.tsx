@@ -54,9 +54,9 @@ export const INITIAL_POSTS: Article[] = [
     author: 'عبدو ويب',
     isTrending: true,
     isProduct: true,
-    price: 0,
+    price: 199,
     marketPrice: 1200,
-    affiliateLink: 'https://temu.to/k/en9h0umf4mu'
+    affiliateLink: 'https://temu.to/k/u6zpr84k5n5'
   },
   {
     id: 'sneaker-sport-premium-2025',
@@ -80,9 +80,9 @@ export const INITIAL_POSTS: Article[] = [
     author: 'عبدو ويب',
     isTrending: false,
     isProduct: true,
-    price: 0,
+    price: 149,
     marketPrice: 650,
-    affiliateLink: 'https://temu.to/k/ezi0kpfjq9q'
+    affiliateLink: 'https://temu.to/k/u6zpr84k5n5'
   },
   {
     id: 'dash-cam-premium-2025',
@@ -106,9 +106,9 @@ export const INITIAL_POSTS: Article[] = [
     author: 'عبدو ويب',
     isTrending: false,
     isProduct: true,
-    price: 0,
+    price: 299,
     marketPrice: 850,
-    affiliateLink: 'https://temu.to/k/etuuox67wtr'
+    affiliateLink: 'https://temu.to/k/u6zpr84k5n5'
   },
   {
     id: 'smart-watch-ultra-9-black',
@@ -130,9 +130,9 @@ export const INITIAL_POSTS: Article[] = [
     author: 'عبدو ويب',
     isTrending: false,
     isProduct: true,
-    price: 0,
+    price: 180,
     marketPrice: 599,
-    affiliateLink: 'https://temu.to/k/etuuox67wtr'
+    affiliateLink: 'https://temu.to/k/u6zpr84k5n5'
   },
   {
     id: 'wireless-earbuds-pro-2',
@@ -153,9 +153,9 @@ export const INITIAL_POSTS: Article[] = [
     author: 'عبدو ويب',
     isTrending: false,
     isProduct: true,
-    price: 0,
+    price: 99,
     marketPrice: 320,
-    affiliateLink: 'https://temu.to/k/etuuox67wtr'
+    affiliateLink: 'https://temu.to/k/u6zpr84k5n5'
   }
 ];
 

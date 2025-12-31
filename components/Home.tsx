@@ -46,11 +46,19 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
       >
         <div className="flex flex-col lg:flex-row items-stretch">
            <div className="w-full lg:w-1/2 p-8 md:p-16 space-y-6 md:space-y-8 flex flex-col justify-center order-2 lg:order-1">
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                  <span className="bg-orange-600 text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest animate-pulse">عرض محدود 🔥</span>
                  <span className="bg-emerald-600/10 text-emerald-500 text-[9px] font-black px-4 py-1.5 rounded-full uppercase border border-emerald-500/20">همزة ممتازة</span>
               </div>
               <h1 className="text-3xl md:text-7xl font-black leading-[1.1] tracking-tight">{trendingPost.title}</h1>
+              
+              {/* Promotion Message for the new Link */}
+              <div className="bg-white/5 p-4 rounded-2xl border border-white/10">
+                 <p className="text-emerald-400 text-xs md:text-lg font-bold leading-relaxed">
+                   ⭐️ Tap the exclusive deal link <span className="underline break-all">https://temu.to/k/u6zpr84k5n5</span> to score top-quality items at ultra-low prices. 🛍️
+                 </p>
+              </div>
+
               <p className="text-slate-400 text-sm md:text-xl line-clamp-2 leading-relaxed opacity-70">{trendingPost.excerpt}</p>
               
               <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-6 pt-4">
@@ -123,7 +131,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
         </div>
       </div>
 
-      {/* NEW: Site Share Section */}
+      {/* Site Share Section */}
       <section className="premium-glass rounded-[40px] md:rounded-[50px] p-8 md:p-16 border-emerald-500/10 relative overflow-hidden text-center space-y-8">
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[100px] -mr-32 -mt-32"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/5 blur-[100px] -ml-32 -mb-32"></div>

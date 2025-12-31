@@ -20,7 +20,7 @@ const STORAGE_KEYS = {
   VERSION: 'abdou_v4_version'
 };
 
-const CURRENT_VERSION = '4.0.4-STABLE';
+const CURRENT_VERSION = '4.0.5-STABLE';
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
@@ -30,7 +30,7 @@ const App: React.FC = () => {
     adsenseCode: 'ca-pub-5578524966832192',
     alternativeAdsCode: '', 
     globalAdsCode: '',      
-    directLinkCode: 'https://bouncingbuzz.com/zj3mgnqb3?key=06741e12c87b4f0448ad3a2ef3183b49', 
+    directLinkCode: 'https://temu.to/k/u6zpr84k5n5', 
     whatsappNumber: '212649075664',
     facebookLink: 'https://facebook.com/abdouweb',
     telegramLink: 'https://t.me/abdouweb',
@@ -163,7 +163,6 @@ const App: React.FC = () => {
         />
       )}
       
-      {/* Enhanced Footer with Share Buttons */}
       <footer className="mt-20 py-20 border-t border-white/5 bg-gradient-to-t from-emerald-950/5 to-transparent">
         <div className="container mx-auto px-4 max-w-6xl">
            <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center text-center md:text-right">
