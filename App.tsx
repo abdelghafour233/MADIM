@@ -13,7 +13,8 @@ import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
-const CURRENT_VERSION = '2.4.1-FIX'; 
+// رفع الإصدار لضمان مسح الكاش القديم عند المستخدمين
+const CURRENT_VERSION = '2.5.0-ULTRA'; 
 const STORAGE_KEYS = {
   POSTS: 'abdou_v40_posts', 
   SETTINGS: 'abdou_v40_settings',
@@ -41,7 +42,6 @@ const INITIAL_SETTINGS: Settings = {
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
-  // تصحيح: البدء ببيانات موجودة مسبقاً لمنع انهيار الموقع (White Screen)
   const [posts, setPosts] = useState<Article[]>(INITIAL_POSTS);
   const [settings, setSettings] = useState<Settings>(INITIAL_SETTINGS);
   const [selectedPost, setSelectedPost] = useState<Article | null>(null);
@@ -73,8 +73,10 @@ const App: React.FC = () => {
     const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
     
+    // إذا اكتشف المتصفح إصداراً قديماً، يمسح الـ localStorage فوراً
     if (lastVersion !== CURRENT_VERSION) {
-      localStorage.clear(); // مسح كامل لتجنب تعارض الإصدارات
+      console.log("Forcing update to v" + CURRENT_VERSION);
+      localStorage.clear(); 
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
       setSettings(INITIAL_SETTINGS);
       setPosts(INITIAL_POSTS);
@@ -89,8 +91,11 @@ const App: React.FC = () => {
 
   useEffect(() => {
     if (!isLoading) {
-      forceInjectAd('top-ad-fixed-container', settings.alternativeAdsCode);
-      forceInjectAd('social-bar-internal', settings.globalAdsCode);
+      // محاولة حقن الإعلانات مع تأخير بسيط لضمان استقرار الصفحة
+      setTimeout(() => {
+        forceInjectAd('top-ad-fixed-container', settings.alternativeAdsCode);
+        forceInjectAd('social-bar-internal', settings.globalAdsCode);
+      }, 500);
     }
   }, [isLoading, settings, forceInjectAd]);
 

@@ -5,6 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
+    <!-- منع التخزين المؤقت بشكل قطعي -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -68,7 +69,18 @@
   <body class="hero-gradient">
     <div id="top-ad-fixed-container"></div>
     <div id="root"></div>
-    <!-- استدعاء مباشر مع كسر الكاش عبر timestamp ثابت لكل جلسة -->
-    <script type="module" src="./index.tsx?v=2.4.1-STABLE"></script>
+    
+    <!-- سكربت ذكي لكسر التخزين المؤقت (Dynamic Cache Buster) -->
+    <script type="text/javascript">
+      (function() {
+        var timestamp = Date.now();
+        var script = document.createElement('script');
+        script.type = 'module';
+        // إضافة تايم ستامب فريد لكل عملية تحميل لإجبار السيرفر على إرسال أحدث ملف
+        script.src = './index.tsx?v=' + timestamp;
+        script.setAttribute('data-cfasync', 'false'); // منع تداخل Cloudflare Rocket Loader
+        document.body.appendChild(script);
+      })();
+    </script>
   </body>
 </html>
