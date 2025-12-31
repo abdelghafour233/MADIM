@@ -5,8 +5,8 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
-    <title>abdouweb | عالم الهميزات والعروض 🇲🇦</title>
-    <meta name="description" content="أقوى عروض تيمو، أمازون، والمنتجات التقنية في المغرب. هميزات حصرية يومياً بأفضل الأسعار." />
+    <title>abdouweb | أقوى الهميزات والعروض 🇲🇦</title>
+    <meta name="description" content="منصة عبدو ويب لأقوى هميزات تيمو وأمازون والمنتجات التقنية في المغرب." />
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,58 +17,56 @@
       :root {
         --primary: #10b981;
         --secondary: #f59e0b;
-        --dark-bg: #050505;
+        --bg-dark: #030303;
       }
 
       body {
         font-family: 'Tajawal', sans-serif;
-        background-color: var(--dark-bg);
+        background-color: var(--bg-dark);
         color: white;
         margin: 0;
         overflow-x: hidden;
         -webkit-tap-highlight-color: transparent;
       }
 
-      /* خلفية متدرجة سينمائية متحركة خفيفة */
-      .bg-canvas {
+      /* خلفية متدرجة فخمة */
+      .bg-mesh {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
         background: 
-          radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.07) 0%, transparent 50%),
-          radial-gradient(circle at 100% 100%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+          radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(245, 158, 11, 0.05) 0px, transparent 50%),
+          #030303;
         z-index: -1;
       }
 
-      .premium-glass {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
+      .glass-premium {
+        background: rgba(255, 255, 255, 0.02);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.05);
       }
 
-      .neo-card {
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      .card-hover {
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      .neo-card:hover {
-        transform: translateY(-8px) scale(1.01);
-        background: rgba(255, 255, 255, 0.06);
+      .card-hover:hover {
+        transform: translateY(-8px);
+        background: rgba(255, 255, 255, 0.04);
         border-color: rgba(16, 185, 129, 0.3);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
       }
 
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
       }
-      .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+      .animate-slide-in { animation: slideIn 0.6s ease-out forwards; }
 
       /* تنسيق السكرول بار */
-      ::-webkit-scrollbar { width: 4px; }
-      ::-webkit-scrollbar-track { background: var(--dark-bg); }
-      ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+      ::-webkit-scrollbar { width: 5px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(16, 185, 129, 0.2); border-radius: 10px; }
       ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
-
-      .ad-container { margin: 20px 0; border-radius: 20px; overflow: hidden; }
     </style>
     
     <script type="importmap">
@@ -84,8 +82,8 @@
 </script>
   </head>
   <body>
-    <div class="bg-canvas"></div>
+    <div class="bg-mesh"></div>
     <div id="root"></div>
-    <script type="module" src="./index.tsx?v=4.0.2"></script>
+    <script type="module" src="./index.tsx"></script>
   </body>
 </html>
