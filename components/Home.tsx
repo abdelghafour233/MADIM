@@ -23,7 +23,9 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
   const shareLinks = {
     whatsapp: `https://wa.me/?text=${encodeURIComponent(shareText)}`,
     facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(siteUrl)}`,
-    telegram: `https://t.me/share/url?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(shareText)}`
+    telegram: `https://t.me/share/url?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(shareText)}`,
+    twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(shareText)}`,
+    pinterest: `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(siteUrl)}&description=${encodeURIComponent(shareText)}`
   };
 
   return (
@@ -131,24 +133,30 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
         </div>
       </div>
 
-      {/* Site Share Section */}
+      {/* Site Share Section Updated with Pinterest & Twitter */}
       <section className="premium-glass rounded-[40px] md:rounded-[50px] p-8 md:p-16 border-emerald-500/10 relative overflow-hidden text-center space-y-8">
         <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[100px] -mr-32 -mt-32"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/5 blur-[100px] -ml-32 -mb-32"></div>
         
-        <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+        <div className="relative z-10 max-w-4xl mx-auto space-y-6">
            <h2 className="text-3xl md:text-6xl font-black tracking-tighter">أعجبك الموقع؟ شاركه مع أحبابك 🚀</h2>
            <p className="text-slate-400 text-sm md:text-xl font-medium opacity-60 leading-relaxed">ساعدنا على نشر أقوى العروض في المغرب وشارك الهمزة مع أصدقائك وعائلتك بضغطة واحدة!</p>
            
            <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-[#25D366] text-white px-10 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-emerald-900/20">
+              <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-[#25D366] text-white px-8 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-emerald-900/20">
                  <span className="text-2xl">💬</span> واتساب
               </a>
-              <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-[#1877F2] text-white px-10 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-blue-900/20">
+              <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-[#1877F2] text-white px-8 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-blue-900/20">
                  <span className="text-2xl">👥</span> فايسبوك
               </a>
-              <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-[#0088cc] text-white px-10 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-sky-900/20">
+              <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-[#0088cc] text-white px-8 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-sky-900/20">
                  <span className="text-2xl">✈️</span> تيليجرام
+              </a>
+              <a href={shareLinks.twitter} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-black text-white px-8 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-white/5">
+                 <span className="text-2xl">𝕏</span> تويتر
+              </a>
+              <a href={shareLinks.pinterest} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-[#E60023] text-white px-8 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-red-900/20">
+                 <span className="text-2xl">📌</span> بنتريست
               </a>
            </div>
         </div>

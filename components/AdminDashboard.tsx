@@ -59,6 +59,10 @@ const AdminDashboard: React.FC<AdminProps> = ({ posts, settings, onUpdate, onUpd
                     <label className="text-[10px] font-black opacity-40 mb-2 block uppercase">رابط إنستغرام</label>
                     <input className="w-full p-4 bg-black/40 rounded-2xl text-xs" value={localSettings.instagramLink} onChange={e => setLocalSettings({...localSettings, instagramLink: e.target.value})} />
                  </div>
+                 <div>
+                    <label className="text-[10px] font-black opacity-40 mb-2 block uppercase">رابط بنتريست</label>
+                    <input className="w-full p-4 bg-black/40 rounded-2xl text-xs" value={localSettings.pinterestLink} onChange={e => setLocalSettings({...localSettings, pinterestLink: e.target.value})} />
+                 </div>
               </div>
               <button onClick={() => {onUpdateSettings(localSettings); alert('تم حفظ روابط التواصل!');}} className="w-full py-4 bg-blue-600 rounded-2xl font-black shadow-xl shadow-blue-500/20">تحديث الروابط ✨</button>
            </div>

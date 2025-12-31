@@ -20,7 +20,7 @@ const STORAGE_KEYS = {
   VERSION: 'abdou_v4_version'
 };
 
-const CURRENT_VERSION = '4.0.5-STABLE';
+const CURRENT_VERSION = '4.0.6-STABLE';
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
@@ -35,6 +35,7 @@ const App: React.FC = () => {
     facebookLink: 'https://facebook.com/abdouweb',
     telegramLink: 'https://t.me/abdouweb',
     instagramLink: 'https://instagram.com/abdouweb',
+    pinterestLink: 'https://pinterest.com/abdouweb',
     totalVisits: 68000,
     totalEarnings: 285.00
   });
@@ -178,10 +179,12 @@ const App: React.FC = () => {
 
               <div className="space-y-6">
                  <span className="text-[10px] font-black uppercase tracking-widest opacity-20 block">انشر الموقع</span>
-                 <div className="flex justify-center gap-4">
-                    <a href={`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + siteUrl)}`} target="_blank" className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-xl hover:bg-[#25D366] transition-all hover:-translate-y-1">💬</a>
-                    <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(siteUrl)}`} target="_blank" className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-xl hover:bg-[#1877F2] transition-all hover:-translate-y-1">👥</a>
-                    <a href={`https://t.me/share/url?url=${encodeURIComponent(siteUrl)}`} target="_blank" className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-xl hover:bg-[#0088cc] transition-all hover:-translate-y-1">✈️</a>
+                 <div className="flex justify-center flex-wrap gap-3">
+                    <a href={`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + siteUrl)}`} target="_blank" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-2xl flex items-center justify-center text-lg md:text-xl hover:bg-[#25D366] transition-all hover:-translate-y-1">💬</a>
+                    <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(siteUrl)}`} target="_blank" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-2xl flex items-center justify-center text-lg md:text-xl hover:bg-[#1877F2] transition-all hover:-translate-y-1">👥</a>
+                    <a href={`https://t.me/share/url?url=${encodeURIComponent(siteUrl)}`} target="_blank" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-2xl flex items-center justify-center text-lg md:text-xl hover:bg-[#0088cc] transition-all hover:-translate-y-1">✈️</a>
+                    <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(shareText)}`} target="_blank" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-2xl flex items-center justify-center text-lg md:text-xl hover:bg-black transition-all hover:-translate-y-1">𝕏</a>
+                    <a href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(siteUrl)}&description=${encodeURIComponent(shareText)}`} target="_blank" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-2xl flex items-center justify-center text-lg md:text-xl hover:bg-[#E60023] transition-all hover:-translate-y-1">📌</a>
                  </div>
               </div>
 

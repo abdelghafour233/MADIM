@@ -56,6 +56,7 @@ export interface Settings {
   facebookLink?: string;
   instagramLink?: string;
   telegramLink?: string;
+  pinterestLink?: string;
 }
 
 export type View = 'home' | 'post' | 'admin' | 'privacy' | 'about' | 'contact' | 'terms' | 'checkout' | 'store' | 'product';
