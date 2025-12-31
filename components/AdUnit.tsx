@@ -6,47 +6,51 @@ interface AdUnitProps {
   slotId?: string;
   isAlternative?: boolean;
   alternativeCode?: string; 
+  className?: string;
 }
 
-const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alternativeCode }) => {
+const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alternativeCode, className = "" }) => {
   const adRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (isAlternative && alternativeCode && adRef.current) {
       const container = adRef.current;
+      
+      // تفريغ الحاوية وتجهيزها
       container.innerHTML = '';
       
-      // 1. استخراج الـ HTML (بدون السكربتات) ووضعه أولاً
-      const htmlContent = alternativeCode.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "");
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = htmlContent;
-      // نقل العناصر (مثل <div id="container-...">) إلى الحاوية الحقيقية
-      while (tempDiv.firstChild) {
-        container.appendChild(tempDiv.firstChild);
+      // 1. استخراج الـ HTML (الديفات) وحقنها فوراً
+      const htmlContent = alternativeCode.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "").trim();
+      if (htmlContent) {
+        container.innerHTML = htmlContent;
       }
 
-      // 2. استخراج السكربتات وحقنها بعد التأكد من وجود الـ HTML
-      const scriptMatches = alternativeCode.match(/<script\b[^>]*>([\s\S]*?)<\/script>/gim);
-      if (scriptMatches) {
-        scriptMatches.forEach(scriptTag => {
-          const scriptEl = document.createElement('script');
-          
-          // استخراج الـ SRC إذا وجد
-          const srcMatch = scriptTag.match(/src=["'](.+?)["']/);
-          if (srcMatch) scriptEl.src = srcMatch[1];
+      // 2. معالجة السكربتات بحذر
+      const scriptTags = alternativeCode.match(/<script\b[^>]*>([\s\S]*?)<\/script>/gim);
+      
+      if (scriptTags) {
+        scriptTags.forEach((tag, index) => {
+          // تأخير بسيط لكل سكربت لضمان ترتيب التنفيذ
+          setTimeout(() => {
+            const newScript = document.createElement('script');
+            
+            // استخراج الـ SRC
+            const srcMatch = tag.match(/src=["'](.+?)["']/);
+            if (srcMatch) newScript.src = srcMatch[1];
 
-          // استخراج الخصائص الأخرى
-          if (scriptTag.includes('async')) scriptEl.async = true;
-          if (scriptTag.includes('data-cfasync="false"')) scriptEl.setAttribute('data-cfasync', 'false');
+            // استخراج الخصائص (async, cfasync)
+            if (tag.includes('async')) newScript.async = true;
+            if (tag.includes('data-cfasync')) newScript.setAttribute('data-cfasync', 'false');
 
-          // استخراج الكود الداخلي إذا وجد
-          const contentMatch = scriptTag.match(/>([\s\S]*?)<\/script>/);
-          if (contentMatch && contentMatch[1].trim()) {
-            scriptEl.innerHTML = contentMatch[1];
-          }
+            // استخراج الكود الداخلي
+            const innerCode = tag.match(/>([\s\S]*?)<\/script>/);
+            if (innerCode && innerCode[1].trim()) {
+              newScript.innerHTML = innerCode[1];
+            }
 
-          // إضافة السكربت
-          container.appendChild(scriptEl);
+            // إضافة السكربت للحاوية
+            container.appendChild(newScript);
+          }, index * 200); // تأخير 200ms بين كل سكربت
         });
       }
     } else if (publisherId && !isAlternative) {
@@ -54,17 +58,17 @@ const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alt
         // @ts-ignore
         (window.adsbygoogle = window.adsbygoogle || []).push({});
       } catch (e) {
-        console.warn("AdSense pending...");
+        console.warn("AdSense pending context");
       }
     }
   }, [alternativeCode, isAlternative, publisherId]);
 
   return (
-    <div className="ad-unit-wrapper my-4 w-full flex flex-col items-center overflow-hidden">
-      <span className="text-[6px] text-slate-500 font-black mb-1 opacity-20 tracking-[0.5em] uppercase">إعلان مدفوع</span>
+    <div className={`ad-unit-wrapper w-full flex flex-col items-center my-4 ${className}`}>
+      <span className="text-[7px] text-slate-500 font-black mb-1 opacity-20 tracking-[0.4em] uppercase">إعلان</span>
       <div 
         ref={adRef}
-        className="w-full flex justify-center items-center min-h-[50px]"
+        className="w-full min-h-[50px] flex justify-center items-center overflow-hidden"
       >
         {!isAlternative && publisherId && (
           <ins

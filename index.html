@@ -18,19 +18,9 @@
       body { font-family: 'Tajawal', sans-serif; background-color: var(--dark); scroll-behavior: smooth; overflow-x: hidden; margin: 0; padding: 0; }
       .hero-gradient { background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), transparent 50%), radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.08), transparent 50%); }
       
-      /* تحسين حاوية الإعلان العلوي */
-      #top-ad-fixed-container { 
-        width: 100%; 
-        min-height: 50px; 
-        background: rgba(0,0,0,0.2); 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        position: relative; 
-        z-index: 2000;
-        overflow: hidden;
-      }
       #root { min-height: 100vh; }
+      /* منع إخفاء الإعلانات بواسطة بعض التنسيقات */
+      .ad-unit-wrapper { display: block !important; visibility: visible !important; min-height: 50px; }
       ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
     </style>
     
@@ -47,8 +37,8 @@
 </script>
   </head>
   <body class="hero-gradient">
-    <div id="top-ad-fixed-container"></div>
     <div id="root"></div>
-    <script type="module" src="./index.tsx?v=3.3.0-PRO-ADS"></script>
+    <!-- تم نقل سكربت المزامنة لأسفل الـ root لضمان جاهزية الـ DOM -->
+    <script type="module" src="./index.tsx?v=3.4.0-FINAL-ADS"></script>
   </body>
 </html>
