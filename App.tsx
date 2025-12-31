@@ -48,7 +48,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const savedVersion = localStorage.getItem(STORAGE_KEYS.VERSION);
     if (savedVersion !== CURRENT_VERSION) {
-      localStorage.removeItem(STORAGE_KEYS.SETTINGS); // Force update settings
+      localStorage.removeItem(STORAGE_KEYS.SETTINGS);
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
     }
 
@@ -68,6 +68,9 @@ const App: React.FC = () => {
     setView(p.isProduct ? 'product' : 'post');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const siteUrl = window.location.origin;
+  const shareText = `اكتشف أقوى العروض في المغرب على abdouweb! 🔥`;
 
   if (isLoading) return (
     <div className="min-h-screen bg-[#030303] flex items-center justify-center">
@@ -160,15 +163,41 @@ const App: React.FC = () => {
         />
       )}
       
-      <footer className="mt-20 py-16 text-center border-t border-white/5 opacity-30">
-        <div className="text-2xl font-black mb-2 italic">abdouweb</div>
-        <p className="text-[10px] uppercase tracking-widest mb-8">Premium Shopping Experience 🇲🇦</p>
-        <div className="flex justify-center gap-6 text-[9px] font-black uppercase">
-           <button onClick={() => setView('privacy')} className="hover:text-emerald-500">الخصوصية</button>
-           <button onClick={() => setView('terms')} className="hover:text-emerald-500">الشروط</button>
-           <button onClick={() => setView('contact')} className="hover:text-emerald-500">اتصل بنا</button>
+      {/* Enhanced Footer with Share Buttons */}
+      <footer className="mt-20 py-20 border-t border-white/5 bg-gradient-to-t from-emerald-950/5 to-transparent">
+        <div className="container mx-auto px-4 max-w-6xl">
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center text-center md:text-right">
+              <div className="space-y-4">
+                 <div className="text-3xl font-black italic tracking-tighter">abdouweb</div>
+                 <p className="text-[10px] uppercase font-black tracking-[0.3em] opacity-30">Premium Shopping Experience 🇲🇦</p>
+                 <div className="flex justify-center md:justify-start gap-6 text-[11px] font-black uppercase text-emerald-500/60">
+                    <button onClick={() => setView('privacy')} className="hover:text-emerald-500 transition-colors">الخصوصية</button>
+                    <button onClick={() => setView('terms')} className="hover:text-emerald-500 transition-colors">الشروط</button>
+                    <button onClick={() => setView('contact')} className="hover:text-emerald-500 transition-colors">اتصل بنا</button>
+                 </div>
+              </div>
+
+              <div className="space-y-6">
+                 <span className="text-[10px] font-black uppercase tracking-widest opacity-20 block">انشر الموقع</span>
+                 <div className="flex justify-center gap-4">
+                    <a href={`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + siteUrl)}`} target="_blank" className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-xl hover:bg-[#25D366] transition-all hover:-translate-y-1">💬</a>
+                    <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(siteUrl)}`} target="_blank" className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-xl hover:bg-[#1877F2] transition-all hover:-translate-y-1">👥</a>
+                    <a href={`https://t.me/share/url?url=${encodeURIComponent(siteUrl)}`} target="_blank" className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-xl hover:bg-[#0088cc] transition-all hover:-translate-y-1">✈️</a>
+                 </div>
+              </div>
+
+              <div className="space-y-4 md:text-left">
+                 <p className="text-[10px] font-black uppercase tracking-widest opacity-20">جميع الحقوق محفوظة {new Date().getFullYear()}</p>
+                 <div className="flex justify-center md:justify-end gap-2 text-[8px] font-bold opacity-30">
+                    <span>Designed by abdouweb Tech</span>
+                    <span>•</span>
+                    <span>v4.1 Global</span>
+                 </div>
+              </div>
+           </div>
         </div>
       </footer>
+
       <WhatsAppButton settings={settings} />
     </div>
   );

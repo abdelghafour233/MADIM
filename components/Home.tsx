@@ -17,6 +17,15 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
 
   if (!posts || posts.length === 0) return null;
 
+  const siteUrl = window.location.origin;
+  const shareText = `اكتشف أقوى الهميزات والعروض الحصرية في المغرب على موقع abdouweb! 🔥🛍️ \nرابط الموقع: ${siteUrl}`;
+
+  const shareLinks = {
+    whatsapp: `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(siteUrl)}`,
+    telegram: `https://t.me/share/url?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(shareText)}`
+  };
+
   return (
     <div className="pt-24 md:pt-36 space-y-12 md:space-y-24 animate-slide-in">
       {/* Top Scrolling Offers Bar */}
@@ -30,7 +39,7 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
         </div>
       </div>
 
-      {/* Hero Highlight - The "Top" Offer */}
+      {/* Hero Highlight */}
       <section 
         className="relative premium-glass rounded-[40px] md:rounded-[60px] overflow-hidden cursor-pointer group shadow-2xl transition-all hover:shadow-emerald-500/10 border-white/5 mt-4"
         onClick={() => onPostClick(trendingPost)}
@@ -113,6 +122,29 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, settings }) => {
           ))}
         </div>
       </div>
+
+      {/* NEW: Site Share Section */}
+      <section className="premium-glass rounded-[40px] md:rounded-[50px] p-8 md:p-16 border-emerald-500/10 relative overflow-hidden text-center space-y-8">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 blur-[100px] -mr-32 -mt-32"></div>
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/5 blur-[100px] -ml-32 -mb-32"></div>
+        
+        <div className="relative z-10 max-w-2xl mx-auto space-y-6">
+           <h2 className="text-3xl md:text-6xl font-black tracking-tighter">أعجبك الموقع؟ شاركه مع أحبابك 🚀</h2>
+           <p className="text-slate-400 text-sm md:text-xl font-medium opacity-60 leading-relaxed">ساعدنا على نشر أقوى العروض في المغرب وشارك الهمزة مع أصدقائك وعائلتك بضغطة واحدة!</p>
+           
+           <div className="flex flex-wrap justify-center gap-4 pt-4">
+              <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-[#25D366] text-white px-10 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-emerald-900/20">
+                 <span className="text-2xl">💬</span> واتساب
+              </a>
+              <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-[#1877F2] text-white px-10 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-blue-900/20">
+                 <span className="text-2xl">👥</span> فايسبوك
+              </a>
+              <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer" className="flex-grow sm:flex-none flex items-center justify-center gap-3 bg-[#0088cc] text-white px-10 py-5 rounded-[25px] font-black text-lg hover:scale-105 transition-transform shadow-xl shadow-sky-900/20">
+                 <span className="text-2xl">✈️</span> تيليجرام
+              </a>
+           </div>
+        </div>
+      </section>
 
       <div className="py-8">
         <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
