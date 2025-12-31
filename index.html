@@ -19,9 +19,19 @@
       .hero-gradient { background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), transparent 50%), radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.08), transparent 50%); }
       
       #root { min-height: 100vh; }
-      /* منع إخفاء الإعلانات بواسطة بعض التنسيقات */
-      .ad-unit-wrapper { display: block !important; visibility: visible !important; min-height: 50px; }
+      .ad-unit-wrapper { display: block !important; visibility: visible !important; min-height: 80px; width: 100%; text-align: center; }
       ins.adsbygoogle[data-ad-status="unfilled"] { display: none !important; }
+      
+      /* تحسين مظهر الحاوية العلوية */
+      #top-ad-zone {
+        background: rgba(0,0,0,0.3);
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        padding: 10px 0;
+        min-height: 90px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
     </style>
     
     <script type="importmap">
@@ -38,7 +48,6 @@
   </head>
   <body class="hero-gradient">
     <div id="root"></div>
-    <!-- تم نقل سكربت المزامنة لأسفل الـ root لضمان جاهزية الـ DOM -->
-    <script type="module" src="./index.tsx?v=3.4.0-FINAL-ADS"></script>
+    <script type="module" src="./index.tsx?v=3.5.0-STABLE"></script>
   </body>
 </html>
