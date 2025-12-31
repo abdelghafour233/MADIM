@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
-    <!-- تعليمات صارمة للمتصفح وكلاود فلير بعدم التخزين المؤقت للنسخة الحالية -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
@@ -30,34 +29,10 @@
         -webkit-tap-highlight-color: transparent;
         overflow-x: hidden;
       }
-      .glass-card {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 35px;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      }
       .hero-gradient {
         background: radial-gradient(circle at top right, rgba(16, 185, 129, 0.12), transparent 50%),
                     radial-gradient(circle at bottom left, rgba(245, 158, 11, 0.08), transparent 50%);
       }
-      .no-scrollbar::-webkit-scrollbar { display: none; }
-      
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(15px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
-      .animate-fade { animation: fadeIn 0.8s ease-out forwards; }
-      
-      img {
-        max-width: 100%;
-        display: block;
-        backface-visibility: hidden;
-        -webkit-user-drag: none;
-      }
-      
-      /* منطقة الإعلان العلوي المحسنة */
       #top-ad-fixed-container {
         width: 100%;
         min-height: 60px;
@@ -69,6 +44,13 @@
         z-index: 2000;
         overflow: hidden;
         border-bottom: 1px solid rgba(255,255,255,0.05);
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 35px;
       }
     </style>
     <script type="importmap">
@@ -84,18 +66,9 @@
 </script>
   </head>
   <body class="hero-gradient">
-    <!-- حاوية الإعلان العلوي المباشر - ستظهر فوق كل شيء -->
     <div id="top-ad-fixed-container"></div>
     <div id="root"></div>
-    
-    <!-- استخدام التوقيت الحالي لكسر التخزين (Cache Busting) -->
-    <script type="text/javascript">
-      const versionBuster = Date.now();
-      const script = document.createElement('script');
-      script.type = 'module';
-      script.src = `./index.tsx?v=${versionBuster}`;
-      script.setAttribute('data-cfasync', 'false');
-      document.body.appendChild(script);
-    </script>
+    <!-- استدعاء مباشر مع كسر الكاش عبر timestamp ثابت لكل جلسة -->
+    <script type="module" src="./index.tsx?v=2.4.1-STABLE"></script>
   </body>
 </html>

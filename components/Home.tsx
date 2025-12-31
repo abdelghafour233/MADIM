@@ -14,21 +14,23 @@ interface HomeProps {
 }
 
 const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, directLink, settings }) => {
+  // حماية: إذا كانت القائمة فارغة نرجع نصاً بسيطاً لمنع الشاشة البيضاء
+  if (!posts || posts.length === 0) {
+    return <div className="text-center py-20 opacity-40 font-black">جاري جلب أفضل العروض...</div>;
+  }
+
   const trendingPost = posts.find(p => p.isTrending) || posts[0];
   const otherPosts = posts.filter(p => p.id !== trendingPost?.id);
-  const [timeLeft, setTimeLeft] = useState({ h: 0, m: 0, s: 0 });
+  const [timeLeft, setTimeLeft] = useState({ h: 2, m: 45, s: 12 });
   const fallbackImage = 'https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=800&auto=format&fit=crop';
 
   useEffect(() => {
-    const end = new Date().setHours(23, 59, 59);
     const timer = setInterval(() => {
-      const now = new Date().getTime();
-      const diff = end - now;
-      if (diff <= 0) return;
-      setTimeLeft({
-        h: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        m: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
-        s: Math.floor((diff % (1000 * 60)) / 1000)
+      setTimeLeft(prev => {
+        if (prev.s > 0) return { ...prev, s: prev.s - 1 };
+        if (prev.m > 0) return { ...prev, m: prev.m - 1, s: 59 };
+        if (prev.h > 0) return { h: prev.h - 1, m: 59, s: 59 };
+        return prev;
       });
     }, 1000);
     return () => clearInterval(timer);
@@ -38,8 +40,6 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
     e.currentTarget.src = fallbackImage;
   };
 
-  if (!trendingPost) return <div className="text-center py-20 opacity-40 font-black">جاري جلب أفضل العروض...</div>;
-
   const chunkedPosts = [];
   const chunkSize = 8; 
   for (let i = 0; i < otherPosts.length; i += chunkSize) {
@@ -48,92 +48,64 @@ const Home: React.FC<HomeProps> = ({ posts, onPostClick, darkMode = true, direct
 
   return (
     <div className="space-y-12 md:space-y-20 animate-fade" dir="rtl">
-      {/* Hero Section Premium */}
+      {/* Hero Section */}
       <section 
         className="relative group cursor-pointer overflow-hidden rounded-[40px] md:rounded-[60px] bg-white/5 border border-white/10 shadow-3xl transition-transform duration-500 hover:scale-[1.005]"
         onClick={() => onPostClick(trendingPost)}
       >
         <div className="flex flex-col lg:flex-row items-stretch">
-           <div className="relative w-full lg:w-1/2 h-[350px] sm:h-[450px] lg:h-[650px] overflow-hidden bg-[#0d0d0e] flex items-center justify-center p-8 md:p-16">
-              <div 
-                className="absolute inset-0 bg-cover bg-center blur-3xl opacity-20 scale-125" 
-                style={{ backgroundImage: `url("${trendingPost.image}")` }}
-              ></div>
+           <div className="relative w-full lg:w-1/2 h-[350px] sm:h-[450px] lg:h-[650px] overflow-hidden bg-[#0d0d0e] flex items-center justify-center p-8">
+              <div className="absolute inset-0 bg-cover bg-center blur-3xl opacity-20" style={{ backgroundImage: `url("${trendingPost.image}")` }}></div>
               <img 
                 src={trendingPost.image} 
-                referrerPolicy="no-referrer"
                 onError={handleImgError}
-                className="relative z-10 w-full h-full object-contain drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] group-hover:scale-110 transition-transform duration-1000" 
+                className="relative z-10 w-full h-full object-contain drop-shadow-2xl group-hover:scale-110 transition-transform duration-1000" 
                 alt={trendingPost.title} 
               />
-              <div className="absolute top-6 right-6 md:top-10 md:right-10 bg-orange-600 text-white px-4 py-2 md:px-6 md:py-3 rounded-2xl text-[10px] md:text-sm font-black shadow-2xl animate-pulse z-30 flex items-center gap-2">
-                <span>⏱️</span>
-                <span>ينتهي العرض: {timeLeft.h}:{timeLeft.m}:{timeLeft.s}</span>
+              <div className="absolute top-6 right-6 bg-orange-600 text-white px-4 py-2 rounded-2xl text-[10px] font-black z-30">
+                ⏱️ {timeLeft.h}:{timeLeft.m}:{timeLeft.s}
               </div>
            </div>
 
-           <div className="w-full lg:w-1/2 p-8 sm:p-12 md:p-16 lg:p-20 flex flex-col justify-center bg-black/40 lg:bg-transparent relative z-30">
-              <div className="flex items-center gap-3 mb-6">
-                <span className="bg-emerald-600/20 text-emerald-500 px-4 py-2 rounded-xl text-[10px] md:text-xs font-black uppercase tracking-widest border border-emerald-500/20">همزة اليوم الحصرية 🔥</span>
-              </div>
-              <h1 className="text-3xl md:text-5xl xl:text-7xl font-black mb-6 md:mb-10 leading-[1.1] group-hover:text-emerald-500 transition-colors">{trendingPost.title}</h1>
-              <p className="text-slate-400 text-lg md:text-2xl font-medium mb-10 md:mb-14 line-clamp-3 leading-relaxed">{trendingPost.excerpt}</p>
+           <div className="w-full lg:w-1/2 p-8 sm:p-12 lg:p-16 flex flex-col justify-center">
+              <span className="bg-emerald-600/20 text-emerald-500 px-4 py-2 rounded-xl text-[10px] font-black w-fit mb-6">همزة حصرية 🔥</span>
+              <h1 className="text-3xl md:text-5xl font-black mb-6 leading-tight">{trendingPost.title}</h1>
+              <p className="text-slate-400 text-lg mb-10 line-clamp-3">{trendingPost.excerpt}</p>
               
               <div className="flex flex-col sm:flex-row items-center gap-6">
-                 <div className="w-full sm:w-auto bg-white text-black p-5 md:p-8 rounded-[30px] font-black shadow-2xl flex flex-col items-center min-w-[160px]">
-                    <span className="text-[10px] md:text-xs opacity-40 mb-1 uppercase tracking-tighter">الثمن اليوم</span>
-                    <span className="text-2xl md:text-5xl">{trendingPost.price && trendingPost.price > 0 ? `${trendingPost.price} د.م` : 'أفضل سعر'}</span>
+                 <div className="w-full sm:w-auto bg-white text-black p-5 rounded-[25px] font-black text-center min-w-[140px]">
+                    <span className="text-[10px] opacity-40 block">الثمن اليوم</span>
+                    <span className="text-2xl">{trendingPost.price ? `${trendingPost.price} د.م` : 'أفضل سعر'}</span>
                  </div>
-                 <button className="w-full sm:flex-1 bg-emerald-600 text-white py-6 md:py-9 rounded-[30px] md:rounded-[45px] font-black text-xl md:text-3xl shadow-2xl shadow-emerald-600/30 hover:bg-emerald-500 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-4">
-                     اكتشف العرض الآن 🛍️
+                 <button className="w-full sm:flex-1 bg-emerald-600 text-white py-6 rounded-[25px] font-black text-xl shadow-xl shadow-emerald-600/30">
+                     اكتشف العرض 🛍️
                  </button>
               </div>
            </div>
         </div>
       </section>
 
-      {/* Reward Center Section */}
       <RewardsCenter rewards={INITIAL_REWARDS} settings={settings} darkMode={darkMode} />
-
       <AdUnit isAlternative={true} alternativeCode={settings.alternativeAdsCode} />
 
-      {/* Product Grid Section */}
-      <div className="space-y-8 md:space-y-12">
-        <div className="flex items-center justify-between border-b border-white/5 pb-8">
-           <h2 className="text-2xl md:text-4xl font-black flex items-center gap-4">
-              <span className="w-3 h-10 bg-emerald-600 rounded-full"></span>
-              أحدث الهميزات والعروض
-           </h2>
-        </div>
+      <div className="space-y-8">
+        <h2 className="text-2xl md:text-4xl font-black flex items-center gap-4">
+           <span className="w-2 h-8 bg-emerald-600 rounded-full"></span>
+           أحدث العروض
+        </h2>
 
         {chunkedPosts.map((chunk, index) => (
           <React.Fragment key={index}>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 md:gap-8">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-8">
               {chunk.map(post => (
-                <div 
-                  key={post.id} 
-                  className="group cursor-pointer glass-card p-4 md:p-6 overflow-hidden flex flex-col h-full"
-                  onClick={() => onPostClick(post)}
-                >
-                  <div className="relative aspect-square rounded-[25px] md:rounded-[40px] overflow-hidden bg-[#0d0d0e] mb-6 flex items-center justify-center img-loading">
-                     <img 
-                        src={post.image} 
-                        loading="lazy" 
-                        referrerPolicy="no-referrer"
-                        onError={handleImgError}
-                        className="relative z-10 w-full h-full object-contain p-4 group-hover:scale-110 transition-transform duration-700" 
-                        alt={post.title} 
-                     />
+                <div key={post.id} className="group cursor-pointer glass-card p-4 flex flex-col h-full" onClick={() => onPostClick(post)}>
+                  <div className="relative aspect-square rounded-[30px] overflow-hidden bg-[#0d0d0e] mb-4 flex items-center justify-center">
+                     <img src={post.image} onError={handleImgError} className="w-full h-full object-contain p-2 group-hover:scale-110 transition-transform duration-700" alt="" />
                   </div>
-                  <h3 className="text-sm md:text-lg font-black mb-4 line-clamp-2 min-h-[2.5rem] group-hover:text-emerald-500 transition-colors leading-snug">
-                    {post.title}
-                  </h3>
-                  <div className="mt-auto flex items-center justify-between pt-4 border-t border-white/5">
-                      <div className="flex flex-col">
-                        <span className="text-xs opacity-40 font-bold">ثمن العرض</span>
-                        <span className="text-lg md:text-2xl font-black text-emerald-500">{post.price && post.price > 0 ? `${post.price} د.م` : 'انظر العرض'}</span>
-                      </div>
-                      <button className="w-10 h-10 md:w-12 md:h-12 bg-emerald-600/10 text-emerald-500 rounded-xl flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-colors">🛍️</button>
+                  <h3 className="text-sm font-black mb-4 line-clamp-2 leading-snug">{post.title}</h3>
+                  <div className="mt-auto pt-4 border-t border-white/5 flex justify-between items-center">
+                      <span className="text-lg font-black text-emerald-500">{post.price ? `${post.price} د.م` : 'انظر العرض'}</span>
+                      <div className="w-8 h-8 bg-emerald-600/10 text-emerald-500 rounded-lg flex items-center justify-center text-sm">🛒</div>
                   </div>
                 </div>
               ))}
