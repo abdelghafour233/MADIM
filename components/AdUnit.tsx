@@ -1,99 +1,37 @@
-
-import React, { useEffect, useRef, useId } from 'react';
+import React from 'react';
 
 interface AdUnitProps {
-  publisherId?: string;
-  slotId?: string;
-  isAlternative?: boolean;
-  alternativeCode?: string; 
   className?: string;
 }
 
-const AdUnit: React.FC<AdUnitProps> = ({ publisherId, slotId, isAlternative, alternativeCode, className = "" }) => {
-  const adRef = useRef<HTMLDivElement>(null);
-  const uniqueId = useId().replace(/:/g, ""); 
-
-  useEffect(() => {
-    if (isAlternative && alternativeCode && adRef.current) {
-      const container = adRef.current;
-      container.innerHTML = ''; 
-      
-      try {
-        // 1. حقن الـ HTML
-        let htmlPart = alternativeCode.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "").trim();
-        
-        // تعديل الـ ID ليكون فريداً
-        const idMatch = htmlPart.match(/id=["'](container-[^"']+)["']/);
-        let currentId = "";
-        if (idMatch) {
-          currentId = idMatch[1];
-          const newId = `${currentId}-${uniqueId}`;
-          htmlPart = htmlPart.replace(new RegExp(currentId, 'g'), newId);
-          currentId = newId;
-        }
-        
-        container.innerHTML = htmlPart;
-
-        // 2. معالجة وحقن السكربتات
-        const scriptTags = alternativeCode.match(/<script\b[^>]*>([\s\S]*?)<\/script>/gim);
-        if (scriptTags) {
-          scriptTags.forEach((tag, idx) => {
-            const scriptEl = document.createElement('script');
-            
-            // خصائص السكربت
-            const src = tag.match(/src=["'](.+?)["']/);
-            if (src) scriptEl.src = src[1];
-            if (tag.includes('async')) scriptEl.async = true;
-            scriptEl.setAttribute('data-cfasync', 'false');
-
-            // محتوى السكربت
-            const inner = tag.match(/>([\s\S]*?)<\/script>/);
-            if (inner && inner[1].trim()) {
-              let code = inner[1];
-              if (idMatch && currentId) {
-                code = code.split(idMatch[1]).join(currentId);
-              }
-              scriptEl.innerHTML = code;
-            }
-
-            // إضافة السكربت للحاوية
-            setTimeout(() => {
-              if (container) container.appendChild(scriptEl);
-            }, (idx + 1) * 250);
-          });
-        }
-      } catch (err) {
-        console.error("AdUnit Exception:", err);
-      }
-    } else if (publisherId && !isAlternative) {
-      try {
-        // @ts-ignore
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
-      } catch (e) {}
-    }
-  }, [alternativeCode, isAlternative, uniqueId]);
+const AdUnit: React.FC<AdUnitProps> = ({ className = "" }) => {
+  const temuLink = "https://temu.to/k/u6zpr84k5n5";
 
   return (
-    <div className={`ad-unit-wrapper ${className}`}>
-      <div className="flex items-center justify-center gap-2 mb-1 opacity-20">
-        <span className="h-[1px] w-3 bg-slate-500"></span>
-        <span className="text-[6px] text-slate-500 font-bold uppercase tracking-widest">Ad Service</span>
-        <span className="h-[1px] w-3 bg-slate-500"></span>
-      </div>
-      <div 
-        ref={adRef}
-        className="w-full min-h-[50px] flex justify-center items-center overflow-hidden"
+    <div className={`temu-promo-banner ${className} px-4`}>
+      <a 
+        href={temuLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="block group relative overflow-hidden bg-gradient-to-r from-orange-600 to-amber-600 rounded-[30px] p-6 md:p-8 border border-white/10 shadow-2xl transition-all hover:shadow-orange-500/20 active:scale-[0.98]"
       >
-        {!isAlternative && publisherId && (
-          <ins
-            className="adsbygoogle"
-            style={{ display: 'block', width: '100%' }}
-            data-ad-client={publisherId}
-            data-ad-slot={slotId || 'default'}
-            data-ad-format="auto"
-            data-full-width-responsive="true"
-          ></ins>
-        )}
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+           <div className="text-center md:text-right space-y-2">
+              <span className="bg-white/20 text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest">عرض خاص من تيمو</span>
+              <h3 className="text-xl md:text-3xl font-black text-white leading-tight">سجل الآن واحصل على حزمة كوبونات بقيمة 1000 درهم! 🎁</h3>
+              <p className="text-white/80 text-sm font-bold">هذا العرض حصري للمستخدمين الجدد عبر رابطنا الرسمي.</p>
+           </div>
+           <div className="bg-white text-orange-600 px-8 py-4 rounded-2xl font-black text-lg shadow-xl group-hover:scale-110 transition-transform">
+              احصل على الهدية 🔥
+           </div>
+        </div>
+        
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-black/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl pointer-events-none"></div>
+      </a>
+      <div className="mt-2 text-center">
+         <span className="text-[8px] font-black uppercase text-white/20 tracking-widest">Promotion Partner: Temu Morocco</span>
       </div>
     </div>
   );

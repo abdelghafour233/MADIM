@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Article, Settings, CartItem } from './types.ts';
 import Navbar from './components/Navbar.tsx';
 import Home from './components/Home.tsx';
@@ -11,7 +10,6 @@ import WhatsAppButton from './components/WhatsAppButton.tsx';
 import LegalPage from './components/LegalPage.tsx';
 import Cart from './components/Cart.tsx';
 import Checkout from './components/Checkout.tsx';
-import AdUnit from './components/AdUnit.tsx';
 import { INITIAL_POSTS } from './constants.tsx';
 
 const STORAGE_KEYS = {
@@ -21,24 +19,24 @@ const STORAGE_KEYS = {
   VERSION: 'abdou_v4_version'
 };
 
-const CURRENT_VERSION = '4.1.0-ADS';
+const CURRENT_VERSION = '4.2.0-TEMU';
 
 const App: React.FC = () => {
   const [view, setView] = useState<View>('home');
   const [posts, setPosts] = useState<Article[]>(INITIAL_POSTS);
   const [settings, setSettings] = useState<Settings>({
     siteName: 'abdouweb.online',
-    adsenseCode: 'ca-pub-5578524966832192',
+    adsenseCode: '',
     alternativeAdsCode: '', 
     globalAdsCode: '',      
-    directLinkCode: 'https://bouncingbuzz.com/wga5mrxfz?key=2d97310179e241819b7915da9473f01d', 
+    directLinkCode: 'https://temu.to/k/u6zpr84k5n5', 
     whatsappNumber: '212649075664',
     facebookLink: 'https://facebook.com/abdouweb',
     telegramLink: 'https://t.me/abdouweb',
     instagramLink: 'https://instagram.com/abdouweb',
     pinterestLink: 'https://pinterest.com/abdouweb',
-    totalVisits: 72400,
-    totalEarnings: 312.50
+    totalVisits: 84200,
+    totalEarnings: 0
   });
   const [selectedPost, setSelectedPost] = useState<Article | null>(null);
   const [isAuth, setIsAuth] = useState(false);
@@ -50,7 +48,6 @@ const App: React.FC = () => {
   useEffect(() => {
     const savedVersion = localStorage.getItem(STORAGE_KEYS.VERSION);
     if (savedVersion !== CURRENT_VERSION) {
-      localStorage.removeItem(STORAGE_KEYS.SETTINGS);
       localStorage.setItem(STORAGE_KEYS.VERSION, CURRENT_VERSION);
     }
 
@@ -58,7 +55,7 @@ const App: React.FC = () => {
     const savedPosts = localStorage.getItem(STORAGE_KEYS.POSTS);
     const savedCart = localStorage.getItem(STORAGE_KEYS.CART);
 
-    if (savedSettings) setSettings(prev => ({...prev, ...JSON.parse(savedSettings)}));
+    if (savedSettings) setSettings(prev => ({...prev, ...JSON.parse(savedSettings), directLinkCode: 'https://temu.to/k/u6zpr84k5n5'}));
     if (savedPosts) setPosts(JSON.parse(savedPosts));
     if (savedCart) setCart(JSON.parse(savedCart));
     
@@ -71,12 +68,9 @@ const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const siteUrl = window.location.origin;
-  const shareText = `اكتشف أقوى العروض في المغرب على abdouweb! 🔥`;
-
   if (isLoading) return (
     <div className="min-h-screen bg-[#030303] flex items-center justify-center">
-      <div className="w-8 h-8 border-2 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+      <div className="w-8 h-8 border-2 border-orange-500/20 border-t-orange-500 rounded-full animate-spin"></div>
     </div>
   );
 
@@ -127,7 +121,7 @@ const App: React.FC = () => {
             onPlaceOrder={(data) => {
                window.open(settings.directLinkCode, '_blank');
                setTimeout(() => {
-                 window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(`طلب جديد:\nالاسم: ${data.name}\nالمدينة: ${data.city}\nالهاتف: ${data.phone}`)}`);
+                 window.open(`https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(`طلب جديد من موقع تيمو:\nالاسم: ${data.name}\nالمدينة: ${data.city}\nالهاتف: ${data.phone}`)}`);
                  setCart([]); 
                  setView('home');
                }, 400);
@@ -153,11 +147,6 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {/* Global Ads Injection Container */}
-      {settings.globalAdsCode && (
-        <AdUnit isAlternative={true} alternativeCode={settings.globalAdsCode} className="hidden" />
-      )}
-
       {isCartOpen && (
         <Cart 
           items={cart} 
@@ -166,43 +155,19 @@ const App: React.FC = () => {
           onCheckout={() => {setIsCartOpen(false); setView('checkout');}} 
           onClose={() => setIsCartOpen(false)} 
           darkMode={true} 
-          adCode={settings.alternativeAdsCode} 
         />
       )}
       
-      <footer className="mt-20 py-20 border-t border-white/5 bg-gradient-to-t from-emerald-950/5 to-transparent">
-        <div className="container mx-auto px-4 max-w-6xl">
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 items-center text-center md:text-right">
-              <div className="space-y-4">
-                 <div className="text-3xl font-black italic tracking-tighter">abdouweb</div>
-                 <p className="text-[10px] uppercase font-black tracking-[0.3em] opacity-30">Premium Shopping Experience 🇲🇦</p>
-                 <div className="flex justify-center md:justify-start gap-6 text-[11px] font-black uppercase text-emerald-500/60">
-                    <button onClick={() => setView('privacy')} className="hover:text-emerald-500 transition-colors">الخصوصية</button>
-                    <button onClick={() => setView('terms')} className="hover:text-emerald-500 transition-colors">الشروط</button>
-                    <button onClick={() => setView('contact')} className="hover:text-emerald-500 transition-colors">اتصل بنا</button>
-                 </div>
-              </div>
-
-              <div className="space-y-6">
-                 <span className="text-[10px] font-black uppercase tracking-widest opacity-20 block">انشر الموقع</span>
-                 <div className="flex justify-center flex-wrap gap-3">
-                    <a href={`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + siteUrl)}`} target="_blank" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-2xl flex items-center justify-center text-lg md:text-xl hover:bg-[#25D366] transition-all hover:-translate-y-1">💬</a>
-                    <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(siteUrl)}`} target="_blank" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-2xl flex items-center justify-center text-lg md:text-xl hover:bg-[#1877F2] transition-all hover:-translate-y-1">👥</a>
-                    <a href={`https://t.me/share/url?url=${encodeURIComponent(siteUrl)}`} target="_blank" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-2xl flex items-center justify-center text-lg md:text-xl hover:bg-[#0088cc] transition-all hover:-translate-y-1">✈️</a>
-                    <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(siteUrl)}&text=${encodeURIComponent(shareText)}`} target="_blank" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-2xl flex items-center justify-center text-lg md:text-xl hover:bg-black transition-all hover:-translate-y-1">𝕏</a>
-                    <a href={`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(siteUrl)}&description=${encodeURIComponent(shareText)}`} target="_blank" className="w-10 h-10 md:w-12 md:h-12 bg-white/5 rounded-2xl flex items-center justify-center text-lg md:text-xl hover:bg-[#E60023] transition-all hover:-translate-y-1">📌</a>
-                 </div>
-              </div>
-
-              <div className="space-y-4 md:text-left">
-                 <p className="text-[10px] font-black uppercase tracking-widest opacity-20">جميع الحقوق محفوظة {new Date().getFullYear()}</p>
-                 <div className="flex justify-center md:justify-end gap-2 text-[8px] font-bold opacity-30">
-                    <span>Designed by abdouweb Tech</span>
-                    <span>•</span>
-                    <span>v4.1 Global</span>
-                 </div>
-              </div>
+      <footer className="mt-20 py-10 border-t border-white/5 bg-gradient-to-t from-orange-950/5 to-transparent">
+        <div className="container mx-auto px-4 max-w-6xl text-center">
+           <div className="text-2xl font-black italic mb-4">abdouweb × Temu</div>
+           <p className="text-[10px] uppercase font-black tracking-widest opacity-30 mb-6">الشريك الرسمي لتيمو في المغرب 🇲🇦</p>
+           <div className="flex justify-center gap-6 text-[11px] font-black uppercase text-orange-500">
+              <button onClick={() => setView('privacy')}>الخصوصية</button>
+              <button onClick={() => setView('terms')}>الشروط</button>
+              <button onClick={() => setView('contact')}>اتصل بنا</button>
            </div>
+           <p className="mt-8 text-[10px] opacity-20">جميع الحقوق محفوظة {new Date().getFullYear()}</p>
         </div>
       </footer>
 
